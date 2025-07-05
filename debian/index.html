@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debian Setups - My Linux Distro Setups</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font import for Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Gradient background for a modern look - consistent with main index */
+            background: linear-gradient(to right bottom, #4a00e0, #8e2de2);
+            min-height: 100vh; /* Ensure full viewport height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem; /* Add some padding for smaller screens */
+        }
+        /* Styling for the container to center content and add shadow - consistent with main index */
+        .container-card {
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+        }
+        /* Button styling for hover effects and consistent appearance - consistent with main index */
+        .setup-button {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .setup-button:hover {
+            transform: translateY(-3px); /* Lift effect on hover */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Main container for the content, centered on the page -->
+    <div class="container-card w-full max-w-2xl p-8 md:p-12 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+            Debian Installation Guides
+        </h1>
+        <p class="text-md md:text-lg text-gray-600 mb-10">
+            Choose from the available Debian setup configurations below:
+        </p>
+
+        <!-- Grid layout for the navigation buttons -->
+        <div class="grid grid-cols-1 gap-6">
+            <!-- Debian Headless qBittorrent Button -->
+            <a href="headless-qbittorrent/debian-server-qbittorrent.html" class="setup-button block p-6 bg-purple-600 text-white rounded-xl hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300">
+                <h2 class="text-2xl font-semibold mb-2">Headless qBittorrent Server</h2>
+                <p class="text-purple-100 text-sm">
+                    Instructions for installing Debian as a minimal server with web server, SSH, and qBittorrent-nox.
+                </p>
+            </a>
+
+            <!-- Debian i3WM Desktop Button -->
+            <a href="i3wm/debian-i3wm.html" class="setup-button block p-6 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                <h2 class="text-2xl font-semibold mb-2">Debian with i3 Window Manager</h2>
+                <p class="text-blue-100 text-sm">
+                    Guide for a minimal Debian installation featuring the i3 tiling window manager (no full desktop environment).
+                </p>
+            </a>
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="mt-10">
+            <a href="../index.html" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
+                &larr; Back to Main Setups
+            </a>
+        </div>
+
+        <p class="text-sm text-gray-500 mt-10">
+            &copy; 2025 Your Name/GitHub Username. All rights reserved.
+        </p>
+    </div>
+</body>
+</html>
