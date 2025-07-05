@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debian i3 Setup Guide - sorryfunnel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1F1A25; /* Very dark desaturated purple/pink for background */
+            color: #E2E8F0; /* Light grey text for readability */
+            line-height: 1.6;
+        }
+        pre {
+            background-color: #2C2533; /* Darker desaturated purple/pink for code */
+            color: #CBD5E0; /* Lighter grey text for code */
+            padding: 1rem;
+            border-radius: 0.5rem; /* Rounded corners */
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            white-space: pre-wrap; /* Wrap long lines */
+            word-wrap: break-word; /* Break words for wrapping */
+        }
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+        }
+        h1, h2, h3 {
+            color: #FF88AA; /* Medium vibrant pink for headings */
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        .container {
+            max-width: 800px; /* Adjusted for overall content width */
+        }
+        .section-card {
+            background-color: #2C2533; /* Card background, matching code blocks */
+            border-radius: 0.75rem; /* More rounded corners for cards */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .note {
+            background-color: #FFADDD; /* Softer, pastel pink for notes */
+            color: #1F1A25; /* Dark text on light pink for contrast */
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .important {
+            background-color: #E53E3E; /* Red for important notes (kept for universal warning clarity) */
+            color: #E2E8F0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        /* Sidebar specific styles for responsiveness and stickiness */
+        .sidebar {
+            background-color: #2C2533; /* Matching card/code background */
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 1024px) { /* Large screens and up */
+            .sidebar {
+                position: sticky;
+                top: 1rem; /* Adjust as needed for spacing from top */
+                height: calc(100vh - 2rem); /* Full viewport height minus top/bottom padding */
+                overflow-y: auto; /* Enable scrolling for long sidebars */
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="flex flex-col lg:flex-row max-w-screen-xl mx-auto">
+        <!-- Sidebar Column -->
+        <aside class="w-full lg:w-1/4 p-4 lg:p-6 sidebar mb-8 lg:mb-0 lg:mr-8">
+            <h2 class="text-xl font-bold text-pink-300 mb-4">Navigation</h2>
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="../index.html" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
+                            ← Main Setups
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../debian/index.html" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
+                            ← Debian Setups
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#top" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
+                            ↑ Back to Top
+                        </a>
+                    </li>
+                    <li class="border-t border-gray-700 my-2"></li> <!-- Separator -->
+                    <li><a href="#step1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">1. Login as Root</a></li>
+                    <li><a href="#step2" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">2. Initial System Update</a></li>
+                    <li><a href="#step3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">3. Add Flathub Repository</a></li>
+                    <li><a href="#step4" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">4. Remove RXVT</a></li>
+                    <li><a href="#step5" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">5. Reboot System and Login as User</a></li>
+                    <li><a href="#step6" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">6. Setup i3 Launch Sequence</a></li>
+                    <li><a href="#step7" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">7. Start i3 Session</a></li>
+                    <li><a href="#step8" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">8. Set Initial Brightness</a></li>
+                    <li><a href="#step9" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">9. Mount Extended Partition</a></li>
+                    <li><a href="#step10" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">10. Install Firefox</a></li>
+                    <li><a href="#step11" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">11. Install Theming Packages</a></li>
+                    <li><a href="#step12" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">12. Initial i3 Configuration</a></li>
+                    <li><a href="#step12-1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">12.1. Configure i3 Window Colors</a></li>
+                    <li><a href="#step13" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">13. Configure i3 Status Bar</a></li>
+                    <li><a href="#step14" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">14. Modify Terminal Appearance</a></li>
+                    <li><a href="#step15" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">15. Configure Dark Mode</a></li>
+                    <li><a href="#step16" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">16. Rebuild Caches</a></li>
+                    <li><a href="#step17" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">17. Further Application Settings</a></li>
+                    <li><a href="#step18" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">18. Install Core Utilities</a></li>
+                    <li><a href="#step19" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">19. Configure Combined Audio</a></li>
+                    <li><a href="#step20" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">20. Test All Applications</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Column -->
+        <main class="w-full lg:w-3/4">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl sm:text-5xl font-extrabold mb-2">Debian i3 Setup Guide</h1>
+                <p class="text-lg text-gray-400">For Lenovo ThinkPad L430 (Hostname: `gaogaogao`, User: `nyanyanyan`)</p>
+                <p class="text-md text-gray-500 mt-2">This comprehensive guide details the step-by-step process for setting up a functional and optimized Debian system with the i3 window manager. Specifically tailored to the Lenovo ThinkPad L430 model, this documentation covers installation, i3 configuration, essential utilities, and common tweaks. It prioritizes a consistent visual experience by focusing on using basic Adwaita Dark for both GTK and Qt applications. This guide was primarily created for my personal use, for a system with the hostname `gaogaogao` and user account `nyanyanyan`, to streamline future fresh installations.</p>
+            </header>
+
+            <div class="section-card" id="step1">
+                <h2 class="text-2xl font-bold mb-4">1. Login as Root</h2>
+                <p class="mb-4">Log in directly as the <strong>root</strong> user in the terminal (TTY) for the following initial setup steps.</p>
+            </div>
+
+            <div class="section-card" id="step2">
+                <h2 class="text-2xl font-bold mb-4">2. Initial System Update and Core Application Installation (as Root)</h2>
+                <p class="mb-4">Update and upgrade your system's package list and existing packages. Then, install a set of core applications.</p>
+                <pre><code>apt update -y && apt upgrade -y && apt install i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak speedcrunch libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-base mpv simplescreenrecorder zathura zathura-pdf-poppler gnome-screenshot ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk -y</code></pre>
+            </div>
+
+            <div class="section-card" id="step3">
+                <h2 class="text-2xl font-bold mb-4">3. Add Flathub Repository</h2>
+                <p class="mb-4">Add the Flathub repository to your Flatpak setup.</p>
+                <pre><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code></pre>
+            </div>
+
+            <div class="section-card" id="step4">
+                <h2 class="text-2xl font-bold mb-4">4. Remove RXVT (Optional, if installed)</h2>
+                <p class="mb-4">If you have `rxvt-unicode` installed and wish to remove it, you can do so now.</p>
+                <pre><code>apt purge rxvt-unicode -y && apt autoremove -y</code></pre>
+            </div>
+
+            <div class="section-card" id="step5">
+                <h2 class="text-2xl font-bold mb-4">5. Reboot System and Login as User</h2>
+                <p class="mb-4">After completing the initial installations, reboot your system.</p>
+                <pre><code>reboot</code></pre>
+                <p class="mt-4">Once your system reboots, **log in as your regular user** in the TTY. All subsequent steps will be performed as your regular user, utilizing `sudo` when administrative privileges are necessary.</p>
+            </div>
+
+            <div class="section-card" id="step6">
+                <h2 class="text-2xl font-bold mb-4">6. Setup i3 Launch Sequence and Session-Wide Environment Variables</h2>
+                <p class="mb-4">Create or edit your `.xinitrc` file in your home directory. This file tells `startx` how to launch your i3 session and sets important environment variables.</p>
+                <pre><code>nano ~/.xinitrc</code></pre>
+                <p class="mb-4">Paste or carefully type the following content into the `nano` editor, exactly as shown:</p>
+                <pre><code>#! /bin/sh
+
+# Start the D-Bus session bus if not already running (often needed for minimal setups)
+# This ensures a user D-Bus session is active and its address is available.
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval "$(dbus-daemon --session --fork --print-address)"
+fi
+
+# CRITICAL: Import X-related environment variables into the systemd --user session.
+# This allows xdg-desktop-portal services (which run as user systemd services)
+# to find your X display and correctly interact with the graphical session.
+if command -v systemctl >/dev/null; then
+    systemctl --user import-environment DISPLAY XAUTHORITY
+    # Optionally, you can explicitly start user services if they are not
+    # starting automatically via dependencies or socket activation.
+    # For xdg-desktop-portal, systemd usually handles this on demand,
+    # but explicitly starting them can sometimes help if issues persist.
+    # systemctl --user start xdg-desktop-portal.service xdg-desktop-portal-gtk.service
+fi
+
+# Set Qt Platform Abstraction plugin (REQUIRED for qt5ct theming)
+export QT_QPA_PLATFORMTHEME="qt5ct"
+
+# Other environment variables (like GTK_THEME) can go here too (REQUIRED for GTK theming)
+export GTK_THEME="Adwaita:dark"
+
+# Load X resources (For xterm and other Xlib applications) (REQUIRED for xterm theming)
+xrdb -merge ~/.Xresources
+
+# Launch i3
+exec i3</code></pre>
+                <p class="mt-4 mb-4">Make the `.xinitrc` file executable.</p>
+                <pre><code>chmod +x ~/.xinitrc</code></pre>
+                <div class="important">
+                    <p><strong>Important: Reboot to apply `.xinitrc` changes.</strong></p>
+                    <p>After making changes to your `~/.xinitrc` file, it is crucial to <strong>reboot</strong> your system or fully log out of your current X session and then log back in. This ensures that the new environment variables and launch commands are properly loaded.</p>
+                </div>
+                <pre><code>sudo reboot</code></pre>
+            </div>
+
+            <div class="section-card" id="step7">
+                <h2 class="text-2xl font-bold mb-4">7. Start i3 Session for the First Time</h2>
+                <p class="mb-4">After reboot, log in as your regular user in TTY, then start your i3 graphical session.</p>
+                <pre><code>startx</code></pre>
+                <p class="mt-4">Follow the initial i3 setup prompts (e.g., Mod key, config file creation).</p>
+            </div>
+
+            <div class="section-card" id="step8">
+                <h2 class="text-2xl font-bold mb-4">8. Set Initial Brightness Level</h2>
+                <p class="mb-4">Now that you are in your i3 session, set an initial brightness level for your screen.</p>
+                <pre><code>brightnessctl set 25%</code></pre>
+            </div>
+
+            <div class="section-card" id="step9">
+                <h2 class="text-2xl font-bold mb-4">9. Mount Extended Partition on Startup and Allow User Access</h2>
+                <p class="mb-4">To manage your extended partition, first, identify it.</p>
+                <pre><code>sudo blkid</code></pre>
+                <p class="mt-4 mb-4">Look for your extended partition in the output and note its `LABEL` (e.g., `LABEL="Extended"`) and its `TYPE` (e.g., `ext4`).</p>
+                <p class="mb-4">Next, create a directory where your partition will be mounted and set its permissions so your user can access it.</p>
+                <pre><code>sudo mkdir -p /mnt/Extended
+sudo chown nyanyanyan:nyanyanyan /mnt/Extended
+sudo chmod 755 /mnt/Extended</code></pre>
+                <p class="mb-4">Now, edit the `/etc/fstab` file to make your partition mount automatically on startup.</p>
+                <pre><code>sudo nano /etc/fstab</code></pre>
+                <p class="mb-4">Add the following line to the end of the file. Make sure to replace `ext4` with the actual filesystem type you noted from the `blkid` command if it's different.</p>
+                <pre><code>LABEL=Extended /mnt/Extended ext4 defaults,errors=remount-ro,user,exec 0 2</code></pre>
+                <p class="mt-4 mb-4">Save the file and exit `nano`.</p>
+                <p class="mb-4">Reload the systemd daemon configuration and mount all filesystems listed in `fstab`. Then, reboot your system to apply the changes.</p>
+                <pre><code>sudo systemctl daemon-reload
+sudo mount -a
+sudo reboot</code></pre>
+            </div>
+
+            <div class="section-card" id="step10">
+                <h2 class="text-2xl font-bold mb-4">10. Install Firefox .deb package (Recommended)</h2>
+                <p class="mb-4">After reboot, log in as your regular user in TTY, then `startx`.</p>
+                <p class="mb-4">To install the .deb package through the APT repository, do the following:</p>
+                <p class="mb-4">Create a directory to store APT repository keys if it doesn't exist:</p>
+                <pre><code>sudo install -d -m 0755 /etc/apt/keyrings</code></pre>
+                <p class="mb-4">Import the Mozilla APT repository signing key:</p>
+                <pre><code>wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null</code></pre>
+                <p class="mb-4">(If you do not have `wget` installed, you can get it first by typing: `sudo apt install wget -y`)</p>
+                <p class="mb-4">Verify the key fingerprint:</p>
+                <pre><code>gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}'</code></pre>
+                <p class="mb-4">Next, add the Mozilla APT repository to your sources list:</p>
+                <pre><code>echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null</code></pre>
+                <p class="mb-4">Configure APT to prioritize packages from the Mozilla repository:</p>
+                <pre><code>echo '
+Package: *
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+' | sudo tee /etc/apt/preferences.d/mozilla</code></pre>
+                <p class="mb-4">Update your package list, and install firefox:</p>
+                <pre><code>sudo apt update -y && sudo apt install firefox -y</code></pre>
+            </div>
+
+            <div class="section-card" id="step11">
+                <h2 class="text-2xl font-bold mb-4">11. Install Theming and Desktop Integration Packages</h2>
+                <pre><code>sudo apt install libreoffice-gtk3 gnome-themes-extra adwaita-icon-theme adwaita-qt adwaita-qt6 qt5ct qgnomeplatform-qt5 dconf-cli libglib2.0-bin libreoffice-style-elementary -y</code></pre>
+            </div>
+
+            <div class="section-card" id="step12">
+                <h2 class="text-2xl font-bold mb-4">12. Initial i3 Configuration and Script Creation</h2>
+                <p class="mb-4">Now that you're in i3, we'll make several configuration changes and create necessary scripts.</p>
+                <h3 class="text-xl font-bold mb-2">First, create the `lock_and_dim.sh` script:</h3>
+                <pre><code>mkdir -p ~/.config/i3/scripts
+nano ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
+                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+                <pre><code>#! /bin/bash
+
+# Save current brightness level
+CURRENT_BRIGHTNESS=$(/usr/bin/brightnessctl get)
+
+# Set brightness to 0%
+/usr/bin/brightnessctl set 0%
+
+# Lock the screen
+/usr/bin/i3lock -c 000000
+
+# Force display off (this might not fully turn off backlight but ensures the screen is black)
+xset dpms force off
+
+# Wait for i3lock to exit (meaning the screen has been unlocked)
+# This loop checks if the i3lock process is still running.
+while pgrep -x i3lock > /dev/null; do
+    sleep 1 # Wait 1 second before checking again
+done
+
+# Restore original brightness after unlocking
+/usr/bin/brightnessctl set "$CURRENT_BRIGHTNESS"</code></pre>
+                <p class="mt-4 mb-4">Make the script executable:</p>
+                <pre><code>chmod +x ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
+
+                <h3 class="text-xl font-bold mt-6 mb-2">Next, create the `exit_dialog.sh` script:</h3>
+                <pre><code>nano ~/.config/i3/exit_dialog.sh</code></pre>
+                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+                <pre><code>#! /bin/bash
+
+# A simple exit dialog for i3
+choice=$(echo -e "Lock\nLogout\nReboot\nShutdown" | dmenu -p "Power options:" -sb "#ff0000" -sf "#ffffff")
+
+case "$choice" in
+    Lock)
+        ~/.config/i3/scripts/lock_and_dim.sh
+        ;;
+    Logout)
+        i3-msg exit
+        ;;
+    Reboot)
+        systemctl reboot
+        ;;
+    Shutdown)
+        systemctl poweroff
+        ;;
+    *)
+        # Do nothing if selection is cancelled or invalid
+        ;;
+esac</code></pre>
+                <p class="mt-4 mb-4">Make the script executable:</p>
+                <pre><code>chmod +x ~/.config/i3/exit_dialog.sh</code></pre>
+
+                <h3 class="text-xl font-bold mt-6 mb-2">Now, configure your main i3 config file:</h3>
+                <pre><code>nano ~/.config/i3/config</code></pre>
+                <p class="mb-4">Inside this file, you will locate existing sections or add new lines as specified. You'll be editing or adding lines within the existing configuration structure. For sections shown below, only modify the specific lines indicated, or add the new lines at an appropriate place (e.g., near the end for keybindings).</p>
+                <p class="mb-2">1. <strong>Change i3 Status Bar Position</strong> (Find and set `position top`):</p>
+                <pre><code>bar {
+    position top
+    status_command i3status
+}</code></pre>
+                <p class="mb-2">2. <strong>Add Fn Keys for Adjusting Brightness</strong> (Add these lines at the end):</p>
+                <pre><code># Fn Keys for Adjusting Brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%</code></pre>
+                <p class="mb-2">3. <strong>Set Desktop Wallpaper</strong> (Add these lines):</p>
+                <pre><code># Set desktop wallpaper using feh
+exec --no-startup-id feh --bg-fill ~/Pictures/YourWallpaperFolder/your_wallpaper_file.jpg</code></pre>
+                <div class="note">
+                    <p><strong>IMPORTANT:</strong> Replace `~/Pictures/YourWallpaperFolder/your_wallpaper_file.jpg` with the actual path to your wallpaper image. Ensure the file name doesn't have white spaces, or enclose the path in quotes if it does.</p>
+                </div>
+                <p class="mb-2">4. <strong>Set `gnome-screenshot` Keybinding</strong> (Add these lines):</p>
+                <pre><code># Launch gnome-screenshot for interactive selection (area/window)
+# Press Print (Print Screen button)
+bindsym Print exec --no-startup-id gnome-screenshot -i</code></pre>
+                <p class="mb-2">5. <strong>Set qBittorrent as Startup Application</strong> (Add this line, preferably near other `exec_always` commands if any):</p>
+                <pre><code># Launch qBittorrent automatically on i3 startup
+exec --no-startup-id qbittorrent</code></pre>
+                <p class="mb-2">6. <strong>Set Lock Screen Button</strong> (Modify existing `bindsym $mod+l` and add new command):</p>
+                <pre><code># bindsym $mod+l focus up
+bindsym $mod+l exec --no-startup-id ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
+                <p class="mb-2">7. <strong>Change Exit Dialog Box for i3</strong> (Modify existing `bindsym $mod+Shift+e`):</p>
+                <pre><code># exit i3 (logs you out of your X session) - now with keyboard confirmation
+bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/exit_dialog.sh</code></pre>
+                <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
+                <pre><code>Super + Shift + r</code></pre>
+            </div>
+
+            <div class="section-card" id="step12-1">
+                <h2 class="text-2xl font-bold mb-4">12.1. Configure i3 Window Colors</h2>
+                <p class="mb-4">Edit your main i3 config file (`~/.config/i3/config`) again to add or modify the window border and title bar colors. You can place these color definitions near the top of your config file, or in a dedicated `colors` block if you have one.</p>
+                <pre><code>nano ~/.config/i3/config</code></pre>
+                <p class="mb-4">Add the following lines to your i3 config file:</p>
+                <pre><code># i3 Window Colors Configuration
+# This section defines the colors for window borders, title bars, and text
+# based on the window's current state (focused, unfocused, urgent, etc.).
+
+# Colors are defined in hexadecimal RGB format (#RRGGBB).
+
+# --- Focused Window ---
+# This is the active window you are currently interacting with.
+# Using your chosen Deep Pink for the border, a slightly lighter Hot Pink for the background,
+# and bright white text for maximum readability. Magenta for the indicator.
+# class                 border      background  text        indicator
+client.focused          #FF1493     #FF69B4     #FFFFFF     #FF00FF
+
+# --- Focused Inactive Window ---
+# This applies to windows that are in the currently focused workspace,
+# but are not the actively selected window (e.g., in a tiled layout).
+# A softer, lighter pink for borders and background, with dark text for contrast.
+# class                 border      background  text        indicator
+client.focused_inactive #FFC0CB     #FFB6C1     #000000     #FFC0CB
+
+# --- Unfocused Window ---
+# These are windows in other workspaces or those not currently in focus.
+# Using a muted, slightly purple-pink (Thistle) for the border and a dark gray background
+# to make them recede, with medium gray text.
+# class                 border      background  text        indicator
+client.unfocused        #D8BFD8     #3C4043     #A0A0A0     #D8BFD8
+
+# --- Urgent Window ---
+# This color is used for windows that require your immediate attention (e.g., a notification).
+# A vibrant Magenta for the border and indicator, with Deep Pink background and white text
+# to make it highly noticeable.
+# class                 border      background  text        indicator
+client.urgent           #FF00FF     #FF1493     #FFFFFF     #FF00FF
+
+# --- Placeholder Window ---
+# This is for windows that appear while an application is loading or if a window
+# hasn't fully rendered yet.
+# Using the same muted pink/dark gray as unfocused for consistency.
+# class                 border      background  text        indicator
+client.placeholder      #D8BFD8     #3C4043     #A0A0A0     #D8BFD8
+
+# --- Background of the Bar (Optional, if you use i3bar) ---
+# If you use i3bar, you might want to set its background to complement your theme.
+# For example, a dark gray or a very subtle pink.
+# bar {
+#     colors {
+#         background #2E3436
+#         statusline #EEEEEC
+#         separator  #666666
+#         # Define colors for workspace buttons
+#         focused_workspace  #FF1493 #FF69B4 #FFFFFF
+#         active_workspace   #FFC0CB #FFB6C1 #000000
+#         inactive_workspace #D8BFD8 #3C4043 #A0A0A0
+#         urgent_workspace   #FF00FF #FF1493 #FFFFFF
+#     }
+# }</code></pre>
+            <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
+            <pre><code>Super + Shift + r</code></pre>
+        </div>
+
+        <div class="section-card" id="step13">
+            <h2 class="text-2xl font-bold mb-4">13. Configure i3 Status Bar Time Format</h2>
+            <pre><code>sudo nano /etc/i3status.conf</code></pre>
+            <p class="mb-4">Go to the `general { ... }` section. Find the line that starts with `format =`. Locate the current time format within that line (it might look like `%time` or something similar, excluding commas and spaces) and erase it. Then, carefully type the following new format after the first comma in that line:</p>
+            <pre><code>%Y %B %d | %I:%M:%S %p</code></pre>
+            <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
+            <pre><code>Super + Shift + r</code></pre>
+        </div>
+
+        <div class="section-card" id="step14">
+            <h2 class="text-2xl font-bold mb-4">14. Modify Terminal (`xterm`) Appearance</h2>
+            <pre><code>nano ~/.Xresources</code></pre>
+            <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+            <pre><code>xterm*faceName: Monospace
+xterm*faceSize: 10
+xterm*background: #2e3436
+xterm*foreground: #eeeeec
+xterm*cursorColor: #eeeeec
+xterm*colorBD: #fce94f
+xterm*colorUL: #729fcf
+xterm*scrollBar: true</code></pre>
+            <p class="mt-4 mb-4">Save and Quit nano.</p>
+            <p class="mb-4">Reload X resources:</p>
+            <pre><code>xrdb -merge ~/.Xresources</code></pre>
+            <p class="mt-4">Close any open `xterm` windows and launch a new one to see the changes.</p>
+        </div>
+
+        <div class="section-card" id="step15">
+            <h2 class="text-2xl font-bold mb-4">15. Configure Dark Mode for Applications</h2>
+            <h3 class="text-xl font-bold mb-2">Set GSettings Defaults (for GTK apps):</h3>
+            <pre><code>gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface icon-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Configure GTK 3 Applications:</h3>
+            <pre><code>mkdir -p ~/.config/gtk-3.0
+nano ~/.config/gtk-3.0/settings.ini</code></pre>
+            <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+            <pre><code>[Settings]
+gtk-application-prefer-dark-theme=1
+gtk-theme-name=Adwaita-dark
+gtk-icon-theme-name=Adwaita-dark</code></pre>
+            <p class="mt-4 mb-4">Save and Quit nano.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Configure GTK 4 Applications:</h3>
+            <pre><code>mkdir -p ~/.config/gtk-4.0
+nano ~/.config/gtk-4.4/settings.ini</code></pre>
+            <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+            <pre><code>[Settings]
+gtk-application-prefer-dark-theme=1
+gtk-theme-name=Adwaita
+gtk-icon-theme-name=Adwaita-dark</code></pre>
+            <p class="mt-4 mb-4">Save and Quit nano.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Configure GTK 2 Applications:</h3>
+            <pre><code>nano ~/.gtkrc-2.0</code></pre>
+            <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+            <pre><code>gtk-theme-name="Adwaita-dark"
+gtk-icon-theme-name="Adwaita-dark"</code></pre>
+            <p class="mt-4 mb-4">Save and Quit nano.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Configure `qt5ct` (Qt5 Applications Styling):</h3>
+            <p class="mb-4">Launch `qt5ct` from dmenu (or terminal).</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li><strong>Under Appearance tab:</strong>
+                    <ul class="list-circle list-inside ml-4">
+                        <li>Style: `Adwaita-Dark`</li>
+                        <li>Standard dialogs: `GTK3`</li>
+                        <li>Palette: `Default`</li>
+                    </ul>
+                </li>
+            </ul>
+            <p class="mb-4">Click `Apply` and then `OK`.</p>
+            <div class="important">
+                <p><strong>Important: Reboot to apply `QT_QPA_PLATFORMTHEME` changes for all Qt apps.</strong></p>
+                <p>After configuring `qt5ct`, you must <strong>reboot</strong> your system or fully log out of your X session and back in for these settings to apply system-wide to all Qt applications.</p>
+            </div>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Persepolis:</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Launch Persepolis from dmenu.</li>
+                <li>Hamburger Icon > Edit > Preferences</li>
+                <li>Style: `qt5ct-style`</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Foliate:</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Open an `.epub` file.</li>
+                <li>Hamburger Icon > Theme > Choose a dark theme</li>
+            </ul>
+        </div>
+
+        <div class="section-card" id="step16">
+            <h2 class="text-2xl font-bold mb-4">16. Rebuild Caches and Final Reboot</h2>
+            <p class="mb-4">Launch `qt5ct` from dmenu.</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li><strong>Icon Themes:</strong> Select `Adwaita`</li>
+            </ul>
+            <p class="mb-4">Click `Apply` and then `OK`.</p>
+            <pre><code>sudo gtk-update-icon-cache -f /usr/share/icons/Adwaita && \
+sudo gtk-update-icon-cache -f /usr/share/icons/hicolor && \
+sudo update-icon-caches /usr/share/icons/* && \
+sudo fc-cache -fv</code></pre>
+            <p class="mt-4 mb-4">Finally, perform a full system reboot to apply all changes.</p>
+            <pre><code>sudo reboot</code></pre>
+        </div>
+
+        <div class="section-card" id="step17">
+            <h2 class="text-2xl font-bold mb-4">17. Further Application Settings</h2>
+            <h3 class="text-xl font-bold mb-2">Mousepad: Wrap Long Lines</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Open a new instance of Mousepad through dmenu (do not open any existing file, just a fresh instance).</li>
+                <li>Go to `Edit > Preferences...`</li>
+                <li>Under the `View` tab, in the `Display` section, <strong>Tick</strong> the box next to `Wrap Long Lines`.</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Pavucontrol: Set Volume</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Open `pavucontrol` from dmenu and adjust your desired volume levels for output and input devices.</li>
+            </ul>
+        </div>
+
+        <div class="section-card" id="step18">
+            <h2 class="text-2xl font-bold mb-4">18. Install Remaining Core Utilities (Last Command)</h2>
+            <pre><code>sudo apt install ttf-mscorefonts-installer ffmpeg -y</code></pre>
+        </div>
+
+        <div class="section-card" id="step19">
+            <h2 class="text-2xl font-bold mb-4">19. Configure Combined Audio for Recording (PulseAudio)</h2>
+            <p class="mb-4">This section details how to set up PulseAudio to simultaneously capture your microphone audio and system sound, which is crucial for screen recordings that include both your voice and the audio playing on your system.</p>
+            <h3 class="text-xl font-bold mb-2">1. Load the `module-null-sink`</h3>
+            <p class="mb-4">This creates a virtual output device (`null-sink`) and a corresponding virtual input device (`null-sink.monitor`). We'll send both system audio and microphone audio to this `null-sink`, and SimpleScreenRecorder will record from its monitor.</p>
+            <pre><code>pactl load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">2. Route your Microphone into the `null-sink`</h3>
+            <p class="mb-4">This command will take your microphone's input and "loop" it into the `Combined_Audio` (null) sink. Your microphone's PulseAudio source name is `alsa_input.pci-0000_00_1b.0.analog-stereo`.</p>
+            <pre><code>pactl load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">3. Configure SimpleScreenRecorder</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Launch SimpleScreenRecorder.</li>
+                <li>Proceed through the setup wizard. When you get to the <strong>Audio Input</strong> page:
+                    <ul class="list-circle list-inside ml-4">
+                        <li><strong>Audio backend:</strong> Select <strong>PulseAudio</strong>.</li>
+                        <li><strong>Source:</strong> From the dropdown menu, select <strong>`Monitor of Combined_Audio_for_Recording`</strong>.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">4. Route System Audio to `Combined_Audio_for_Recording`</h3>
+            <p class="mb-4">You need to tell the applications that are playing sound (like your web browser, video player, etc.) to send their audio to your new combined sink.</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Start playing the audio/video you want to record (e.g., a YouTube video in Firefox).</li>
+                <li>Open <strong>`pavucontrol`</strong> (PulseAudio Volume Control) from your terminal or dmenu.</li>
+                <li>Go to the <strong>"Playback"</strong> tab.</li>
+                <li>You will see the application that's currently playing audio (e.g., "Firefox," "MPV," etc.). Next to its name, there will be a dropdown menu showing its current output device.</li>
+                <li>Click on this dropdown menu and select <strong>`Combined_Audio_for_Recording`</strong>.</li>
+                <li class="note"><strong>Important:</strong> You'll need to do this for <em>each application</em> whose sound you want to capture during your recording session.</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">5. Adjust Volumes in `pavucontrol`</h3>
+            <p class="mb-4">While recording, you might need to fine-tune the levels:</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li><strong>"Recording" Tab in `pavucontrol`</strong>: You'll see SimpleScreenRecorder listed. Adjust the overall recording volume here.</li>
+                <li><strong>"Input Devices" Tab in `pavucontrol`</strong>: Adjust the volume slider for your `Built-in Audio Analog Stereo` (your microphone) to ensure your voice is captured at an appropriate level relative to the system audio.</li>
+                <li><strong>"Playback" Tab in `pavucontrol`</strong>: Ensure the volume for the applications routed to `Combined_Audio_for_Recording` is at a good level.</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">6. Start and Test Your Recording</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Go back to SimpleScreenRecorder.</li>
+                <li>Start your recording.</li>
+                <li>Play some system audio and speak into your microphone.</li>
+                <li>Stop the recording gracefully in SimpleScreenRecorder.</li>
+                <li>Play the recorded video file with MPV and verify that both your system audio and microphone audio are present and at acceptable levels.</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">Making the Setup Permanent Across Reboots (Recommended)</h3>
+            <p class="mb-4">The `pactl load-module` commands you used are temporary and will be reset on reboot. To make this setup permanent:</p>
+            <pre><code>sudo nano /etc/pulse/default.pa</code></pre>
+            <p class="mb-4">Add the following lines to the end of the file:</p>
+            <pre><code>### For SimpleScreenRecorder - Combined Audio Input ###
+load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"
+load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
+            <p class="mt-4 mb-4">Save the file (Ctrl+O, Enter) and exit nano (Ctrl+X).</p>
+            <p class="mb-4">Finally, reboot your system.</p>
+            <pre><code>sudo reboot</code></pre>
+        </div>
+
+        <div class="section-card" id="step20">
+            <h2 class="text-2xl font-bold mb-4">20. Test All Applications</h2>
+            <p class="mb-4">Now that everything is set up, it's a good idea to test all your installed applications to ensure they are functioning correctly and that your theming is applied as expected. Launch each of these from dmenu (for `gnome-screenshot`, you can open a terminal and type `gnome-screenshot -i` and press Enter):</p>
+            <ul class="list-disc list-inside ml-4">
+                <li>qBittorrent</li>
+                <li>simplescreenrecorder</li>
+                <li>Mousepad</li>
+                <li>Thunar</li>
+                <li>LibreOffice</li>
+                <li>Lollypop</li>
+                <li>`xterm` (ensure it's dark and has the correct font/scrollbar)</li>
+                <li>Firefox (ensure it's installed and functioning)</li>
+            </ul>
+        </div>
+
+        <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
+            <p>&copy; 2025 sorryfunnel. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
