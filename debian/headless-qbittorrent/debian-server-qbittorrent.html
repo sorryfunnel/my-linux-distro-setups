@@ -9,79 +9,90 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Darker background */
-            color: #e2e8f0; /* Lighter text */
-            display: flex; /* Use flexbox for layout */
-            min-height: 100vh; /* Ensure body takes full viewport height */
+            background-color: #1a202c; /* Original Darker background */
+            color: #e2e8f0; /* Original Lighter text */
+            line-height: 1.6;
+            padding: 1rem; /* Default padding for small screens */
         }
-        .nav-pane {
-            width: 250px; /* Fixed width for nav pane */
-            background-color: #2d3748; /* Slightly lighter dark gray for nav */
-            padding: 1.5rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            position: fixed; /* Fixed position */
-            height: 100%; /* Full height */
-            overflow-y: auto; /* Scrollable if content overflows */
-            border-right: 1px solid #4a5568; /* Subtle separator */
-            z-index: 10; /* Ensure it stays on top */
-        }
-        .main-content-wrapper {
-            margin-left: 250px; /* Offset for fixed nav pane */
-            flex-grow: 1; /* Allow main content to take remaining space */
-            padding: 1rem;
-        }
-        .container {
-            max-width: 96%; /* Fluid width for mobile */
+        /* New outer wrapper for flex layout */
+        .flex-container-wrapper {
+            display: flex;
+            flex-direction: column; /* Default for small screens */
+            max-width: 1280px; /* Equivalent to max-w-screen-xl */
             margin: 0 auto;
-            background-color: #2d3748; /* Slightly lighter dark gray for main content box */
+            min-height: 100vh; /* Ensure it takes full height */
+        }
+
+        .nav-pane { /* This is now the sidebar, with original colors */
+            background-color: #2d3748; /* Original Slightly lighter dark gray for nav */
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%; /* Full width on small screens */
+            margin-bottom: 1rem; /* Margin below on small screens */
+        }
+        .main-content-wrapper { /* This is now the main column */
+            flex-grow: 1; /* Allow main content to take remaining space */
+            padding: 1rem; /* Keep padding for content inside */
+        }
+        .container { /* Content card inside main-content-wrapper */
+            max-width: none; /* Let the parent (main-content-wrapper) control width */
+            margin: 0 auto; /* Keep for centering if needed */
+            background-color: #2d3748; /* Original Slightly lighter dark gray for main content box */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             border-radius: 0.5rem;
             padding: 1.5rem;
         }
-        @media (max-width: 1023px) { /* Adjust for smaller screens */
+
+        /* Responsive adjustments for large screens */
+        @media (min-width: 1024px) { /* lg breakpoint */
             body {
-                flex-direction: column; /* Stack nav and content vertically */
+                padding: 2rem; /* More padding for larger screens */
+            }
+            .flex-container-wrapper {
+                flex-direction: row; /* Row layout for large screens */
             }
             .nav-pane {
-                width: 100%;
-                height: auto;
-                position: relative; /* Make it flow with content on small screens */
-                margin-bottom: 1rem;
-                border-right: none;
-                border-bottom: 1px solid #4a5568;
+                width: 25%; /* Approx w-1/4 */
+                position: sticky; /* Make sidebar sticky */
+                top: 1rem; /* Spacing from top */
+                height: calc(100vh - 2rem); /* Full viewport height minus top/bottom padding */
+                overflow-y: auto; /* Enable scrolling for long sidebars */
+                margin-bottom: 0; /* Remove margin-bottom from small screen */
+                margin-right: 2rem; /* Add margin to the right of nav-pane (lg:mr-8) */
             }
             .main-content-wrapper {
-                margin-left: 0; /* Remove offset */
-            }
-            .container {
-                padding: 1rem;
+                width: 75%; /* Approx w-3/4 */
+                margin-left: 0; /* No fixed margin needed */
             }
         }
 
         .code-block {
-            background-color: #1f2937; /* Darker gray for code */
-            color: #e5e7eb; /* Light gray text */
+            background-color: #1f2937; /* Original Darker gray for code */
+            color: #e5e7eb; /* Original Light gray text */
             padding: 1rem;
             border-radius: 0.5rem;
             overflow-x: auto; /* Enable horizontal scrolling for long lines */
             font-family: monospace;
             font-size: 0.875rem; /* text-sm */
+            white-space: pre-wrap; /* Wrap long lines */
+            word-wrap: break-word; /* Break words for wrapping */
         }
         .warning-box {
-            background-color: #4a2d00; /* Darker yellow/orange for warning */
-            color: #ffedd5; /* Light text for warning */
-            padding: 1rem;
+            background-color: #4a2d00; /* Original Darker yellow/orange for warning */
+            color: #ffedd5; /* Original Light text for warning */
+            padding: 0.75rem;
             border-radius: 0.5rem;
-            border-left: 4px solid #f59e0b; /* Orange border */
+            border-left: 4px solid #f59e0b; /* Original Orange border */
             margin-top: 1rem;
             margin-bottom: 1rem;
         }
         .info-box {
-            background-color: #003366; /* Darker blue for info */
-            color: #bfdbfe; /* Light text for info */
-            padding: 1rem;
+            background-color: #003366; /* Original Darker blue for info */
+            color: #bfdbfe; /* Original Light text for info */
+            padding: 0.75rem;
             border-radius: 0.5rem;
-            border-left: 4px solid #60a5fa; /* Blue border */
+            border-left: 4px solid #60a5fa; /* Original Blue border */
             margin-top: 1rem;
             margin-bottom: 1rem;
         }
@@ -89,10 +100,10 @@
             font-weight: 700; /* font-bold */
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
-            color: #90cdf4; /* Light blue for headings */
+            color: #90cdf4; /* Original Light blue for headings */
         }
-        h1 { font-size: 4rem; /* Increased size for main title */ color: #60a5fa; } /* Bigger and more vibrant blue */
-        h2 { font-size: 2.25rem; /* Increased size for phase titles */ }
+        h1 { font-size: 2.5rem; /* Retained size from user's example */ color: #60a5fa; } /* Original Bigger and more vibrant blue */
+        h2 { font-size: 2rem; /* Retained size from user's example */ }
         h3 { font-size: 1.5rem; /* text-2xl */ }
         h4 { font-size: 1.25rem; /* text-xl */ }
         ul {
@@ -108,23 +119,32 @@
         li {
             margin-bottom: 0.5rem;
         }
-        a.nav-button {
+        a.nav-button { /* General nav button style, now with original colors and left alignment */
             display: block;
-            background-color: #4a5568;
-            color: #e2e8f0;
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
-            text-align: center;
+            text-align: left; /* Aligned left as per i3 example */
             text-decoration: none;
             font-weight: 600;
-            transition: background-color 0.2s ease;
-            margin-bottom: 0.5rem; /* Spacing between nav buttons */
+            transition: background-color 0.2s ease, color 0.2s ease;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0; /* Original Light text */
+            background-color: transparent; /* Transparent background for default nav items */
         }
         a.nav-button:hover {
-            background-color: #636b77;
+            background-color: #4a5568; /* A darker shade of original nav pane background for hover */
+            color: #ffffff; /* White hover text */
+        }
+        a.nav-button.back-link { /* Specific style for back links, now with original colors */
+            color: #90cdf4; /* Original light blue */
+            font-weight: 700;
+            background-color: #3f4a5a; /* Slightly different background for back links */
+        }
+        a.nav-button.back-link:hover {
+            background-color: #5a677a; /* Original hover background */
         }
         .nav-section-title {
-            color: #cbd5e0; /* Light gray for section titles in nav */
+            color: #cbd5e0; /* Original Light gray for section titles in nav */
             font-weight: 700;
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
@@ -133,287 +153,295 @@
     </style>
 </head>
 <body class="antialiased">
-    <div class="nav-pane">
-        <h3 class="text-white text-center mb-6">Navigation</h3>
+    <div class="flex-container-wrapper">
+        <!-- Sidebar Column -->
+        <aside class="nav-pane">
+            <h3 class="text-white text-center mb-6">Navigation</h3>
 
-        <!-- Back Navigation Links -->
-        <a href="../../index.html" class="nav-button">← Main Setups</a>
-        <a href="../index.html" class="nav-button">← Debian Setups</a>
-        <a href="#top" class="nav-button">↑ Back to Top</a>
+            <!-- Back Navigation Links -->
+            <ul class="space-y-2 mb-6">
+                <li><a href="../../index.html" class="nav-button back-link">← Main Setups</a></li>
+                <li><a href="../index.html" class="nav-button back-link">← Debian Setups</a></li>
+                <li><a href="#top" class="nav-button back-link">↑ Back to Top</a></li>
+            </ul>
 
-        <h4 class="nav-section-title">Guide Phases</h4>
-        <!-- Phase Navigation Links -->
-        <a href="#phase1" class="nav-button">Phase 1: Initial Setup</a>
-        <a href="#phase2" class="nav-button">Phase 2: Disk/Dir Prep</a>
-        <a href="#phase3" class="nav-button">Phase 3: qB-nox & Systemd</a>
-        <a href="#phase4" class="nav-button">Phase 4: WebUI & Firewall (Browser)</a>
-        <a href="#phase5" class="nav-button">Phase 5: Firewall (Server)</a>
-        <a href="#phase6" class="nav-button">Phase 6: Start Torrenting!</a>
-    </div>
+            <h4 class="nav-section-title">Guide Phases</h4>
+            <!-- Phase Navigation Links -->
+            <ul class="space-y-2">
+                <li><a href="#phase1" class="nav-button">Phase 1: Initial Setup</a></li>
+                <li><a href="#phase2" class="nav-button">Phase 2: Disk/Dir Prep</a></li>
+                <li><a href="#phase3" class="nav-button">Phase 3: qB-nox & Systemd</a></li>
+                <li><a href="#phase4" class="nav-button">Phase 4: WebUI & Firewall (Browser)</a></li>
+                <li><a href="#phase5" class="nav-button">Phase 5: Firewall (Server)</a></li>
+                <li><a href="#phase6" class="nav-button">Phase 6: Start Torrenting!</a></li>
+            </ul>
+        </aside>
 
-    <div class="main-content-wrapper">
-        <div class="container" id="top">
-            <h1 class="text-center mb-6">Debian Minimal Server: qBittorrent-nox Setup Guide</h1>
-            <p class="mb-4 text-gray-300">
-                This comprehensive guide will walk you through setting up a Debian minimal server for qBittorrent-nox.
-                It assumes a fresh Debian minimal installation where you are initially logged in as the <strong>root</strong> user.
-                Follow these steps carefully to get your headless torrent server fully operational.
-            </p>
+        <!-- Main Content Column -->
+        <main class="main-content-wrapper">
+            <div class="container" id="top">
+                <h1 class="text-center mb-6">Debian Minimal Server: qBittorrent-nox Setup Guide</h1>
+                <p class="mb-4 text-gray-300">
+                    This comprehensive guide will walk you through setting up a Debian minimal server for qBittorrent-nox.
+                    It assumes a fresh Debian minimal installation where you are initially logged in as the <strong>root</strong> user.
+                    Follow these steps carefully to get your headless torrent server fully operational.
+                </p>
 
-            <div class="info-box">
-                <h4>Assumptions for this Guide:</h4>
-                <ul class="list-disc ml-6 text-blue-200">
-                    <li>You have performed a fresh Debian minimal installation.</li>
-                    <li>You are initially logged into the TTY as the <strong>root</strong> user.</li>
-                    <li><strong>The user <code>x250</code> has already been created and has <code>sudo</code> privileges.</strong></li>
-                    <li>Your Wi-Fi connection is already configured and persistent (connecting automatically on boot).</li>
-                    <li>You have an extended storage drive (e.g., an HDD/SSD) that you want to mount at <code>/mnt/Extended</code> for your torrent downloads.</li>
-                </ul>
-            </div>
+                <div class="info-box">
+                    <h4>Assumptions for this Guide:</h4>
+                    <ul class="list-disc ml-6 text-blue-200">
+                        <li>You have performed a fresh Debian minimal installation.</li>
+                        <li>You are initially logged into the TTY as the <strong>root</strong> user.</li>
+                        <li><strong>The user <code>x250</code> has already been created and has <code>sudo</code> privileges.</strong></li>
+                        <li>Your Wi-Fi connection is already configured and persistent (connecting automatically on boot).</li>
+                        <li>You have an extended storage drive (e.g., an HDD/SSD) that you want to mount at <code>/mnt/Extended</code> for your torrent downloads.</li>
+                    </ul>
+                </div>
 
-            <hr class="my-6 border-gray-600">
+                <hr class="my-6 border-gray-600">
 
-            <h2 id="phase1" class="text-blue-400">Phase 1: Post-Installation Initial Setup (as <code class="bg-gray-700 px-1 rounded">root</code> user)</h2>
+                <h2 id="phase1" class="text-blue-400">Phase 1: Post-Installation Initial Setup (as <code class="bg-gray-700 px-1 rounded">root</code> user)</h2>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">1. Update Package Lists and Upgrade System</h3>
-                <p class="mb-2 text-gray-300">Ensure your system is up-to-date right away.</p>
-                <pre class="code-block"><code>apt update
+                <div class="mb-6">
+                    <h3 class="text-gray-200">1. Update Package Lists and Upgrade System</h3>
+                    <p class="mb-2 text-gray-300">Ensure your system is up-to-date right away.</p>
+                    <pre class="code-block"><code>apt update
 apt upgrade -y</code></pre>
-            </div>
+                </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">2. Install <code class="bg-gray-700 px-1 rounded">sudo</code> and Your Essential Tools</h3>
-                <p class="mb-2 text-gray-300">This command installs <code>sudo</code>, qBittorrent-nox, a text-based browser, file manager, firewall, and more.</p>
-                <pre class="code-block"><code>apt install -y sudo qbittorrent-nox elinks gpm htop mc ufw fail2ban neofetch tree speedtest-cli rfkill nano ca-certificates</code></pre>
-            </div>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">2. Install <code class="bg-gray-700 px-1 rounded">sudo</code> and Your Essential Tools</h3>
+                    <p class="mb-2 text-gray-300">This command installs <code>sudo</code>, qBittorrent-nox, a text-based browser, file manager, firewall, and more.</p>
+                    <pre class="code-block"><code>apt install -y sudo qbittorrent-nox elinks gpm htop mc ufw fail2ban neofetch tree speedtest-cli rfkill nano ca-certificates</code></pre>
+                </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">3. Reboot the Server</h3>
-                <p class="mb-2 text-gray-300">This ensures all changes take effect cleanly.</p>
-                <pre class="code-block"><code>reboot</code></pre>
-            </div>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">3. Reboot the Server</h3>
+                    <p class="mb-2 text-gray-300">This ensures all changes take effect cleanly.</p>
+                    <pre class="code-block"><code>reboot</code></pre>
+                </div>
 
-            <hr class="my-6 border-gray-600">
+                <hr class="my-6 border-gray-600">
 
-            <h2 id="phase2" class="text-blue-400">Phase 2: User Login and Disk/Directory Preparation (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
+                <h2 id="phase2" class="text-blue-400">Phase 2: User Login and Disk/Directory Preparation (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">1. Log in as <code class="bg-gray-700 px-1 rounded">x250</code></h3>
-                <p class="mb-2 text-gray-300">At the login prompt, type <code>x250</code> and your password.</p>
-            </div>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">1. Log in as <code class="bg-gray-700 px-1 rounded">x250</code></h3>
+                    <p class="mb-2 text-gray-300">At the login prompt, type <code>x250</code> and your password.</p>
+                </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">2. Verify <code class="bg-gray-700 px-1 rounded">sudo</code> Access</h3>
-                <p class="mb-2 text-gray-300">Test if <code>x250</code> can use <code>sudo</code>.</p>
-                <pre class="code-block"><code>sudo apt update</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>It will ask for <code>x250</code>'s password. If it runs without "is not in the sudoers file" errors, you're good.</em>
-                </p>
-            </div>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">2. Verify <code class="bg-gray-700 px-1 rounded">sudo</code> Access</h3>
+                    <p class="mb-2 text-gray-300">Test if <code>x250</code> can use <code>sudo</code>.</p>
+                    <pre class="code-block"><code>sudo apt update</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>It will ask for <code>x250</code>'s password. If it runs without "is not in the sudoers file" errors, you're good.</em>
+                    </p>
+                </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">3. Prepare Your Extended Storage (<code class="bg-gray-700 px-1 rounded">/mnt/Extended</code>)</h3>
-                <p class="mb-2 text-gray-300">Assuming you have a separate disk or partition for your torrents.</p>
-                <h4 class="text-gray-300">a. Identify your disk/partition:</h4>
-                <pre class="code-block"><code>sudo lsblk</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Look for your large storage drive (e.g., <code>sdb1</code>, <code>nvme0n1p1</code>).</em>
-                </p>
-                <h4 class="text-gray-300">b. Create mount point:</h4>
-                <pre class="code-block"><code>sudo mkdir -p /mnt/Extended</code></pre>
-                <h4 class="text-gray-300">c. Mount the partition (temporarily):</h4>
-                <pre class="code-block"><code>sudo mount /dev/sdb1 /mnt/Extended</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Replace <code>/dev/sdb1</code> with your actual partition (e.g., <code>/dev/sda1</code> or <code>/dev/nvme0n1p1</code>).</em>
-                </p>
-                <h4 class="text-gray-300">d. Set Ownership and Permissions Recursively (CRITICAL!):</h4>
-                <p class="mb-2 text-gray-300">This ensures <code>x250</code> can read, write, and execute within <code>/mnt/Extended</code> and all its contents.</p>
-                <pre class="code-block"><code>sudo chown -R x250:x250 /mnt/Extended
+                <div class="mb-6">
+                    <h3 class="text-gray-200">3. Prepare Your Extended Storage (<code class="bg-gray-700 px-1 rounded">/mnt/Extended</code>)</h3>
+                    <p class="mb-2 text-gray-300">Assuming you have a separate disk or partition for your torrents.</p>
+                    <h4 class="text-gray-300">a. Identify your disk/partition:</h4>
+                    <pre class="code-block"><code>sudo lsblk</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Look for your large storage drive (e.g., <code>sdb1</code>, <code>nvme0n1p1</code>).</em>
+                    </p>
+                    <h4 class="text-gray-300">b. Create mount point:</h4>
+                    <pre class="code-block"><code>sudo mkdir -p /mnt/Extended</code></pre>
+                    <h4 class="text-gray-300">c. Mount the partition (temporarily):</h4>
+                    <pre class="code-block"><code>sudo mount /dev/sdb1 /mnt/Extended</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Replace <code>/dev/sdb1</code> with your actual partition (e.g., <code>/dev/sda1</code> or <code>/dev/nvme0n1p1</code>).</em>
+                    </p>
+                    <h4 class="text-gray-300">d. Set Ownership and Permissions Recursively (CRITICAL!):</h4>
+                    <p class="mb-2 text-gray-300">This ensures <code>x250</code> can read, write, and execute within <code>/mnt/Extended</code> and all its contents.</p>
+                    <pre class="code-block"><code>sudo chown -R x250:x250 /mnt/Extended
 sudo chmod -R 755 /mnt/Extended</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em><code>-R</code> is vital for recursive application. <code>755</code> (rwxr-xr-x) is suitable for directories and common for user data files.</em>
-                </p>
-                <h4 class="text-gray-300">e. Make Mount Persistent (Add to <code class="bg-gray-700 px-1 rounded">/etc/fstab</code>):</h4>
-                <p class="mb-2 text-gray-300">This makes the disk mount automatically on boot. First, determine the filesystem type (e.g., <code>ext4</code>, <code>ntfs</code>, <code>xfs</code>) by using <code>sudo blkid /dev/sdb1</code>.</p>
-                <pre class="code-block"><code>sudo nano /etc/fstab</code></pre>
-                <p class="mb-2 text-gray-300">Add a new line at the end of the file. A robust way is to use the UUID.</p>
-                <p class="mb-2 text-gray-300">Get UUID:</p>
-                <pre class="code-block"><code>sudo blkid /dev/sdb1</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Replace <code>/dev/sdb1</code> with your actual partition. Copy the UUID.</em>
-                </p>
-                <p class="mb-2 text-gray-300">Then add the line to <code>/etc/fstab</code> (example for <code>ext4</code> filesystem):</p>
-                <pre class="code-block"><code>UUID=YOUR_DISK_UUID_HERE /mnt/Extended ext4 defaults,errors=remount-ro,user,exec 0 2</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em><strong>Replace <code>YOUR_DISK_UUID_HERE</code> with the actual UUID you copied.</strong> Replace <code>ext4</code> with your actual filesystem type.</em>
-                </p>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Save (<code>Ctrl+S</code>) and Exit (<code>Ctrl+X</code>) in nano.</em>
-                </p>
-                <h4 class="text-gray-300">f. Test <code class="bg-gray-700 px-1 rounded">fstab</code> entry:</h4>
-                <pre class="code-block"><code>sudo umount /mnt/Extended # Unmount it first
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em><code>-R</code> is vital for recursive application. <code>755</code> (rwxr-xr-x) is suitable for directories and common for user data files.</em>
+                    </p>
+                    <h4 class="text-gray-300">e. Make Mount Persistent (Add to <code class="bg-gray-700 px-1 rounded">/etc/fstab</code>):</h4>
+                    <p class="mb-2 text-gray-300">This makes the disk mount automatically on boot. First, determine the filesystem type (e.g., <code>ext4</code>, <code>ntfs</code>, <code>xfs</code>) by using <code>sudo blkid /dev/sdb1</code>.</p>
+                    <pre class="code-block"><code>sudo nano /etc/fstab</code></pre>
+                    <p class="mb-2 text-gray-300">Add a new line at the end of the file. A robust way is to use the UUID.</p>
+                    <p class="mb-2 text-gray-300">Get UUID:</p>
+                    <pre class="code-block"><code>sudo blkid /dev/sdb1</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Replace <code>/dev/sdb1</code> with your actual partition. Copy the UUID.</em>
+                    </p>
+                    <p class="mb-2 text-gray-300">Then add the line to <code>/etc/fstab</code> (example for <code>ext4</code> filesystem):</p>
+                    <pre class="code-block"><code>UUID=YOUR_DISK_UUID_HERE /mnt/Extended ext4 defaults,errors=remount-ro,user,exec 0 2</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em><strong>Replace <code>YOUR_DISK_UUID_HERE</code> with the actual UUID you copied.</strong> Replace <code>ext4</code> with your actual filesystem type.</em>
+                    </p>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Save (<code>Ctrl+S</code>) and Exit (<code>Ctrl+X</code>) in nano.</em>
+                    </p>
+                    <h4 class="text-gray-300">f. Test <code class="bg-gray-700 px-1 rounded">fstab</code> entry:</h4>
+                    <pre class="code-block"><code>sudo umount /mnt/Extended # Unmount it first
 sudo mount -a             # Mount all entries from fstab
 ls -l /mnt/Extended       # Verify content is visible</code></pre>
-            </div>
+                </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">4. Create qBittorrent Configuration and Download Directories</h3>
-                <p class="mb-2 text-gray-300">qBittorrent-nox stores its configuration in a hidden directory in the user's home.</p>
-                <pre class="code-block"><code>mkdir -p /home/x250/.config/qBittorrent</code></pre>
-                <p class="mb-2 text-gray-300">Your designated download paths on the mounted external drive:</p>
-                <pre class="code-block"><code>mkdir -p /mnt/Extended/Downloads
+                <div class="mb-6">
+                    <h3 class="text-gray-200">4. Create qBittorrent Configuration and Download Directories</h3>
+                    <p class="mb-2 text-gray-300">qBittorrent-nox stores its configuration in a hidden directory in the user's home.</p>
+                    <pre class="code-block"><code>mkdir -p /home/x250/.config/qBittorrent</code></pre>
+                    <p class="mb-2 text-gray-300">Your designated download paths on the mounted external drive:</p>
+                    <pre class="code-block"><code>mkdir -p /mnt/Extended/Downloads
 mkdir -p /mnt/Extended/Torrent\ Files</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Remember the backslash <code>\</code> for spaces in <code>Torrent\ Files</code>.</em>
-                </p>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">5. Get Server IP Address</h3>
-                <p class="mb-2 text-gray-300">You'll need this to access the WebUI later from your other device.</p>
-                <pre class="code-block"><code>ip addr show wlp3s0</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Replace <code>wlp3s0</code> with your actual Wi-Fi interface name if different. Look for the <code>inet</code> address (e.g., <code>192.168.1.3</code>). <strong>Note this down.</strong></em>
-                </p>
-            </div>
-
-            <hr class="my-6 border-gray-600">
-
-            <h2 id="phase3" class="text-blue-400">Phase 3: qBittorrent-nox Setup and Systemd Service Integration (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">1. Initialize qBittorrent-nox and Accept the Legal Disclaimer</h3>
-                <p class="mb-2 text-gray-300">This step runs qBittorrent-nox once as <code>x250</code> to accept the terms and generate initial configuration.</p>
-                <pre class="code-block"><code>qbittorrent-nox --profile=/home/x250</code></pre>
-                <div class="warning-box">
-                    <h4>IMPORTANT:</h4>
-                    <p class="mb-2">You should see a legal disclaimer (Terms of Use). <strong>Type <code>y</code> or <code>yes</code> and press Enter</strong> to accept it.</p>
-                    <p class="mb-2">qBittorrent-nox will then print details for its WebUI (default URL: <code>http://localhost:8080</code>, default username: <code>admin</code>, default password: <code>adminadmin</code>). <strong>Make a note of this info!</strong></p>
-                    <p class="mb-0"><strong>Do not close this terminal yet.</strong> Once the disclaimer is accepted and the WebUI info is displayed, press <strong><code>Ctrl+c</code></strong> to stop it. Verify it's stopped: <code>pgrep qbittorrent-nox</code> (should return no output).</p>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Remember the backslash <code>\</code> for spaces in <code>Torrent\ Files</code>.</em>
+                    </p>
                 </div>
-            </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">2. Start the qBittorrent-nox service for <code class="bg-gray-700 px-1 rounded">x250</code> using Systemd</h3>
-                <p class="mb-2 text-gray-300"><code>systemd</code> manages services. The <code>qbittorrent-nox</code> package provides a template for this.</p>
-                <pre class="code-block"><code>sudo systemctl start qbittorrent-nox@x250</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em><code>@x250</code> tells systemd to run this template as the <code>x250</code> user.</em>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">5. Get Server IP Address</h3>
+                    <p class="mb-2 text-gray-300">You'll need this to access the WebUI later from your other device.</p>
+                    <pre class="code-block"><code>ip addr show wlp3s0</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Replace <code>wlp3s0</code> with your actual Wi-Fi interface name if different. Look for the <code>inet</code> address (e.g., <code>192.168.1.3</code>). <strong>Note this down.</strong></em>
+                    </p>
+                </div>
+
+                <hr class="my-6 border-gray-600">
+
+                <h2 id="phase3" class="text-blue-400">Phase 3: qBittorrent-nox Setup and Systemd Service Integration (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">1. Initialize qBittorrent-nox and Accept the Legal Disclaimer</h3>
+                    <p class="mb-2 text-gray-300">This step runs qBittorrent-nox once as <code>x250</code> to accept the terms and generate initial configuration.</p>
+                    <pre class="code-block"><code>qbittorrent-nox --profile=/home/x250</code></pre>
+                    <div class="warning-box">
+                        <h4>IMPORTANT:</h4>
+                        <p class="mb-2">You should see a legal disclaimer (Terms of Use). <strong>Type <code>y</code> or <code>yes</code> and press Enter</strong> to accept it.</p>
+                        <p class="mb-2">qBittorrent-nox will then print details for its WebUI (default URL: <code>http://localhost:8080</code>, default username: <code>admin</code>, default password: <code>adminadmin</code>). <strong>Make a note of this info!</strong></p>
+                        <p class="mb-0"><strong>Do not close this terminal yet.</strong> Once the disclaimer is accepted and the WebUI info is displayed, press <strong><code>Ctrl+c</code></strong> to stop it. Verify it's stopped: <code>pgrep qbittorrent-nox</code> (should return no output).</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">2. Start the qBittorrent-nox service for <code class="bg-gray-700 px-1 rounded">x250</code> using Systemd</h3>
+                    <p class="mb-2 text-gray-300"><code>systemd</code> manages services. The <code>qbittorrent-nox</code> package provides a template for this.</p>
+                    <pre class="code-block"><code>sudo systemctl start qbittorrent-nox@x250</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em><code>@x250</code> tells systemd to run this template as the <code>x250</code> user.</em>
+                    </p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">3. Check the service status</h3>
+                    <pre class="code-block"><code>systemctl status qbittorrent-nox@x250</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em><strong>Expected output:</strong> Look for <code>Active: active (running)</code> in green. If you see <code>inactive (dead)</code> or errors, carefully transcribe them.</em>
+                    </p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">4. Enable the service to start automatically on boot</h3>
+                    <pre class="code-block"><code>sudo systemctl enable qbittorrent-nox@x250</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>You should see output indicating a symlink was created.</em>
+                    </p>
+                </div>
+
+                <hr class="my-6 border-gray-600">
+
+                <h2 id="phase4" class="text-blue-400">Phase 4: WebUI Configuration and Firewall (from a Graphical Browser)</h2>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">1. Access the WebUI</h3>
+                    <p class="mb-2 text-gray-300">Open your web browser on your desktop/laptop and go to <code>http://&lt;YOUR_SERVER_IP&gt;:8080</code> (e.g., <code>http://192.168.1.3:8080</code>).</p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">2. Log in</h3>
+                    <p class="mb-2 text-gray-300">Use the default credentials: Username <code>admin</code>, Password <code>adminadmin</code>.</p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">3. CHANGE THE DEFAULT PASSWORD IMMEDIATELY! (CRUCIAL SECURITY STEP)</h3>
+                    <ul class="list-disc ml-6 mb-2 text-gray-300">
+                        <li>Go to <code>Tools</code> (or the gear icon) <code>-> Options -> Web UI</code>.</li>
+                        <li>Change the username and <strong>especially the password</strong> to something strong.</li>
+                        <li><strong>Highly Recommended:</strong> Change the "Listen port" from <code>8080</code> to a non-standard, unused port (e.g., <code>9090</code>, <code>48484</code>). This adds a small layer of obscurity.</li>
+                        <li>Click "Apply" or "OK". You'll be logged out; log back in with new credentials (and new port if changed).</li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">4. Configure Download Paths</h3>
+                    <ul class="list-disc ml-6 mb-2 text-gray-300">
+                        <li>Go to <code>Tools</code> (or gear icon) <code>-> Options -> Downloads</code>.</li>
+                        <li>Set <strong>"Default Save Path"</strong> to: <code>/mnt/Extended/Downloads/</code></li>
+                        <li>Set <strong>"Automatically add torrents from:"</strong> to: <code>/mnt/Extended/Torrent Files/</code> (and ensure it's enabled).</li>
+                        <li>Click "Apply" or "OK".</li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">5. Note qBittorrent's Peer-to-Peer Port</h3>
+                    <ul class="list-disc ml-6 mb-2 text-gray-300">
+                        <li>Go to <code>Tools</code> (or gear icon) <code>-> Options -> Connection</code>.</li>
+                        <li>Find the "Port used for incoming connections" number. Make a note of this (e.g., <code>6881</code>).</li>
+                    </ul>
+                </div>
+
+                <hr class="my-6 border-gray-600">
+
+                <h2 id="phase5" class="text-blue-400">Phase 5: Firewall Configuration (from Server's TTY or SSH)</h2>
+
+                <p class="mb-2 text-gray-300">
+                    You are back on your server's TTY, logged in as <code>x250</code>. If you prefer, you can now SSH into your server from your desktop/laptop as <code>x250@YOUR_SERVER_IP</code> to run these commands.
                 </p>
-            </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">3. Check the service status</h3>
-                <pre class="code-block"><code>systemctl status qbittorrent-nox@x250</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em><strong>Expected output:</strong> Look for <code>Active: active (running)</code> in green. If you see <code>inactive (dead)</code> or errors, carefully transcribe them.</em>
-                </p>
-            </div>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">1. Allow SSH Access</h3>
+                    <pre class="code-block"><code>sudo ufw allow ssh</code></pre>
+                </div>
 
-            <div class="mb-6">
-                <h3 class="text-gray-200">4. Enable the service to start automatically on boot</h3>
-                <pre class="code-block"><code>sudo systemctl enable qbittorrent-nox@x250</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>You should see output indicating a symlink was created.</em>
-                </p>
-            </div>
+                <div class="mb-6">
+                    <h3 class="text-gray-200">2. Allow qBittorrent WebUI Access</h3>
+                    <p class="mb-2 text-gray-300">Use the port you chose in the WebUI (e.g., <code>8080</code> or <code>9090</code>).</p>
+                    <pre class="code-block"><code>sudo ufw allow &lt;YOUR_WEBUI_PORT&gt;/tcp</code></pre>
+                </div>
 
-            <hr class="my-6 border-gray-600">
-
-            <h2 id="phase4" class="text-blue-400">Phase 4: WebUI Configuration and Firewall (from a Graphical Browser)</h2>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">1. Access the WebUI</h3>
-                <p class="mb-2 text-gray-300">Open your web browser on your desktop/laptop and go to <code>http://&lt;YOUR_SERVER_IP&gt;:8080</code> (e.g., <code>http://192.168.1.3:8080</code>).</p>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">2. Log in</h3>
-                <p class="mb-2 text-gray-300">Use the default credentials: Username <code>admin</code>, Password <code>adminadmin</code>.</p>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">3. CHANGE THE DEFAULT PASSWORD IMMEDIATELY! (CRUCIAL SECURITY STEP)</h3>
-                <ul class="list-disc ml-6 mb-2 text-gray-300">
-                    <li>Go to <code>Tools</code> (or the gear icon) <code>-> Options -> Web UI</code>.</li>
-                    <li>Change the username and <strong>especially the password</strong> to something strong.</li>
-                    <li><strong>Highly Recommended:</strong> Change the "Listen port" from <code>8080</code> to a non-standard, unused port (e.g., <code>9090</code>, <code>48484</code>). This adds a small layer of obscurity.</li>
-                    <li>Click "Apply" or "OK". You'll be logged out; log back in with new credentials (and new port if changed).</li>
-                </ul>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">4. Configure Download Paths</h3>
-                <ul class="list-disc ml-6 mb-2 text-gray-300">
-                    <li>Go to <code>Tools</code> (or gear icon) <code>-> Options -> Downloads</code>.</li>
-                    <li>Set <strong>"Default Save Path"</strong> to: <code>/mnt/Extended/Downloads/</code></li>
-                    <li>Set <strong>"Automatically add torrents from:"</strong> to: <code>/mnt/Extended/Torrent Files/</code> (and ensure it's enabled).</li>
-                    <li>Click "Apply" or "OK".</li>
-                </ul>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">5. Note qBittorrent's Peer-to-Peer Port</h3>
-                <ul class="list-disc ml-6 mb-2 text-gray-300">
-                    <li>Go to <code>Tools</code> (or gear icon) <code>-> Options -> Connection</code>.</li>
-                    <li>Find the "Port used for incoming connections" number. Make a note of this (e.g., <code>6881</code>).</li>
-                </ul>
-            </div>
-
-            <hr class="my-6 border-gray-600">
-
-            <h2 id="phase5" class="text-blue-400">Phase 5: Firewall Configuration (from Server's TTY or SSH)</h2>
-
-            <p class="mb-2 text-gray-300">
-                You are back on your server's TTY, logged in as <code>x250</code>. If you prefer, you can now SSH into your server from your desktop/laptop as <code>x250@YOUR_SERVER_IP</code> to run these commands.
-            </p>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">1. Allow SSH Access</h3>
-                <pre class="code-block"><code>sudo ufw allow ssh</code></pre>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">2. Allow qBittorrent WebUI Access</h3>
-                <p class="mb-2 text-gray-300">Use the port you chose in the WebUI (e.g., <code>8080</code> or <code>9090</code>).</p>
-                <pre class="code-block"><code>sudo ufw allow &lt;YOUR_WEBUI_PORT&gt;/tcp</code></pre>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">3. Allow qBittorrent Peer-to-Peer Traffic</h3>
-                <p class="mb-2 text-gray-300">Use the port you noted from the WebUI (e.g., <code>6881</code>). <strong>You need both TCP and UDP.</strong></p>
-                <pre class="code-block"><code>sudo ufw allow &lt;YOUR_TORRENT_PORT&gt;/tcp
+                <div class="mb-6">
+                    <h3 class="text-gray-200">3. Allow qBittorrent Peer-to-Peer Traffic</h3>
+                    <p class="mb-2 text-gray-300">Use the port you noted from the WebUI (e.g., <code>6881</code>). <strong>You need both TCP and UDP.</strong></p>
+                    <pre class="code-block"><code>sudo ufw allow &lt;YOUR_TORRENT_PORT&gt;/tcp
 sudo ufw allow &lt;YOUR_TORRENT_PORT&gt;/udp</code></pre>
-            </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">4. Enable the Firewall</h3>
-                <pre class="code-block"><code>sudo ufw enable</code></pre>
-                <div class="warning-box">
-                    <h4>WARNING:</h4>
-                    <p class="mb-0">Always confirm SSH access is allowed before enabling, or you might lock yourself out!</p>
                 </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">4. Enable the Firewall</h3>
+                    <pre class="code-block"><code>sudo ufw enable</code></pre>
+                    <div class="warning-box">
+                        <h4>WARNING:</h4>
+                        <p class="mb-0">Always confirm SSH access is allowed before enabling, or you might lock yourself out!</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-gray-200">5. Verify Firewall Status</h3>
+                    <pre class="code-block"><code>sudo ufw status verbose</code></pre>
+                    <p class="mb-2 text-sm text-gray-400">
+                        <em>Confirm your rules are listed and active.</em>
+                    </p>
+                </div>
+
+                <hr class="my-6 border-gray-600">
+
+                <h2 id="phase6" class="text-blue-400">Phase 6: Start Using Your Torrent Server!</h2>
+                <p class="mb-4 text-gray-300">Your server is now fully configured and ready for torrenting.</p>
+                <ul class="list-disc ml-6 mb-4 text-gray-300">
+                    <li>You can add torrents via magnet links or by uploading <code>.torrent</code> files directly through the WebUI on your desktop/laptop.</li>
+                    <li>You can also place <code>.torrent</code> files into <code>/mnt/Extended/Torrent Files/</code> on your server (e.g., using <code>mc</code> if moving files locally, or <code>scp</code> if you transferred them via SSH), and qBittorrent will automatically add them.</li>
+                </ul>
+                <p class="text-green-500 font-bold">Enjoy your new headless torrent server!</p>
             </div>
-
-            <div class="mb-6">
-                <h3 class="text-gray-200">5. Verify Firewall Status</h3>
-                <pre class="code-block"><code>sudo ufw status verbose</code></pre>
-                <p class="mb-2 text-sm text-gray-400">
-                    <em>Confirm your rules are listed and active.</em>
-                </p>
-            </div>
-
-            <hr class="my-6 border-gray-600">
-
-            <h2 id="phase6" class="text-blue-400">Phase 6: Start Using Your Torrent Server!</h2>
-            <p class="mb-4 text-gray-300">Your server is now fully configured and ready for torrenting.</p>
-            <ul class="list-disc ml-6 mb-4 text-gray-300">
-                <li>You can add torrents via magnet links or by uploading <code>.torrent</code> files directly through the WebUI on your desktop/laptop.</li>
-                <li>You can also place <code>.torrent</code> files into <code>/mnt/Extended/Torrent Files/</code> on your server (e.g., using <code>mc</code> if moving files locally, or <code>scp</code> if you transferred them via SSH), and qBittorrent will automatically add them.</li>
-            </ul>
-            <p class="text-green-500 font-bold">Enjoy your new headless torrent server!</p>
-        </div>
+        </main>
     </div>
 </body>
 </html>
