@@ -39,6 +39,9 @@
             padding: 1.5rem;
         }
         @media (max-width: 1023px) { /* Adjust for smaller screens */
+            body {
+                flex-direction: column; /* Stack nav and content vertically */
+            }
             .nav-pane {
                 width: 100%;
                 height: auto;
@@ -88,8 +91,8 @@
             margin-bottom: 0.75rem;
             color: #90cdf4; /* Light blue for headings */
         }
-        h1 { font-size: 3rem; /* text-5xl equivalent */ color: #60a5fa; } /* Bigger and more vibrant blue */
-        h2 { font-size: 1.875rem; /* text-3xl */ }
+        h1 { font-size: 4rem; /* Increased size for main title */ color: #60a5fa; } /* Bigger and more vibrant blue */
+        h2 { font-size: 2.25rem; /* Increased size for phase titles */ }
         h3 { font-size: 1.5rem; /* text-2xl */ }
         h4 { font-size: 1.25rem; /* text-xl */ }
         ul {
@@ -115,17 +118,37 @@
             text-decoration: none;
             font-weight: 600;
             transition: background-color 0.2s ease;
+            margin-bottom: 0.5rem; /* Spacing between nav buttons */
         }
         a.nav-button:hover {
             background-color: #636b77;
+        }
+        .nav-section-title {
+            color: #cbd5e0; /* Light gray for section titles in nav */
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
         }
     </style>
 </head>
 <body class="antialiased">
     <div class="nav-pane">
         <h3 class="text-white text-center mb-6">Navigation</h3>
-        <a href="#top" class="nav-button">Back to Top</a>
-        <!-- You can add more navigation links here for specific sections -->
+
+        <!-- Back Navigation Links -->
+        <a href="../../index.html" class="nav-button">← Main Setups</a>
+        <a href="../index.html" class="nav-button">← Debian Setups</a>
+        <a href="#top" class="nav-button">↑ Back to Top</a>
+
+        <h4 class="nav-section-title">Guide Phases</h4>
+        <!-- Phase Navigation Links -->
+        <a href="#phase1" class="nav-button">Phase 1: Initial Setup</a>
+        <a href="#phase2" class="nav-button">Phase 2: Disk/Dir Prep</a>
+        <a href="#phase3" class="nav-button">Phase 3: qB-nox & Systemd</a>
+        <a href="#phase4" class="nav-button">Phase 4: WebUI & Firewall (Browser)</a>
+        <a href="#phase5" class="nav-button">Phase 5: Firewall (Server)</a>
+        <a href="#phase6" class="nav-button">Phase 6: Start Torrenting!</a>
     </div>
 
     <div class="main-content-wrapper">
@@ -150,7 +173,7 @@
 
             <hr class="my-6 border-gray-600">
 
-            <h2 class="text-blue-400">Phase 1: Post-Installation Initial Setup (as <code class="bg-gray-700 px-1 rounded">root</code> user)</h2>
+            <h2 id="phase1" class="text-blue-400">Phase 1: Post-Installation Initial Setup (as <code class="bg-gray-700 px-1 rounded">root</code> user)</h2>
 
             <div class="mb-6">
                 <h3 class="text-gray-200">1. Update Package Lists and Upgrade System</h3>
@@ -173,7 +196,7 @@ apt upgrade -y</code></pre>
 
             <hr class="my-6 border-gray-600">
 
-            <h2 class="text-blue-400">Phase 2: User Login and Disk/Directory Preparation (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
+            <h2 id="phase2" class="text-blue-400">Phase 2: User Login and Disk/Directory Preparation (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
 
             <div class="mb-6">
                 <h3 class="text-gray-200">1. Log in as <code class="bg-gray-700 px-1 rounded">x250</code></h3>
@@ -257,7 +280,7 @@ mkdir -p /mnt/Extended/Torrent\ Files</code></pre>
 
             <hr class="my-6 border-gray-600">
 
-            <h2 class="text-blue-400">Phase 3: qBittorrent-nox Setup and Systemd Service Integration (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
+            <h2 id="phase3" class="text-blue-400">Phase 3: qBittorrent-nox Setup and Systemd Service Integration (as <code class="bg-gray-700 px-1 rounded">x250</code> user)</h2>
 
             <div class="mb-6">
                 <h3 class="text-gray-200">1. Initialize qBittorrent-nox and Accept the Legal Disclaimer</h3>
@@ -298,7 +321,7 @@ mkdir -p /mnt/Extended/Torrent\ Files</code></pre>
 
             <hr class="my-6 border-gray-600">
 
-            <h2 class="text-blue-400">Phase 4: WebUI Configuration and Firewall (from a Graphical Browser)</h2>
+            <h2 id="phase4" class="text-blue-400">Phase 4: WebUI Configuration and Firewall (from a Graphical Browser)</h2>
 
             <div class="mb-6">
                 <h3 class="text-gray-200">1. Access the WebUI</h3>
@@ -340,7 +363,7 @@ mkdir -p /mnt/Extended/Torrent\ Files</code></pre>
 
             <hr class="my-6 border-gray-600">
 
-            <h2 class="text-blue-400">Phase 5: Firewall Configuration (from Server's TTY or SSH)</h2>
+            <h2 id="phase5" class="text-blue-400">Phase 5: Firewall Configuration (from Server's TTY or SSH)</h2>
 
             <p class="mb-2 text-gray-300">
                 You are back on your server's TTY, logged in as <code>x250</code>. If you prefer, you can now SSH into your server from your desktop/laptop as <code>x250@YOUR_SERVER_IP</code> to run these commands.
@@ -383,7 +406,7 @@ sudo ufw allow &lt;YOUR_TORRENT_PORT&gt;/udp</code></pre>
 
             <hr class="my-6 border-gray-600">
 
-            <h2 class="text-blue-400">Phase 6: Start Using Your Torrent Server!</h2>
+            <h2 id="phase6" class="text-blue-400">Phase 6: Start Using Your Torrent Server!</h2>
             <p class="mb-4 text-gray-300">Your server is now fully configured and ready for torrenting.</p>
             <ul class="list-disc ml-6 mb-4 text-gray-300">
                 <li>You can add torrents via magnet links or by uploading <code>.torrent</code> files directly through the WebUI on your desktop/laptop.</li>
