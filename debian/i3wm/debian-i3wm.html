@@ -85,12 +85,12 @@
             <nav>
                 <ul class="space-y-2">
                     <li>
-                        <a href="../index.html" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
+                        <a href="../../index.html" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
                             ← Main Setups
                         </a>
                     </li>
                     <li>
-                        <a href="../debian/index.html" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
+                        <a href="../index.html" class="block py-2 px-4 rounded-md text-pink-400 hover:bg-pink-800 hover:text-white transition-colors duration-200 font-semibold">
                             ← Debian Setups
                         </a>
                     </li>
@@ -167,7 +167,7 @@
                 <h2 class="text-2xl font-bold mb-4">6. Setup i3 Launch Sequence and Session-Wide Environment Variables</h2>
                 <p class="mb-4">Create or edit your `.xinitrc` file in your home directory. This file tells `startx` how to launch your i3 session and sets important environment variables.</p>
                 <pre><code>nano ~/.xinitrc</code></pre>
-                <p class="mb-4">Paste or carefully type the following content into the `nano` editor, exactly as shown:</p>
+                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
                 <pre><code>#! /bin/sh
 
 # Start the D-Bus session bus if not already running (often needed for minimal setups)
@@ -563,79 +563,80 @@ sudo fc-cache -fv</code></pre>
             <p class="mb-4">This creates a virtual output device (`null-sink`) and a corresponding virtual input device (`null-sink.monitor`). We'll send both system audio and microphone audio to this `null-sink`, and SimpleScreenRecorder will record from its monitor.</p>
             <pre><code>pactl load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"</code></pre>
 
-            <h3 class="text-xl font-bold mt-6 mb-2">2. Route your Microphone into the `null-sink`</h3>
-            <p class="mb-4">This command will take your microphone's input and "loop" it into the `Combined_Audio` (null) sink. Your microphone's PulseAudio source name is `alsa_input.pci-0000_00_1b.0.analog-stereo`.</p>
-            <pre><code>pactl load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
+                <h3 class="text-xl font-bold mt-6 mb-2">2. Route your Microphone into the `null-sink`</h3>
+                <p class="mb-4">This command will take your microphone's input and "loop" it into the `Combined_Audio` (null) sink. Your microphone's PulseAudio source name is `alsa_input.pci-0000_00_1b.0.analog-stereo`.</p>
+                <pre><code>pactl load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
 
-            <h3 class="text-xl font-bold mt-6 mb-2">3. Configure SimpleScreenRecorder</h3>
-            <ul class="list-disc list-inside ml-4 mb-4">
-                <li>Launch SimpleScreenRecorder.</li>
-                <li>Proceed through the setup wizard. When you get to the <strong>Audio Input</strong> page:
-                    <ul class="list-circle list-inside ml-4">
-                        <li><strong>Audio backend:</strong> Select <strong>PulseAudio</strong>.</li>
-                        <li><strong>Source:</strong> From the dropdown menu, select <strong>`Monitor of Combined_Audio_for_Recording`</strong>.</li>
-                    </ul>
-                </li>
-            </ul>
+                <h3 class="text-xl font-bold mt-6 mb-2">3. Configure SimpleScreenRecorder</h3>
+                <ul class="list-disc list-inside ml-4 mb-4">
+                    <li>Launch SimpleScreenRecorder.</li>
+                    <li>Proceed through the setup wizard. When you get to the <strong>Audio Input</strong> page:
+                        <ul class="list-circle list-inside ml-4">
+                            <li><strong>Audio backend:</strong> Select <strong>PulseAudio</strong>.</li>
+                            <li><strong>Source:</strong> From the dropdown menu, select <strong>`Monitor of Combined_Audio_for_Recording`</strong>.</li>
+                        </ul>
+                    </li>
+                </ul>
 
-            <h3 class="text-xl font-bold mt-6 mb-2">4. Route System Audio to `Combined_Audio_for_Recording`</h3>
-            <p class="mb-4">You need to tell the applications that are playing sound (like your web browser, video player, etc.) to send their audio to your new combined sink.</p>
-            <ul class="list-disc list-inside ml-4 mb-4">
-                <li>Start playing the audio/video you want to record (e.g., a YouTube video in Firefox).</li>
-                <li>Open <strong>`pavucontrol`</strong> (PulseAudio Volume Control) from your terminal or dmenu.</li>
-                <li>Go to the <strong>"Playback"</strong> tab.</li>
-                <li>You will see the application that's currently playing audio (e.g., "Firefox," "MPV," etc.). Next to its name, there will be a dropdown menu showing its current output device.</li>
-                <li>Click on this dropdown menu and select <strong>`Combined_Audio_for_Recording`</strong>.</li>
-                <li class="note"><strong>Important:</strong> You'll need to do this for <em>each application</em> whose sound you want to capture during your recording session.</li>
-            </ul>
+                <h3 class="text-xl font-bold mt-6 mb-2">4. Route System Audio to `Combined_Audio_for_Recording`</h3>
+                <p class="mb-4">You need to tell the applications that are playing sound (like your web browser, video player, etc.) to send their audio to your new combined sink.</p>
+                <ul class="list-disc list-inside ml-4 mb-4">
+                    <li>Start playing the audio/video you want to record (e.g., a YouTube video in Firefox).</li>
+                    <li>Open <strong>`pavucontrol`</strong> (PulseAudio Volume Control) from your terminal or dmenu.</li>
+                    <li>Go to the <strong>"Playback"</strong> tab.</li>
+                    <li>You will see the application that's currently playing audio (e.g., "Firefox," "MPV," etc.). Next to its name, there will be a dropdown menu showing its current output device.</li>
+                    <li>Click on this dropdown menu and select <strong>`Combined_Audio_for_Recording`</strong>.</li>
+                    <li class="note"><strong>Important:</strong> You'll need to do this for <em>each application</em> whose sound you want to capture during your recording session.</li>
+                </ul>
 
-            <h3 class="text-xl font-bold mt-6 mb-2">5. Adjust Volumes in `pavucontrol`</h3>
-            <p class="mb-4">While recording, you might need to fine-tune the levels:</p>
-            <ul class="list-disc list-inside ml-4 mb-4">
-                <li><strong>"Recording" Tab in `pavucontrol`</strong>: You'll see SimpleScreenRecorder listed. Adjust the overall recording volume here.</li>
-                <li><strong>"Input Devices" Tab in `pavucontrol`</strong>: Adjust the volume slider for your `Built-in Audio Analog Stereo` (your microphone) to ensure your voice is captured at an appropriate level relative to the system audio.</li>
-                <li><strong>"Playback" Tab in `pavucontrol`</strong>: Ensure the volume for the applications routed to `Combined_Audio_for_Recording` is at a good level.</li>
-            </ul>
+                <h3 class="text-xl font-bold mt-6 mb-2">5. Adjust Volumes in `pavucontrol`</h3>
+                <p class="mb-4">While recording, you might need to fine-tune the levels:</p>
+                <ul class="list-disc list-inside ml-4 mb-4">
+                    <li><strong>"Recording" Tab in `pavucontrol`</strong>: You'll see SimpleScreenRecorder listed. Adjust the overall recording volume here.</li>
+                    <li><strong>"Input Devices" Tab in `pavucontrol`</strong>: Adjust the volume slider for your `Built-in Audio Analog Stereo` (your microphone) to ensure your voice is captured at an appropriate level relative to the system audio.</li>
+                    <li><strong>"Playback" Tab in `pavucontrol`</strong>: Ensure the volume for the applications routed to `Combined_Audio_for_Recording` is at a good level.</li>
+                </ul>
 
-            <h3 class="text-xl font-bold mt-6 mb-2">6. Start and Test Your Recording</h3>
-            <ul class="list-disc list-inside ml-4 mb-4">
-                <li>Go back to SimpleScreenRecorder.</li>
-                <li>Start your recording.</li>
-                <li>Play some system audio and speak into your microphone.</li>
-                <li>Stop the recording gracefully in SimpleScreenRecorder.</li>
-                <li>Play the recorded video file with MPV and verify that both your system audio and microphone audio are present and at acceptable levels.</li>
-            </ul>
+                <h3 class="text-xl font-bold mt-6 mb-2">6. Start and Test Your Recording</h3>
+                <ul class="list-disc list-inside ml-4 mb-4">
+                    <li>Go back to SimpleScreenRecorder.</li>
+                    <li>Start your recording.</li>
+                    <li>Play some system audio and speak into your microphone.</li>
+                    <li>Stop the recording gracefully in SimpleScreenRecorder.</li>
+                    <li>Play the recorded video file with MPV and verify that both your system audio and microphone audio are present and at acceptable levels.</li>
+                </ul>
 
-            <h3 class="text-xl font-bold mt-6 mb-2">Making the Setup Permanent Across Reboots (Recommended)</h3>
-            <p class="mb-4">The `pactl load-module` commands you used are temporary and will be reset on reboot. To make this setup permanent:</p>
-            <pre><code>sudo nano /etc/pulse/default.pa</code></pre>
-            <p class="mb-4">Add the following lines to the end of the file:</p>
-            <pre><code>### For SimpleScreenRecorder - Combined Audio Input ###
+                <h3 class="text-xl font-bold mt-6 mb-2">Making the Setup Permanent Across Reboots (Recommended)</h3>
+                <p class="mb-4">The `pactl load-module` commands you used are temporary and will be reset on reboot. To make this setup permanent:</p>
+                <pre><code>sudo nano /etc/pulse/default.pa</code></pre>
+                <p class="mb-4">Add the following lines to the end of the file:</p>
+                <pre><code>### For SimpleScreenRecorder - Combined Audio Input ###
 load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"
 load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
-            <p class="mt-4 mb-4">Save the file (Ctrl+O, Enter) and exit nano (Ctrl+X).</p>
-            <p class="mb-4">Finally, reboot your system.</p>
-            <pre><code>sudo reboot</code></pre>
-        </div>
+                <p class="mt-4 mb-4">Save the file (Ctrl+O, Enter) and exit nano (Ctrl+X).</p>
+                <p class="mb-4">Finally, reboot your system.</p>
+                <pre><code>sudo reboot</code></pre>
+            </div>
 
-        <div class="section-card" id="step20">
-            <h2 class="text-2xl font-bold mb-4">20. Test All Applications</h2>
-            <p class="mb-4">Now that everything is set up, it's a good idea to test all your installed applications to ensure they are functioning correctly and that your theming is applied as expected. Launch each of these from dmenu (for `gnome-screenshot`, you can open a terminal and type `gnome-screenshot -i` and press Enter):</p>
-            <ul class="list-disc list-inside ml-4">
-                <li>qBittorrent</li>
-                <li>simplescreenrecorder</li>
-                <li>Mousepad</li>
-                <li>Thunar</li>
-                <li>LibreOffice</li>
-                <li>Lollypop</li>
-                <li>`xterm` (ensure it's dark and has the correct font/scrollbar)</li>
-                <li>Firefox (ensure it's installed and functioning)</li>
-            </ul>
-        </div>
+            <div class="section-card" id="step20">
+                <h2 class="text-2xl font-bold mb-4">20. Test All Applications</h2>
+                <p class="mb-4">Now that everything is set up, it's a good idea to test all your installed applications to ensure they are functioning correctly and that your theming is applied as expected. Launch each of these from dmenu (for `gnome-screenshot`, you can open a terminal and type `gnome-screenshot -i` and press Enter):</p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>qBittorrent</li>
+                    <li>simplescreenrecorder</li>
+                    <li>Mousepad</li>
+                    <li>Thunar</li>
+                    <li>LibreOffice</li>
+                    <li>Lollypop</li>
+                    <li>`xterm` (ensure it's dark and has the correct font/scrollbar)</li>
+                    <li>Firefox (ensure it's installed and functioning)</li>
+                </ul>
+            </div>
 
-        <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
-            <p>&copy; 2025 sorryfunnel. All rights reserved.</p>
-        </footer>
+            <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
+                <p>&copy; 2025 sorryfunnel. All rights reserved.</p>
+            </footer>
+        </main>
     </div>
 </body>
 </html>
