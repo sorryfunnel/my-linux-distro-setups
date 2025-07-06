@@ -112,7 +112,17 @@
                     <li><a href="#step10" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">10. Install Firefox</a></li>
                     <li><a href="#step11" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">11. Install Theming Packages</a></li>
                     <li><a href="#step12" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">12. Initial i3 Configuration</a></li>
-                    <li><a href="#step12-1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">12.1. Configure i3 Window Colors</a></li>
+                    <li><a href="#step12-1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">12.1. Create `lock_and_dim.sh` script</a></li>
+                    <li><a href="#step12-2" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">12.2. Create `exit_dialog.sh` script</a></li>
+                    <li><a href="#step12-3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">12.3. Configure Main i3 Config File</a></li>
+                    <li><a href="#step12-3-1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.1. Change i3 Status Bar Position</a></li>
+                    <li><a href="#step12-3-2" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.2. Add Fn Keys for Adjusting Brightness</a></li>
+                    <li><a href="#step12-3-3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.3. Set Desktop Wallpaper</a></li>
+                    <li><a href="#step12-3-4" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.4. Set `gnome-screenshot` Keybinding</a></li>
+                    <li><a href="#step12-3-5" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.5. Set qBittorrent as Startup Application</a></li>
+                    <li><a href="#step12-3-6" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.6. Set Lock Screen Button</a></li>
+                    <li><a href="#step12-3-7" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.7. Change Exit Dialog Box for i3</a></li>
+                    <li><a href="#step12-3-8" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-10 text-xs">12.3.8. Configure i3 Window Colors</a></li>
                     <li><a href="#step13" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">13. Configure i3 Status Bar</a></li>
                     <li><a href="#step14" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">14. Modify Terminal Appearance</a></li>
                     <li><a href="#step15" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">15. Configure Dark Mode</a></li>
@@ -167,7 +177,7 @@
                 <h2 class="text-2xl font-bold mb-4">6. Setup i3 Launch Sequence and Session-Wide Environment Variables</h2>
                 <p class="mb-4">Create or edit your `.xinitrc` file in your home directory. This file tells `startx` how to launch your i3 session and sets important environment variables.</p>
                 <pre><code>nano ~/.xinitrc</code></pre>
-                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+                <p class="mb-4">Paste or carefully type the following content into the `nano` editor, exactly as shown:</p>
                 <pre><code>#! /bin/sh
 
 # Start the D-Bus session bus if not already running (often needed for minimal setups)
@@ -271,12 +281,13 @@ Pin-Priority: 1000
 
             <div class="section-card" id="step12">
                 <h2 class="text-2xl font-bold mb-4">12. Initial i3 Configuration and Script Creation</h2>
-                <p class="mb-4">Now that you're in i3, we'll make several configuration changes and create necessary scripts.</p>
-                <h3 class="text-xl font-bold mb-2">First, create the `lock_and_dim.sh` script:</h3>
-                <pre><code>mkdir -p ~/.config/i3/scripts
+
+                <div class="mt-6" id="step12-1">
+                    <h3 class="text-xl font-bold mb-2">12.1. Create `lock_and_dim.sh` script:</h3>
+                    <pre><code>mkdir -p ~/.config/i3/scripts
 nano ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
-                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
-                <pre><code>#! /bin/bash
+                    <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+                    <pre><code>#! /bin/bash
 
 # Save current brightness level
 CURRENT_BRIGHTNESS=$(/usr/bin/brightnessctl get)
@@ -298,13 +309,15 @@ done
 
 # Restore original brightness after unlocking
 /usr/bin/brightnessctl set "$CURRENT_BRIGHTNESS"</code></pre>
-                <p class="mt-4 mb-4">Make the script executable:</p>
-                <pre><code>chmod +x ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
+                    <p class="mt-4 mb-4">Make the script executable:</p>
+                    <pre><code>chmod +x ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
+                </div>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">Next, create the `exit_dialog.sh` script:</h3>
-                <pre><code>nano ~/.config/i3/exit_dialog.sh</code></pre>
-                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
-                <pre><code>#! /bin/bash
+                <div class="mt-6" id="step12-2">
+                    <h3 class="text-xl font-bold mb-2">12.2. Create `exit_dialog.sh` script:</h3>
+                    <pre><code>nano ~/.config/i3/exit_dialog.sh</code></pre>
+                    <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+                    <pre><code>#! /bin/bash
 
 # A simple exit dialog for i3
 choice=$(echo -e "Lock\nLogout\nReboot\nShutdown" | dmenu -p "Power options:" -sb "#ff0000" -sf "#ffffff")
@@ -326,50 +339,53 @@ case "$choice" in
         # Do nothing if selection is cancelled or invalid
         ;;
 esac</code></pre>
-                <p class="mt-4 mb-4">Make the script executable:</p>
-                <pre><code>chmod +x ~/.config/i3/exit_dialog.sh</code></pre>
+                    <p class="mt-4 mb-4">Make the script executable:</p>
+                    <pre><code>chmod +x ~/.config/i3/exit_dialog.sh</code></pre>
+                </div>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">Now, configure your main i3 config file:</h3>
-                <pre><code>nano ~/.config/i3/config</code></pre>
-                <p class="mb-4">Inside this file, you will locate existing sections or add new lines as specified. You'll be editing or adding lines within the existing configuration structure. For sections shown below, only modify the specific lines indicated, or add the new lines at an appropriate place (e.g., near the end for keybindings).</p>
-                <p class="mb-2">1. <strong>Change i3 Status Bar Position</strong> (Find and set `position top`):</p>
-                <pre><code>bar {
+                <div class="mt-6" id="step12-3">
+                    <h3 class="text-xl font-bold mb-2">12.3. Configure Main i3 Config File:</h3>
+                    <pre><code>nano ~/.config/i3/config</code></pre>
+                    <p class="mb-4">Inside this file, you will locate existing sections or add new lines as specified. You'll be editing or adding lines within the existing configuration structure. For sections shown below, only modify the specific lines indicated, or add the new lines at an appropriate place (e.g., near the end for keybindings).</p>
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-1">12.3.1. Change i3 Status Bar Position:</h4>
+                    <pre><code>bar {
     position top
     status_command i3status
 }</code></pre>
-                <p class="mb-2">2. <strong>Add Fn Keys for Adjusting Brightness</strong> (Add these lines at the end):</p>
-                <pre><code># Fn Keys for Adjusting Brightness
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-2">12.3.2. Add Fn Keys for Adjusting Brightness:</h4>
+                    <pre><code># Fn Keys for Adjusting Brightness
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%</code></pre>
-                <p class="mb-2">3. <strong>Set Desktop Wallpaper</strong> (Add these lines):</p>
-                <pre><code># Set desktop wallpaper using feh
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-3">12.3.3. Set Desktop Wallpaper:</h4>
+                    <pre><code># Set desktop wallpaper using feh
 exec --no-startup-id feh --bg-fill ~/Pictures/YourWallpaperFolder/your_wallpaper_file.jpg</code></pre>
-                <div class="note">
-                    <p><strong>IMPORTANT:</strong> Replace `~/Pictures/YourWallpaperFolder/your_wallpaper_file.jpg` with the actual path to your wallpaper image. Ensure the file name doesn't have white spaces, or enclose the path in quotes if it does.</p>
-                </div>
-                <p class="mb-2">4. <strong>Set `gnome-screenshot` Keybinding</strong> (Add these lines):</p>
-                <pre><code># Launch gnome-screenshot for interactive selection (area/window)
+                    <div class="note">
+                        <p><strong>IMPORTANT:</strong> Replace `~/Pictures/YourWallpaperFolder/your_wallpaper_file.jpg` with the actual path to your wallpaper image. Ensure the file name doesn't have white spaces, or enclose the path in quotes if it does.</p>
+                    </div>
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-4">12.3.4. Set `gnome-screenshot` Keybinding:</h4>
+                    <pre><code># Launch gnome-screenshot for interactive selection (area/window)
 # Press Print (Print Screen button)
 bindsym Print exec --no-startup-id gnome-screenshot -i</code></pre>
-                <p class="mb-2">5. <strong>Set qBittorrent as Startup Application</strong> (Add this line, preferably near other `exec_always` commands if any):</p>
-                <pre><code># Launch qBittorrent automatically on i3 startup
-exec --no-startup-id qbittorrent</code></pre>
-                <p class="mb-2">6. <strong>Set Lock Screen Button</strong> (Modify existing `bindsym $mod+l` and add new command):</p>
-                <pre><code># bindsym $mod+l focus up
-bindsym $mod+l exec --no-startup-id ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
-                <p class="mb-2">7. <strong>Change Exit Dialog Box for i3</strong> (Modify existing `bindsym $mod+Shift+e`):</p>
-                <pre><code># exit i3 (logs you out of your X session) - now with keyboard confirmation
-bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/exit_dialog.sh</code></pre>
-                <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
-                <pre><code>Super + Shift + r</code></pre>
-            </div>
 
-            <div class="section-card" id="step12-1">
-                <h2 class="text-2xl font-bold mb-4">12.1. Configure i3 Window Colors</h2>
-                <p class="mb-4">Edit your main i3 config file (`~/.config/i3/config`) again to add or modify the window border and title bar colors. You can place these color definitions near the top of your config file, or in a dedicated `colors` block if you have one.</p>
-                <pre><code>nano ~/.config/i3/config</code></pre>
-                <p class="mb-4">Add the following lines to your i3 config file:</p>
-                <pre><code># i3 Window Colors Configuration
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-5">12.3.5. Set qBittorrent as Startup Application:</h4>
+                    <pre><code># Launch qBittorrent automatically on i3 startup
+exec --no-startup-id qbittorrent</code></pre>
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-6">12.3.6. Set Lock Screen Button:</h4>
+                    <pre><code># bindsym $mod+l focus up
+bindsym $mod+l exec --no-startup-id ~/.config/i3/scripts/lock_and_dim.sh</code></pre>
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-7">12.3.7. Change Exit Dialog Box for i3:</h4>
+                    <pre><code># exit i3 (logs you out of your X session) - now with keyboard confirmation
+bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/exit_dialog.sh</code></pre>
+
+                    <h4 class="text-lg font-semibold mt-4 mb-2" id="step12-3-8">12.3.8. Configure i3 Window Colors:</h4>
+                    <p class="mb-4">Add the following lines to your i3 config file:</p>
+                    <pre><code># i3 Window Colors Configuration
 # This section defines the colors for window borders, title bars, and text
 # based on the window's current state (focused, unfocused, urgent, etc.).
 
@@ -425,31 +441,61 @@ client.placeholder      #D8BFD8     #3C4043     #A0A0A0     #D8BFD8
 #         urgent_workspace   #FF00FF #FF1493 #FFFFFF
 #     }
 # }</code></pre>
-            <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
-            <pre><code>Super + Shift + r</code></pre>
-        </div>
+                </div>
+                <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
+                <pre><code>Super + Shift + r</code></pre>
+            </div>
 
-        <div class="section-card" id="step13">
-            <h2 class="text-2xl font-bold mb-4">13. Configure i3 Status Bar Time Format</h2>
-            <pre><code>sudo nano /etc/i3status.conf</code></pre>
-            <p class="mb-4">Go to the `general { ... }` section. Find the line that starts with `format =`. Locate the current time format within that line (it might look like `%time` or something similar, excluding commas and spaces) and erase it. Then, carefully type the following new format after the first comma in that line:</p>
-            <pre><code>%Y %B %d | %I:%M:%S %p</code></pre>
-            <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
-            <pre><code>Super + Shift + r</code></pre>
-        </div>
+            <div class="section-card" id="step13">
+                <h2 class="text-2xl font-bold mb-4">13. Configure i3 Status Bar Time Format</h2>
+                <pre><code>sudo nano /etc/i3status.conf</code></pre>
+                <p class="mb-4">Go to the `general { ... }` section. Find the line that starts with `format =`. Locate the current time format within that line (it might look like `%time` or something similar, excluding commas and spaces) and erase it. Then, carefully type the following new format after the first comma in that line:</p>
+                <pre><code>%Y %B %d | %I:%M:%S %p</code></pre>
+                <p class="mt-4 mb-4">Save and Quit nano. Reload i3 config:</p>
+                <pre><code>Super + Shift + r</code></pre>
+            </div>
 
-        <div class="section-card" id="step14">
-            <h2 class="text-2xl font-bold mb-4">14. Modify Terminal (`xterm`) Appearance</h2>
-            <pre><code>nano ~/.Xresources</code></pre>
-            <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
-            <pre><code>xterm*faceName: Monospace
-xterm*faceSize: 10
-xterm*background: #2e3436
-xterm*foreground: #eeeeec
-xterm*cursorColor: #eeeeec
-xterm*colorBD: #fce94f
-xterm*colorUL: #729fcf
-xterm*scrollBar: true</code></pre>
+            <div class="section-card" id="step14">
+                <h2 class="text-2xl font-bold mb-4">14. Modify Terminal (`xterm`) Appearance</h2>
+                <pre><code>nano ~/.Xresources</code></pre>
+                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
+                <pre><code>! Xterm Configuration for nyanyanyan
+
+! === Font Settings ===
+xterm*faceName: Monospace
+xterm*faceSize: 12
+
+! === Color Scheme ===
+xterm*background: black
+xterm*foreground: white
+xterm*cursorColor: white
+
+! Default bold and underline colors will be used as specific overrides are not set.
+
+! === Copy/Paste (Ctrl+Shift+C / Ctrl+Shift+V) ===
+! This remaps keybindings to use the CLIPBOARD selection (like modern applications)
+xterm*vt100.Translations: #override \
+    Ctrl <KeyPress> C: copy-selection(CLIPBOARD) \n\
+    Ctrl <KeyPress> V: insert-selection(CLIPBOARD) \n\
+    Shift <KeyPress> Insert: insert-selection(CLIPBOARD) \n\
+    <KeyPress> Prior: scroll-back(1,page) \n\
+    <KeyPress> Next: scroll-forw(1,page)
+
+! === Line Wrapping ===
+! Enables automatic line wrapping for long lines
+xterm*autoWrap: true
+! Prevents switching to 132-column mode, which can interfere with wrapping
+xterm*c132: false
+
+! === Scrollbar ===
+! Enables the scrollbar
+xterm*scrollBar: true
+! Places the scrollbar on the RIGHT side of the window
+xterm*rightScrollBar: true
+! Makes scrolling happen by moving the scrollbar itself (not by new output)
+xterm*scrollKey: true
+! Prevents new output from automatically scrolling the window down
+xterm*scrollTtyOutput: false</code></pre>
             <p class="mt-4 mb-4">Save and Quit nano.</p>
             <p class="mb-4">Reload X resources:</p>
             <pre><code>xrdb -merge ~/.Xresources</code></pre>
@@ -558,85 +604,83 @@ sudo fc-cache -fv</code></pre>
 
         <div class="section-card" id="step19">
             <h2 class="text-2xl font-bold mb-4">19. Configure Combined Audio for Recording (PulseAudio)</h2>
-            <p class="mb-4">This section details how to set up PulseAudio to simultaneously capture your microphone audio and system sound, which is crucial for screen recordings that include both your voice and the audio playing on your system.</p>
             <h3 class="text-xl font-bold mb-2">1. Load the `module-null-sink`</h3>
-            <p class="mb-4">This creates a virtual output device (`null-sink`) and a corresponding virtual input device (`null-sink.monitor`). We'll send both system audio and microphone audio to this `null-sink`, and SimpleScreenRecorder will record from its monitor.</p>
             <pre><code>pactl load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"</code></pre>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">2. Route your Microphone into the `null-sink`</h3>
-                <p class="mb-4">This command will take your microphone's input and "loop" it into the `Combined_Audio` (null) sink. Your microphone's PulseAudio source name is `alsa_input.pci-0000_00_1b.0.analog-stereo`.</p>
-                <pre><code>pactl load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
+            <h3 class="text-xl font-bold mt-6 mb-2">2. Route your Microphone into the `null-sink`</h3>
+            <p class="mb-4">First, identify the name of your microphone's PulseAudio source:</p>
+            <pre><code>pactl list sources short</code></pre>
+            <p class="mb-4">Look for an entry similar to `alsa_input.pci-0000_00_1b.0.analog-stereo` in the output. Then, route your microphone into the `Combined_Audio` sink:</p>
+            <pre><code>pactl load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">3. Configure SimpleScreenRecorder</h3>
-                <ul class="list-disc list-inside ml-4 mb-4">
-                    <li>Launch SimpleScreenRecorder.</li>
-                    <li>Proceed through the setup wizard. When you get to the <strong>Audio Input</strong> page:
-                        <ul class="list-circle list-inside ml-4">
-                            <li><strong>Audio backend:</strong> Select <strong>PulseAudio</strong>.</li>
-                            <li><strong>Source:</strong> From the dropdown menu, select <strong>`Monitor of Combined_Audio_for_Recording`</strong>.</li>
-                        </ul>
-                    </li>
-                </ul>
+            <h3 class="text-xl font-bold mt-6 mb-2">3. Configure SimpleScreenRecorder</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Launch SimpleScreenRecorder.</li>
+                <li>Proceed through the setup wizard. When you get to the <strong>Audio Input</strong> page:
+                    <ul class="list-circle list-inside ml-4">
+                        <li><strong>Audio backend:</strong> Select <strong>PulseAudio</strong>.</li>
+                        <li><strong>Source:</strong> From the dropdown menu, select <strong>`Monitor of Combined_Audio_for_Recording`</strong>.</li>
+                    </ul>
+                </li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">4. Route System Audio to `Combined_Audio_for_Recording`</h3>
-                <p class="mb-4">You need to tell the applications that are playing sound (like your web browser, video player, etc.) to send their audio to your new combined sink.</p>
-                <ul class="list-disc list-inside ml-4 mb-4">
-                    <li>Start playing the audio/video you want to record (e.g., a YouTube video in Firefox).</li>
-                    <li>Open <strong>`pavucontrol`</strong> (PulseAudio Volume Control) from your terminal or dmenu.</li>
-                    <li>Go to the <strong>"Playback"</strong> tab.</li>
-                    <li>You will see the application that's currently playing audio (e.g., "Firefox," "MPV," etc.). Next to its name, there will be a dropdown menu showing its current output device.</li>
-                    <li>Click on this dropdown menu and select <strong>`Combined_Audio_for_Recording`</strong>.</li>
-                    <li class="note"><strong>Important:</strong> You'll need to do this for <em>each application</em> whose sound you want to capture during your recording session.</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-6 mb-2">4. Route System Audio to `Combined_Audio_for_Recording`</h3>
+            <p class="mb-4">You need to tell the applications that are playing sound (like your web browser, video player, etc.) to send their audio to your new combined sink.</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Start playing the audio/video you want to record (e.g., a YouTube video in Firefox).</li>
+                <li>Open <strong>`pavucontrol`</strong> (PulseAudio Volume Control) from your terminal or dmenu.</li>
+                <li>Go to the <strong>"Playback"</strong> tab.</li>
+                <li>You will see the application that's currently playing audio (e.g., "Firefox," "MPV," etc.). Next to its name, there will be a dropdown menu showing its current output device.</li>
+                <li>Click on this dropdown menu and select <strong>`Combined_Audio_for_Recording`</strong>.</li>
+                <li class="note"><strong>Important:</strong> You'll need to do this for <em>each application</em> whose sound you want to capture during your recording session.</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">5. Adjust Volumes in `pavucontrol`</h3>
-                <p class="mb-4">While recording, you might need to fine-tune the levels:</p>
-                <ul class="list-disc list-inside ml-4 mb-4">
-                    <li><strong>"Recording" Tab in `pavucontrol`</strong>: You'll see SimpleScreenRecorder listed. Adjust the overall recording volume here.</li>
-                    <li><strong>"Input Devices" Tab in `pavucontrol`</strong>: Adjust the volume slider for your `Built-in Audio Analog Stereo` (your microphone) to ensure your voice is captured at an appropriate level relative to the system audio.</li>
-                    <li><strong>"Playback" Tab in `pavucontrol`</strong>: Ensure the volume for the applications routed to `Combined_Audio_for_Recording` is at a good level.</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-6 mb-2">5. Adjust Volumes in `pavucontrol`</h3>
+            <p class="mb-4">While recording, you might need to fine-tune the levels:</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li><strong>"Recording" Tab in `pavucontrol`</strong>: You'll see SimpleScreenRecorder listed. Adjust the overall recording volume here.</li>
+                <li><strong>"Input Devices" Tab in `pavucontrol`</strong>: Adjust the volume slider for your `Built-in Audio Analog Stereo` (your microphone) to ensure your voice is captured at an appropriate level relative to the system audio.</li>
+                <li><strong>"Playback" Tab in `pavucontrol`</strong>: Ensure the volume for the applications routed to `Combined_Audio_for_Recording` is at a good level.</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">6. Start and Test Your Recording</h3>
-                <ul class="list-disc list-inside ml-4 mb-4">
-                    <li>Go back to SimpleScreenRecorder.</li>
-                    <li>Start your recording.</li>
-                    <li>Play some system audio and speak into your microphone.</li>
-                    <li>Stop the recording gracefully in SimpleScreenRecorder.</li>
-                    <li>Play the recorded video file with MPV and verify that both your system audio and microphone audio are present and at acceptable levels.</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-6 mb-2">6. Start and Test Your Recording</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Go back to SimpleScreenRecorder.</li>
+                <li>Start your recording.</li>
+                <li>Play some system audio and speak into your microphone.</li>
+                <li>Stop the recording gracefully in SimpleScreenRecorder.</li>
+                <li>Play the recorded video file with MPV and verify that both your system audio and microphone audio are present and at acceptable levels.</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-6 mb-2">Making the Setup Permanent Across Reboots (Recommended)</h3>
-                <p class="mb-4">The `pactl load-module` commands you used are temporary and will be reset on reboot. To make this setup permanent:</p>
-                <pre><code>sudo nano /etc/pulse/default.pa</code></pre>
-                <p class="mb-4">Add the following lines to the end of the file:</p>
-                <pre><code>### For SimpleScreenRecorder - Combined Audio Input ###
+            <h3 class="text-xl font-bold mt-6 mb-2">Making the Setup Permanent Across Reboots (Recommended)</h3>
+            <pre><code>sudo nano /etc/pulse/default.pa</code></pre>
+            <p class="mb-4">Add the following lines to the end of the file:</p>
+            <pre><code>### For SimpleScreenRecorder - Combined Audio Input ###
 load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"
 load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</code></pre>
-                <p class="mt-4 mb-4">Save the file (Ctrl+O, Enter) and exit nano (Ctrl+X).</p>
-                <p class="mb-4">Finally, reboot your system.</p>
-                <pre><code>sudo reboot</code></pre>
-            </div>
+            <p class="mt-4 mb-4">Save the file (Ctrl+O, Enter) and exit nano (Ctrl+X).</p>
+            <p class="mb-4">Finally, reboot your system.</p>
+            <pre><code>sudo reboot</code></pre>
+        </div>
 
-            <div class="section-card" id="step20">
-                <h2 class="text-2xl font-bold mb-4">20. Test All Applications</h2>
-                <p class="mb-4">Now that everything is set up, it's a good idea to test all your installed applications to ensure they are functioning correctly and that your theming is applied as expected. Launch each of these from dmenu (for `gnome-screenshot`, you can open a terminal and type `gnome-screenshot -i` and press Enter):</p>
-                <ul class="list-disc list-inside ml-4">
-                    <li>qBittorrent</li>
-                    <li>simplescreenrecorder</li>
-                    <li>Mousepad</li>
-                    <li>Thunar</li>
-                    <li>LibreOffice</li>
-                    <li>Lollypop</li>
-                    <li>`xterm` (ensure it's dark and has the correct font/scrollbar)</li>
-                    <li>Firefox (ensure it's installed and functioning)</li>
-                </ul>
-            </div>
+        <div class="section-card" id="step20">
+            <h2 class="text-2xl font-bold mb-4">20. Test All Applications</h2>
+            <p class="mb-4">Now that everything is set up, it's a good idea to test all your installed applications to ensure they are functioning correctly and that your theming is applied as expected. Launch each of these from dmenu (for `gnome-screenshot`, you can open a terminal and type `gnome-screenshot -i` and press Enter):</p>
+            <ul class="list-disc list-inside ml-4">
+                <li>qBittorrent</li>
+                <li>simplescreenrecorder</li>
+                <li>Mousepad</li>
+                <li>Thunar</li>
+                <li>LibreOffice</li>
+                <li>Lollypop</li>
+                <li>`xterm` (ensure it's dark and has the correct font/scrollbar)</li>
+                <li>Firefox (ensure it's installed and functioning)</li>
+            </ul>
+        </div>
 
-            <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
-                <p>&copy; 2025 sorryfunnel. All rights reserved.</p>
-            </footer>
-        </main>
+        <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
+            <p>&copy; 2025 sorryfunnel. All rights reserved.</p>
+        </footer>
     </div>
 </body>
 </html>
