@@ -128,7 +128,11 @@
                     <li><a href="#step15" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">15. Configure Dark Mode</a></li>
                     <li><a href="#step16" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">16. Rebuild Caches</a></li>
                     <li><a href="#step17" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">17. Further Application Settings</a></li>
-                    <li><a href="#step18" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">18. Install Core Utilities</a></li>
+                    <li><a href="#step18" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">18. Install Remaining Core Utilities and Applications</a></li>
+                    <li><a href="#step18-1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">18.1. Install MS fonts (ttf-mscorefonts-installer)</a></li>
+                    <li><a href="#step18-2" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">18.2. Install Joplin</a></li>
+                    <li><a href="#step18-3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">18.3. Install ONLYOFFICE</a></li>
+                    <li><a href="#step18-4" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">18.4. Install FFmpeg</a></li>
                     <li><a href="#step19" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">19. Configure Combined Audio</a></li>
                     <li><a href="#step20" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">20. Test All Applications</a></li>
                 </ul>
@@ -151,7 +155,7 @@
             <div class="section-card" id="step2">
                 <h2 class="text-2xl font-bold mb-4">2. Initial System Update and Core Application Installation (as Root)</h2>
                 <p class="mb-4">Update and upgrade your system's package list and existing packages. Then, install a set of core applications.</p>
-                <pre><code>apt update -y && apt upgrade -y && apt install i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak speedcrunch libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-base mpv simplescreenrecorder zathura zathura-pdf-poppler gnome-screenshot ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk -y</code></pre>
+                <pre><code>apt update -y && apt upgrade -y && apt install i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak speedcrunch libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-base mpv simplescreenrecorder zathura zathura-pdf-poppler gnome-screenshot ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei fonts-arphic-uming fonts-arphic-ukai -y</code></pre>
             </div>
 
             <div class="section-card" id="step3">
@@ -177,7 +181,7 @@
                 <h2 class="text-2xl font-bold mb-4">6. Setup i3 Launch Sequence and Session-Wide Environment Variables</h2>
                 <p class="mb-4">Create or edit your `.xinitrc` file in your home directory. This file tells `startx` how to launch your i3 session and sets important environment variables.</p>
                 <pre><code>nano ~/.xinitrc</code></pre>
-                <p class="mb-4">Paste or carefully type the following content into the `nano` editor, exactly as shown:</p>
+                <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
                 <pre><code>#! /bin/sh
 
 # Start the D-Bus session bus if not already running (often needed for minimal setups)
@@ -598,8 +602,32 @@ sudo fc-cache -fv</code></pre>
         </div>
 
         <div class="section-card" id="step18">
-            <h2 class="text-2xl font-bold mb-4">18. Install Remaining Core Utilities (Last Command)</h2>
-            <pre><code>sudo apt install ttf-mscorefonts-installer ffmpeg -y</code></pre>
+            <h2 class="text-2xl font-bold mb-4">18. Install Remaining Core Utilities and Applications</h2>
+
+            <div class="mt-6" id="step18-1">
+                <h3 class="text-xl font-bold mb-2">18.1. Install MS fonts (ttf-mscorefonts-installer)</h3>
+                <pre><code>sudo apt install ttf-mscorefonts-installer -y</code></pre>
+            </div>
+
+            <div class="mt-6" id="step18-2">
+                <h3 class="text-xl font-bold mb-2">18.2. Install Joplin</h3>
+                <p class="mb-4">Download the latest `.deb` package from the official Joplin Desktop Linux Package releases page: <a href="https://gitlab.com/LFd3v/joplin-desktop-linux-package/-/releases" target="_blank" class="text-blue-400 hover:underline">https://gitlab.com/LFd3v/joplin-desktop-linux-package/-/releases</a></p>
+                <p class="mb-4">After downloading, install the package:</p>
+                <pre><code>sudo dpkg -i "name of package.deb" -y</code></pre>
+            </div>
+
+            <div class="mt-6" id="step18-3">
+                <h3 class="text-xl font-bold mb-2">18.3. Install ONLYOFFICE</h3>
+                <p class="mb-4">Go to the <a href="https://www.onlyoffice.com/download-desktop.aspx" target="_blank" class="text-blue-400 hover:underline">official ONLYOFFICE website</a>, navigate to the "Desktop apps" section, and download the `.deb` package for Debian/Ubuntu.</p>
+                <p class="mb-4">After downloading, install the package:</p>
+                <pre><code>sudo apt install ./name-of-package-without-spaces.deb -y</code></pre>
+                <p class="mt-4">Once launched, go to ONLYOFFICE Desktop Editors settings and set the Interface theme to "Modern Dark."</p>
+            </div>
+
+            <div class="mt-6" id="step18-4">
+                <h3 class="text-xl font-bold mb-2">18.4. Install FFmpeg</h3>
+                <pre><code>sudo apt install ffmpeg -y</code></pre>
+            </div>
         </div>
 
         <div class="section-card" id="step19">
