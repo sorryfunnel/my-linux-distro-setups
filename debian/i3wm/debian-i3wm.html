@@ -154,8 +154,18 @@
 
             <div class="section-card" id="step2">
                 <h2 class="text-2xl font-bold mb-4">2. Initial System Update and Core Application Installation (as Root)</h2>
-                <p class="mb-4">Update and upgrade your system's package list and existing packages. Then, install a set of core applications.</p>
-                <pre><code>apt update -y && apt upgrade -y && apt install i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak speedcrunch libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-base mpv simplescreenrecorder zathura zathura-pdf-poppler gnome-screenshot ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei fonts-arphic-uming fonts-arphic-ukai -y</code></pre>
+                <p class="mb-4">Update and upgrade your system's package list and existing packages. Then, install a set of core applications. Note that long commands are broken with `\` for better readability in terminal browsers like `elinks`.</p>
+                <pre><code>apt update -y && apt upgrade -y && apt install -y \
+    i3 xorg xterm brightnessctl mousepad feh thunar \
+    speedtest-cli pavucontrol flatpak speedcrunch \
+    libreoffice-writer libreoffice-calc libreoffice-impress \
+    libreoffice-draw libreoffice-base mpv simplescreenrecorder \
+    zathura zathura-pdf-poppler gnome-screenshot ocrmypdf \
+    telegram-desktop lollypop gimp foliate qbittorrent persepolis \
+    dbus-user-session xdg-user-dirs xdg-desktop-portal \
+    xdg-desktop-portal-gtk \
+    fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei \
+    fonts-arphic-uming fonts-arphic-ukai</code></pre>
             </div>
 
             <div class="section-card" id="step3">
@@ -432,7 +442,7 @@ client.placeholder      #D8BFD8     #3C4043     #A0A0A0     #D8BFD8
 
 # --- Background of the Bar (Optional, if you use i3bar) ---
 # If you use i3bar, you might want to set its background to complement your theme.
-# For example, a dark gray or a very subtle pink.
+# # For example, a dark gray or a very subtle pink.
 # bar {
 #     colors {
 #         background #2E3436
