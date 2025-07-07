@@ -551,7 +551,7 @@ gtk-icon-theme-name=Adwaita-dark</code></pre>
 
             <h3 class="text-xl font-bold mt-6 mb-2">Configure GTK 4 Applications:</h3>
             <pre><code>mkdir -p ~/.config/gtk-4.0
-nano ~/.config/gtk-4.4/settings.ini</code></pre>
+nano ~/.config/gtk-4.0/settings.ini</code></pre>
             <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
             <pre><code>[Settings]
 gtk-application-prefer-dark-theme=1
@@ -597,8 +597,8 @@ gtk-icon-theme-name="Adwaita-dark"</code></pre>
             </ul>
         </div>
 
-        <div class="section-card" id="step18">
-            <h2 class="text-2xl font-bold mb-4">18. Rebuild Caches and Final Reboot</h2>
+        <div class="section-card" id="step17">
+            <h2 class="text-2xl font-bold mb-4">17. Rebuild Caches and Final Reboot</h2>
             <p class="mb-4">Launch `qt5ct` from dmenu.</p>
             <ul class="list-disc list-inside ml-4 mb-4">
                 <li><strong>Icon Themes:</strong> Select `Adwaita`</li>
@@ -612,8 +612,8 @@ sudo fc-cache -fv</code></pre>
             <pre><code>sudo reboot</code></pre>
         </div>
 
-        <div class="section-card" id="step19">
-            <h2 class="text-2xl font-bold mb-4">19. Further Application Settings</h2>
+        <div class="section-card" id="step18">
+            <h2 class="text-2xl font-bold mb-4">18. Further Application Settings</h2>
             <h3 class="text-xl font-bold mb-2">Mousepad: Wrap Long Lines</h3>
             <ul class="list-disc list-inside ml-4 mb-4">
                 <li>Open a new instance of Mousepad through dmenu (do not open any existing file, just a fresh instance).</li>
@@ -627,37 +627,37 @@ sudo fc-cache -fv</code></pre>
             </ul>
         </div>
 
-        <div class="section-card" id="step20">
-            <h2 class="text-2xl font-bold mb-4">20. Install Remaining Core Utilities and Applications</h2>
+        <div class="section-card" id="step19">
+            <h2 class="text-2xl font-bold mb-4">19. Install Remaining Core Utilities and Applications</h2>
 
-            <div class="mt-6" id="step20-1">
-                <h3 class="text-xl font-bold mb-2">20.1. Install MS fonts (ttf-mscorefonts-installer)</h3>
+            <div class="mt-6" id="step19-1">
+                <h3 class="text-xl font-bold mb-2">19.1. Install MS fonts (ttf-mscorefonts-installer)</h3>
                 <pre><code>sudo apt install ttf-mscorefonts-installer -y</code></pre>
             </div>
 
-            <div class="mt-6" id="step20-2">
-                <h3 class="text-xl font-bold mb-2">20.2. Install Joplin</h3>
+            <div class="mt-6" id="step19-2">
+                <h3 class="text-xl font-bold mb-2">19.2. Install Joplin</h3>
                 <p class="mb-4">Download the latest `.deb` package from the official Joplin Desktop Linux Package releases page: <a href="https://gitlab.com/LFd3v/joplin-desktop-linux-package/-/releases" target="_blank" class="text-blue-400 hover:underline">https://gitlab.com/LFd3v/joplin-desktop-linux-package/-/releases</a></p>
                 <p class="mb-4">After downloading, install the package:</p>
                 <pre><code>sudo dpkg -i "name of package.deb" -y</code></pre>
             </div>
 
-            <div class="mt-6" id="step20-3">
-                <h3 class="text-xl font-bold mb-2">20.3. Install ONLYOFFICE</h3>
+            <div class="mt-6" id="step19-3">
+                <h3 class="text-xl font-bold mb-2">19.3. Install ONLYOFFICE</h3>
                 <p class="mb-4">Go to the <a href="https://www.onlyoffice.com/download-desktop.aspx" target="_blank" class="text-blue-400 hover:underline">official ONLYOFFICE website</a>, navigate to the "Desktop apps" section, and download the `.deb` package for Debian/Ubuntu.</p>
                 <p class="mb-4">After downloading, install the package:</p>
                 <pre><code>sudo apt install ./name-of-package-without-spaces.deb -y</code></pre>
                 <p class="mt-4">Once launched, go to ONLYOFFICE Desktop Editors settings and set the Interface theme to "Modern Dark."</p>
             </div>
 
-            <div class="mt-6" id="step20-4">
-                <h3 class="text-xl font-bold mb-2">20.4. Install FFmpeg</h3>
+            <div class="mt-6" id="step19-4">
+                <h3 class="text-xl font-bold mb-2">19.4. Install FFmpeg</h3>
                 <pre><code>sudo apt install ffmpeg -y</code></pre>
             </div>
         </div>
 
-        <div class="section-card" id="step21">
-            <h2 class="text-2xl font-bold mb-4">21. Configure Combined Audio for Recording (PulseAudio)</h2>
+        <div class="section-card" id="step20">
+            <h2 class="text-2xl font-bold mb-4">20. Configure Combined Audio for Recording (PulseAudio)</h2>
             <h3 class="text-xl font-bold mb-2">1. Load the `module-null-sink`</h3>
             <pre><code>pactl load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"</code></pre>
 
