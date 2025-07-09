@@ -205,7 +205,7 @@ apt install -y \
     xdg-desktop-portal-gtk \
     fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei \
     fonts-arphic-uming fonts-arphic-ukai \
-    firefox</code></pre>
+    firefox engrampa</code></pre>
             </div>
 
             <div class="section-card" id="step5">
@@ -346,7 +346,8 @@ done
 
                 <div class="mt-6" id="step13-2">
                     <h3 class="text-xl font-bold mb-2">13.2. Create `exit_dialog.sh` script:</h3>
-                    <pre><code>nano ~/.config/i3/exit_dialog.sh</code></pre>
+                    <pre><code>mkdir -p ~/.config/i3/scripts
+nano ~/.config/i3/scripts/exit_dialog.sh</code></pre>
                     <p class="mb-4">Paste or carefully type the following content into the editor, exactly as shown:</p>
                     <pre><code>#! /bin/bash
 
@@ -371,7 +372,7 @@ case "$choice" in
         ;;
 esac</code></pre>
                     <p class="mt-4 mb-4">Make the script executable:</p>
-                    <pre><code>chmod +x ~/.config/i3/exit_dialog.sh</code></pre>
+                    <pre><code>chmod +x ~/.config/i3/scripts/exit_dialog.sh</code></pre>
                 </div>
 
                 <div class="mt-6" id="step13-3">
@@ -414,7 +415,7 @@ bindsym $mod+l exec --no-startup-id ~/.config/i3/scripts/lock_and_dim.sh</code><
                     <h4 class="text-lg font-semibold mt-4 mb-2" id="step13-3-7">13.3.7. Change Exit Dialog Box for i3:</h4>
                     <p class="mb-4">Comment out the default `bindsym $mod+Shift+e exit` line by adding `#` at the beginning, then add the following:</p>
                     <pre><code># bindsym $mod+Shift+e exit
-bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/exit_dialog.sh</code></pre>
+bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/scripts/exit_dialog.sh</code></pre>
 
                     <h4 class="text-lg font-semibold mt-4 mb-2" id="step13-3-8">13.3.8. Configure i3 Window Colors:</h4>
                     <p class="mb-4">Add the following lines to your i3 config file:</p>
@@ -759,7 +760,7 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
             <p class="mb-4">If you encounter "permission denied" errors when trying to "Open Terminal Here" in Thunar, you can create a custom action to resolve this, ensuring it launches `xterm` correctly in the desired directory.</p>
             <h3 class="text-xl font-bold mb-2">1. Delete the existing action:</h3>
             <p class="mb-4">Open Thunar and go to `Edit > Configure Custom Actions...`</p>
-            <p class="mb-4">In the "Custom Actions" window, select any existing "Open Terminal Here" action (or similar) and click the minus (`-`) icon to delete it. This prevents conflicts with the new custom action.</p>
+            <p class="mb-4">In the "Custom Actions" window, select any existing "Open Terminal Here" action (or similar, often named "Open Terminal" or "Open in Terminal") and click the minus (`-`) icon to delete it. This prevents conflicts with the new custom action.</p>
             <h3 class="text-xl font-bold mt-6 mb-2">2. Create a Custom Action in Thunar:</h3>
             <p class="mb-4">In the "Custom Actions" window, click the plus (`+`) icon to add a new action.</p>
             <h3 class="text-xl font-bold mt-6 mb-2">3. Configure the New Action:</h3>
