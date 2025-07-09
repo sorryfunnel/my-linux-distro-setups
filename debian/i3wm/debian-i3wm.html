@@ -134,8 +134,11 @@
                     <li><a href="#step19-2" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.2. Install Joplin</a></li>
                     <li><a href="#step19-3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.3. Install ONLYOFFICE</a></li>
                     <li><a href="#step19-4" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.4. Install FFmpeg</a></li>
+                    <li><a href="#step19-5" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.5. Install Tor Browser (if needed)</a></li>
                     <li><a href="#step20" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">20. Configure Combined Audio</a></li>
                     <li><a href="#step21" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">21. Test All Applications</a></li>
+                    <li><a href="#step22" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">22. Final System Cleanup (Optional)</a></li>
+                    <li><a href="#step23" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">23. Fix Thunar "Open Terminal Here"</a></li>
                 </ul>
             </nav>
         </aside>
@@ -654,6 +657,11 @@ sudo fc-cache -fv</code></pre>
                 <h3 class="text-xl font-bold mb-2">19.4. Install FFmpeg</h3>
                 <pre><code>sudo apt install ffmpeg -y</code></pre>
             </div>
+
+            <div class="mt-6" id="step19-5">
+                <h3 class="text-xl font-bold mb-2">19.5. Install Tor Browser (if needed)</h3>
+                <pre><code>sudo apt install torbrowser-launcher -y</code></pre>
+            </div>
         </div>
 
         <div class="section-card" id="step20">
@@ -730,6 +738,63 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
                 <li>`xterm` (ensure it's dark and has the correct font/scrollbar)</li>
                 <li>Firefox (ensure it's installed and functioning)</li>
             </ul>
+        </div>
+
+        <div class="section-card" id="step22">
+            <h2 class="text-2xl font-bold mb-4">22. Final System Cleanup (Optional)</h2>
+            <p class="mb-4">After all installations and configurations, you can perform some optional cleanup to free up disk space and manage system logs.</p>
+            <h3 class="text-xl font-bold mb-2">1. Remove Unused Dependencies:</h3>
+            <p class="mb-4">This command removes packages that were installed as dependencies for other packages but are no longer needed.</p>
+            <pre><code>sudo apt autoremove -y</code></pre>
+            <h3 class="text-xl font-bold mt-6 mb-2">2. Clear Downloaded Package Archives:</h3>
+            <p class="mb-4">This command clears out the local repository of downloaded package files (`.deb` files) that are no longer needed.</p>
+            <pre><code>sudo apt clean</code></pre>
+            <h3 class="text-xl font-bold mt-6 mb-2">3. Clean Old System Logs:</h3>
+            <p class="mb-4">This command removes journal logs older than 7 days, helping to manage disk space used by system logs.</p>
+            <pre><code>sudo journalctl --vacuum-time=7d</code></pre>
+        </div>
+
+        <div class="section-card" id="step23">
+            <h2 class="text-2xl font-bold mb-4">23. Fix Thunar "Open Terminal Here" (Custom Action)</h2>
+            <p class="mb-4">If you encounter "permission denied" errors when trying to "Open Terminal Here" in Thunar, you can create a custom action to resolve this, ensuring it launches `xterm` correctly in the desired directory.</p>
+            <h3 class="text-xl font-bold mb-2">1. Delete the existing action:</h3>
+            <p class="mb-4">Open Thunar and go to `Edit > Configure Custom Actions...`</p>
+            <p class="mb-4">In the "Custom Actions" window, select any existing "Open Terminal Here" action (or similar) and click the minus (`-`) icon to delete it. This prevents conflicts with the new custom action.</p>
+            <h3 class="text-xl font-bold mt-6 mb-2">2. Create a Custom Action in Thunar:</h3>
+            <p class="mb-4">In the "Custom Actions" window, click the plus (`+`) icon to add a new action.</p>
+            <h3 class="text-xl font-bold mt-6 mb-2">3. Configure the New Action:</h3>
+            <p class="mb-4">Fill in the following details in the "Action Properties" dialog:</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li><strong>Name:</strong> `Open New Terminal Here` (or a name of your choice)</li>
+                <li><strong>Description:</strong> `Open a new xterm terminal in the current directory`</li>
+                <li><strong>Command:</strong>
+                    <pre><code>xterm -e "cd %f && exec xterm"</code></pre>
+                    <ul class="list-circle list-inside ml-4 mt-2">
+                        <li>`xterm`: Calls the `xterm` terminal emulator.</li>
+                        <li>`-e`: Tells `xterm` to execute a command.</li>
+                        <li>`"cd %f && exec xterm"`: This is the command `xterm` will execute.
+                            <ul class="list-square list-inside ml-4">
+                                <li>`cd %f`: `%f` is a Thunar placeholder that expands to the path of the selected folder. This changes the directory within the `xterm` instance.</li>
+                                <li>`&&`: A shell operator; executes the next command only if the previous one was successful.</li>
+                                <li>`exec xterm`: Replaces the current shell process with a new `xterm` process, keeping the terminal open and interactive.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Icon:</strong> (Optional) Click "No Icon" to choose a terminal-related icon (e.g., `terminal`, `utilities-terminal`).</li>
+            </ul>
+            <h3 class="text-xl font-bold mt-6 mb-2">4. Set Appearance Conditions:</h3>
+            <p class="mb-4">Switch to the "Appearance Conditions" tab:</p>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Under "File Pattern," leave it as `*` (asterisk) to make the action available for all files and folders.</li>
+                <li>Under "Appears if selection contains," check <strong>`Directory`</strong>. This ensures the action appears when you right-click on a directory or in the background of a directory view. You can also check "Other Files" if you want the option to appear when right-clicking on a file (in which case `%f` would be the directory containing the file).</li>
+            </ul>
+            <h3 class="text-xl font-bold mt-6 mb-2">5. Save and Test:</h3>
+            <ul class="list-disc list-inside ml-4 mb-4">
+                <li>Click `OK` to save the custom action.</li>
+                <li>Click `Close` on the "Custom Actions" window.</li>
+            </ul>
+            <p class="mt-4">Now, navigate to any directory in Thunar, right-click in an empty space within the directory (or on a folder), and you should see "Open New Terminal Here" in the context menu. Clicking it will launch a new `xterm` window in that specific directory.</p>
         </div>
 
         <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
