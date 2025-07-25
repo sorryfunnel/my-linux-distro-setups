@@ -135,11 +135,11 @@
                     <li><a href="#step19-3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.3. Install ONLYOFFICE</a></li>
                     <li><a href="#step19-4" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.4. Install FFmpeg</a></li>
                     <li><a href="#step19-5" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.5. Install Tor Browser (if needed)</a></li>
+                    <li><a href="#step19-6" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200 pl-6 text-sm">19.6. Install Latest yt-dlp</a></li>
                     <li><a href="#step20" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">20. Configure Combined Audio</a></li>
                     <li><a href="#step21" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">21. Test All Applications</a></li>
                     <li><a href="#step22" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">22. Final System Cleanup (Optional)</a></li>
                     <li><a href="#step23" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">23. Fix Thunar "Open Terminal Here"</a></li>
-                    <li><a href="#step24" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">24. Install Latest yt-dlp</a></li>
                 </ul>
             </nav>
         </aside>
@@ -664,6 +664,14 @@ sudo fc-cache -fv</code></pre>
                 <h3 class="text-xl font-bold mb-2">19.5. Install Tor Browser (if needed)</h3>
                 <pre><code>sudo apt install torbrowser-launcher -y</code></pre>
             </div>
+
+            <div class="mt-6" id="step19-6">
+                <h3 class="text-xl font-bold mb-2">19.6. Install Latest yt-dlp (using pip)</h3>
+                <p class="mb-4">To ensure you have the most up-to-date version of `yt-dlp`, it's recommended to install it via `pip` (Python's package installer). This involves removing any older `apt` version, installing `pip` itself, and then installing `yt-dlp`.</p>
+                <pre><code>sudo apt remove yt-dlp -y
+sudo apt install python3-pip -y
+pip install -U yt-dlp</code></pre>
+            </div>
         </div>
 
         <div class="section-card" id="step20">
@@ -797,14 +805,6 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
                 <li>Click `Close` on the "Custom Actions" window.</li>
             </ul>
             <p class="mt-4">Now, navigate to any directory in Thunar, right-click in an empty space within the directory (or on a folder), and you should see "Open New Terminal Here" in the context menu. Clicking it will launch a new `xterm` window in that specific directory.</p>
-        </div>
-
-        <div class="section-card" id="step24">
-            <h2 class="text-2xl font-bold mb-4">24. Install Latest yt-dlp (using pip)</h2>
-            <p class="mb-4">To ensure you have the most up-to-date version of `yt-dlp`, it's recommended to install it via `pip` (Python's package installer). This involves removing any older `apt` version, installing `pip` itself, and then installing `yt-dlp`.</p>
-            <pre><code>sudo apt remove yt-dlp -y && \
-sudo apt install python3-pip -y && \
-pip install -U yt-dlp</code></pre>
         </div>
 
         <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
