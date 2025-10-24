@@ -140,6 +140,7 @@
                     <li><a href="#step21" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">21. Test All Applications</a></li>
                     <li><a href="#step22" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">22. Final System Cleanup (Optional)</a></li>
                     <li><a href="#step23" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">23. Fix Thunar "Open Terminal Here"</a></li>
+                    <li><a href="#step24" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">24. Configure Robust Automatic Screen Locking</a></li>
                 </ul>
             </nav>
         </aside>
@@ -805,6 +806,53 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
                 <li>Click `Close` on the "Custom Actions" window.</li>
             </ul>
             <p class="mt-4">Now, navigate to any directory in Thunar, right-click in an empty space within the directory (or on a folder), and you should see "Open New Terminal Here" in the context menu. Clicking it will launch a new `xterm` window in that specific directory.</p>
+        </div>
+
+        <div class="section-card" id="step24">
+            <h2 class="text-2xl font-bold mb-4">24. Configure Robust Automatic Screen Locking</h2>
+            <p class="mb-4">This final configuration sets up a reliable screen lock mechanism using <code>xss-lock</code>, <code>i3lock</code>, and custom DPMS (Display Power Management Signaling) settings. This ensures the screen reliably locks after a period of inactivity and powers off shortly thereafter to save energy.</p>
+
+            <h3 class="text-xl font-bold mb-2">1. Edit the i3 Configuration File</h3>
+            <pre><code>nano ~/.config/i3/config</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">2. Disable the Conflicting Default Lock</h3>
+            <p class="mb-4">Locate the existing default <code>xss-lock</code> command (usually near the top) and <strong>comment it out</strong> by adding a <code>#</code> at the beginning of the line:</p>
+            <pre><code># xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
+# screen before suspend. Use loginctl lock-session to lock your screen.
+# exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork 👈 COMMENT THIS OUT</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">3. Add the Robust Auto-Lock Configuration</h3>
+            <p class="mb-4">Add the following complete, custom block of code to the section of your file where you place startup commands (<code>exec</code>):</p>
+            <pre><code># =========================================================================
+# Custom Automatic Screen Locking (i3lock + xss-lock)
+# Locks after 60s, powers off display 5s later.
+# =========================================================================
+
+# 1. SET THE X SCREEN SAVER IDLE TIMER TO 60 SECONDS (1 minute).
+#    This timer is what xss-lock monitors to trigger the lock.
+exec --no-startup-id xset s 60
+
+# 2. DISABLE X SCREENSAVER BLANKING (prevents conflicts).
+exec --no-startup-id xset s noblank
+
+# 3. ENABLE DPMS (Display Power Management Signaling).
+exec --no-startup-id xset +dpms
+
+# 4. CONFIGURE DPMS TIMERS for quick power off AFTER LOCK.
+#    (Standby/Suspend/Off set to 5 seconds).
+exec --no-startup-id xset dpms 5 5 5
+
+# 5. START xss-lock to intercept the 60s signal and run i3lock.
+#    The -n --nofork flags ensure i3lock runs reliably and stays active.
+#    -c 000000 sets a solid black background.
+exec --no-startup-id xss-lock -- i3lock -n --nofork -c 000000</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-2">4. Save and Reload i3</h3>
+            <p class="mb-4">Save the configuration file, then reload i3 to apply the new settings:</p>
+            <pre><code>Super + Shift + r</code></pre>
+            <div class="note">
+                <p>Your screen will now reliably lock after <strong>60 seconds</strong> of inactivity, and the display will power off a few seconds later. When you wake the screen, the password prompt will be ready.</p>
+            </div>
         </div>
 
         <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
