@@ -140,7 +140,7 @@
                     <li><a href="#step21" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">21. Test All Applications</a></li>
                     <li><a href="#step22" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">22. Final System Cleanup (Optional)</a></li>
                     <li><a href="#step23" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">23. Fix Thunar "Open Terminal Here"</a></li>
-                    <li><a href="#step24" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">24. Configure Robust Automatic Screen Locking</a></li>
+                    <li><a href="#step24" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">24. Configure Robust Automatic Screen Locking (Display Off First)</a></li>
                 </ul>
             </nav>
         </aside>
@@ -529,8 +529,6 @@ xterm*scrollBar: true
 ! Places the scrollbar on the RIGHT side of the window
 xterm*rightScrollBar: true
 ! Makes scrolling happen by moving the scrollbar itself (not by new output)
-xterm*scrollKey: true
-! Prevents new output from automatically scrolling the window down
 xterm*scrollTtyOutput: false</code></pre>
             <p class="mt-4 mb-4">Save and Quit nano.</p>
             <p class="mb-4">Reload X resources:</p>
@@ -809,8 +807,8 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
         </div>
 
         <div class="section-card" id="step24">
-            <h2 class="text-2xl font-bold mb-4">24. Configure Robust Automatic Screen Locking</h2>
-            <p class="mb-4">This final configuration sets up a reliable screen lock mechanism using <code>xss-lock</code>, <code>i3lock</code>, and custom DPMS (Display Power Management Signaling) settings. This ensures the screen reliably locks after a period of inactivity and powers off shortly thereafter to save energy.</p>
+            <h2 class="text-2xl font-bold mb-4">24. Configure Robust Automatic Screen Locking (Display Off First)</h2>
+            <p class="mb-4">This configuration prioritizes turning off the display for power saving (at 60 seconds) before triggering the screen lock (at 62 seconds). This ensures the screen is off when you approach it, but the password prompt appears instantly upon movement/wake-up.</p>
 
             <h3 class="text-xl font-bold mb-2">1. Edit the i3 Configuration File</h3>
             <pre><code>nano ~/.config/i3/config</code></pre>
@@ -824,34 +822,31 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
             <h3 class="text-xl font-bold mt-6 mb-2">3. Add the Robust Auto-Lock Configuration</h3>
             <p class="mb-4">Add the following complete, custom block of code to the section of your file where you place startup commands (<code>exec</code>):</p>
             <pre><code># =========================================================================
-# Custom Automatic Screen Locking (i3lock + xss-lock)
-# Locks after 60s, powers off display 5s later.
+# Custom automatic screen locking (display off at 60s, lock at 62s)
 # =========================================================================
 
-# 1. SET THE X SCREEN SAVER IDLE TIMER TO 60 SECONDS (1 minute).
-#    This timer is what xss-lock monitors to trigger the lock.
-exec --no-startup-id xset s 60
-
-# 2. DISABLE X SCREENSAVER BLANKING (prevents conflicts).
-exec --no-startup-id xset s noblank
-
-# 3. ENABLE DPMS (Display Power Management Signaling).
+# 1. Enable DPMS (display power management signaling).
 exec --no-startup-id xset +dpms
 
-# 4. CONFIGURE DPMS TIMERS for quick power off AFTER LOCK.
-#    (Standby/Suspend/Off set to 5 seconds).
-exec --no-startup-id xset dpms 5 5 5
+# 2. Set DPMS timers to 60 seconds (1 minute).
+#    This will power off the display at 60 seconds of inactivity.
+exec --no-startup-id xset dpms 60 60 60
 
-# 5. START xss-lock to intercept the 60s signal and run i3lock.
-#    The -n --nofork flags ensure i3lock runs reliably and stays active.
-#    -c 000000 sets a solid black background.
+# 3. Set the X screensaver idle timeout to 62 seconds.
+#    This will trigger xss-lock just 2 seconds after the display powers off.
+exec --no-startup-id xset s 62
+
+# 4. Disable X screensaver blanking and exposures (prevents visual conflicts).
+exec --no-startup-id xset s noblank
+
+# 5. Start xss-lock to intercept the 62s screensaver signal and run i3lock.
 exec --no-startup-id xss-lock -- i3lock -n --nofork -c 000000</code></pre>
 
             <h3 class="text-xl font-bold mt-6 mb-2">4. Save and Reload i3</h3>
             <p class="mb-4">Save the configuration file, then reload i3 to apply the new settings:</p>
             <pre><code>Super + Shift + r</code></pre>
             <div class="note">
-                <p>Your screen will now reliably lock after <strong>60 seconds</strong> of inactivity, and the display will power off a few seconds later. When you wake the screen, the password prompt will be ready.</p>
+                <p>Your display will now power off after <strong>60 seconds</strong> of inactivity, and the screen lock will be active at <strong>62 seconds</strong>, ensuring the system is secured just after the screen goes dark.</p>
             </div>
         </div>
 
