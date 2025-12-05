@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debian i3 Setup Guide - sorryfunnel</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -79,7 +78,6 @@
 </head>
 <body class="p-4 sm:p-8">
     <div class="flex flex-col lg:flex-row max-w-screen-xl mx-auto">
-        <!-- Sidebar Column -->
         <aside class="w-full lg:w-1/4 p-4 lg:p-6 sidebar mb-8 lg:mb-0 lg:mr-8">
             <h2 class="text-xl font-bold text-pink-300 mb-4">Navigation</h2>
             <nav>
@@ -99,8 +97,7 @@
                             ↑ Back to Top
                         </a>
                     </li>
-                    <li class="border-t border-gray-700 my-2"></li> <!-- Separator -->
-                    <li><a href="#step1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">1. Login as Root</a></li>
+                    <li class="border-t border-gray-700 my-2"></li> <li><a href="#step1" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">1. Login as Root</a></li>
                     <li><a href="#step2" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">2. Edit `sources.list`</a></li>
                     <li><a href="#step3" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">3. Update System and Install Preliminary Packages</a></li>
                     <li><a href="#step4" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">4. Install Core Applications (as Root)</a></li>
@@ -108,7 +105,8 @@
                     <li><a href="#step6" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">6. Remove RXVT</a></li>
                     <li><a href="#step7" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">7. Reboot System and Login as User</a></li>
                     <li><a href="#step8" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">8. Setup i3 Launch Sequence</a></li>
-                    <li><a href="#step9" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">9. Start i3 Session</a></li>
+                    <li><a href="#step8-5" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">8.5. Configure Automatic i3 Launch in TTY</a></li>
+                    <li><a href="#step9" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">9. Automatic i3 Session Start</a></li>
                     <li><a href="#step10" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">10. Set Initial Brightness</a></li>
                     <li><a href="#step11" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">11. Mount Extended Partition</a></li>
                     <li><a href="#step12" class="block py-2 px-4 rounded-md text-gray-300 hover:bg-pink-600 hover:text-white transition-colors duration-200">12. Install Theming Packages</a></li>
@@ -145,7 +143,6 @@
             </nav>
         </aside>
 
-        <!-- Main Content Column -->
         <main class="w-full lg:w-3/4">
             <header class="text-center mb-8">
                 <h1 class="text-4xl sm:text-5xl font-extrabold mb-2">Debian i3 Setup Guide</h1>
@@ -267,17 +264,34 @@ xrdb -merge ~/.Xresources
 exec i3</code></pre>
                 <p class="mt-4 mb-4">Make the `.xinitrc` file executable.</p>
                 <pre><code>chmod +x ~/.xinitrc</code></pre>
+            </div>
+            
+            <div class="section-card" id="step8-5">
+                <h2 class="text-2xl font-bold mb-4">8.5. Configure Automatic i3 Launch in TTY ($~/.bash\_profile$)</h2>
+                <p class="mb-4">Configure your shell's profile to automatically launch the X server (`startx`) when you log in to the first TTY (tty1). This automates the process of entering your graphical session.</p>
+                <pre><code>nano ~/.bash_profile</code></pre>
+                <p class="mb-4">Paste or carefully type the following content into the empty file, exactly as shown:</p>
+                <pre><code># Start X server and i3 automatically upon login to TTY1
+
+# Check if the DISPLAY variable is empty (i.e., not already in an X session)
+# and check if the current session is the first TTY (tty1).
+if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    # The 'exec' command is critical here to replace the current shell process
+    # with the 'startx' process. 'startx' will then run ~/.xinitrc, which runs i3.
+    exec startx
+fi</code></pre>
+                <p class="mt-4 mb-4">Save the file and exit `nano`.</p>
                 <div class="important">
-                    <p><strong>Important: Reboot to apply `.xinitrc` changes.</strong></p>
-                    <p>After making changes to your `~/.xinitrc` file, it is crucial to <strong>reboot</strong> your system or fully log out of your current X session and then log back in. This ensures that the new environment variables and launch commands are properly loaded.</p>
+                    <p><strong>Important: Reboot to apply `.xinitrc` and `.bash_profile` changes.</strong></p>
+                    <p>After making changes to both your `~/.xinitrc` and `~/.bash_profile` files, you must **reboot** your system. This ensures that the shell script is executed on your next login and that the new environment variables and launch commands are properly loaded.</p>
                 </div>
                 <pre><code>sudo reboot</code></pre>
             </div>
 
+
             <div class="section-card" id="step9">
-                <h2 class="text-2xl font-bold mb-4">9. Start i3 Session for the First Time</h2>
-                <p class="mb-4">After reboot, log in as your regular user in TTY, then start your i3 graphical session.</p>
-                <pre><code>startx</code></pre>
+                <h2 class="text-2xl font-bold mb-4">9. Automatic i3 Session Start</h2>
+                <p class="mb-4">After reboot, when you **log in as your regular user in TTY1**, the script you just created in $~/.bash\_profile$ will automatically execute `startx`, launching your i3 graphical session.</p>
                 <p class="mt-4">Follow the initial i3 setup prompts (e.g., Mod key, config file creation).</p>
             </div>
 
