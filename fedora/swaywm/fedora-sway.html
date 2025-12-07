@@ -256,6 +256,13 @@
                         <li><a href="#exit-menu" class="subsection">Create Exit Menu Script</a></li>
                     </ul>
                 </li>
+
+                <li><a href="#waybar-config" class="toc-entry">Waybar Configuration</a>
+                    <ul>
+                        <li><a href="#waybar-config-file" class="subsection">Create config.jsonc</a></li>
+                        <li><a href="#waybar-style-file" class="subsection">Create style.css</a></li>
+                    </ul>
+                </li>
                 
                 <li><a href="#final-config" class="toc-entry">Final Sway Configuration</a>
                     <ul>
@@ -320,8 +327,8 @@
         </ul>
         
         <h3 id="delete-apps">Delete Unneeded Applications and Install Screenshot Tools</h3>
-        <p>Remove unneeded packages and install required tools that are not part of the default Sway Spin installation. <code class="inline-code">grim</code>, <code class="inline-code">slurp</code>, and <code class="inline-code">swappy</code> are required for the screenshot binding.</p>
-        <pre><code><span class="command">sudo dnf remove Jxrdecapp Jxrencapp ModemManager Vgauthservice 'vbox*' setroubleshoot setroubleshoot-server -y &amp;&amp; sudo dnf install -y grim slurp swappy &amp;&amp; sudo systemctl daemon-reload</span></code></pre>
+        <p>Remove unneeded packages. **grim**, **slurp**, and **swappy** will be installed in a later step.</p>
+        <pre><code><span class="command">sudo dnf remove Jxrdecapp Jxrencapp ModemManager Vgauthservice 'vbox*' setroubleshoot setroubleshoot-server -y &amp;&amp; sudo systemctl daemon-reload</span></code></pre>
 
         <hr>
 
@@ -381,8 +388,8 @@ max_parallel_downloads=10</code></pre>
         <pre><code><span class="command">sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm &amp;&amp; sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &amp;&amp; sudo dnf upgrade -y --refresh</span></code></pre>
 
         <h3 id="install-dnf-pkgs">Install Essential DNF Packages</h3>
-        <p>Install the required applications and utilities.</p>
-        <pre><code><span class="command">sudo dnf install -y gnome-themes-extra gnome-text-editor btop acpi libreoffice-writer libreoffice-calc libreoffice-impress qbittorrent lollypop gimp foliate speedtest-cli qt5ct qt6ct swayimg torbrowser-launcher</span></code></pre>
+        <p>Install the required applications and utilities, including screenshot tools.</p>
+        <pre><code><span class="command">sudo dnf install -y gnome-themes-extra gnome-text-editor btop acpi libreoffice-writer libreoffice-calc libreoffice-impress qbittorrent lollypop gimp foliate speedtest-cli qt5ct qt6ct swayimg torbrowser-launcher grim slurp swappy</span></code></pre>
         
         <h3 id="install-flatpak-apps">Install Flatpak Applications</h3>
         <p>Install <strong>OBS Studio</strong> and <strong>Shortwave</strong> from Flathub in a single command.</p>
@@ -571,6 +578,553 @@ esac</code></pre>
 
         <hr>
 
+        <h2 id="waybar-config">Waybar Configuration</h2>
+        <p>Create the configuration directory and add the required files for the Waybar status panel. This includes the main configuration and the CSS styling file.</p>
+        <pre><code><span class="command">mkdir -p ~/.config/waybar</span></code></pre>
+
+        <h3 id="waybar-config-file">Create config.jsonc</h3>
+        <p>This file defines the modules used by Waybar and their positioning.</p>
+        <pre><code><span class="command">nano ~/.config/waybar/config.jsonc</span></code></pre>
+        <p><strong>Content of <code class="file-path">~/.config/waybar/config.jsonc</code>:</strong></p>
+        <pre><code><span class="comment">// -*- mode: jsonc -*-</span>
+{
+    <span class="comment">// "layer": "top", // Waybar at top layer</span>
+    <span class="comment">// "position": "bottom", // Waybar position (top|bottom|left|right)</span>
+    "height": 30, <span class="comment">// Waybar height (to be removed for auto height)</span>
+    <span class="comment">// "width": 1280, // Waybar width</span>
+    "spacing": 4, <span class="comment">// Gaps between modules (4px)</span>
+    <span class="comment">// Choose the order of the modules</span>
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode",
+        "sway/scratchpad"
+    ],
+    "modules-center": [
+        "sway/window"
+    ],
+    "modules-right": [
+        "idle_inhibitor",
+        "pulseaudio",
+        "power-profiles-daemon",
+        "cpu",
+        "memory",
+        "temperature",
+        "backlight",
+        "sway/language",
+        "battery",
+        "clock",
+        "tray"
+    ],
+    <span class="comment">// Modules configuration</span>
+    <span class="comment">// "sway/workspaces": {</span>
+    <span class="comment">//     "disable-scroll": true,</span>
+    <span class="comment">//     "all-outputs": true,</span>
+    <span class="comment">//     "warp-on-scroll": false,</span>
+    <span class="comment">//     "format": "{name}: {icon}",</span>
+    <span class="comment">//     "format-icons": {</span>
+    <span class="comment">//         "1": "",</span>
+    <span class="comment">//         "2": "",</span>
+    <span class="comment">//         "3": "",</span>
+    <span class="comment">//         "4": "",</span>
+    <span class="comment">//         "5": "",</span>
+    <span class="comment">//         "urgent": "",</span>
+    <span class="comment">//         "focused": "",</span>
+    <span class="comment">//         "default": ""</span>
+    <span class="comment">//     }</span>
+    <span class="comment">// },</span>
+    "keyboard-state": {
+        "numlock": true,
+        "capslock": true,
+        "format": "{name} {icon}",
+        "format-icons": {
+            "locked": "",
+            "unlocked": ""
+        }
+    },
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+    "sway/scratchpad": {
+        "format": "{icon} {count}",
+        "show-empty": false,
+        "format-icons": ["", ""],
+        "tooltip": true,
+        "tooltip-format": "{app}: {title}"
+    },
+    "mpd": {
+    "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ",
+        "format-disconnected": "Disconnected ",
+        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
+        "unknown-tag": "N/A",
+        "interval": 5,
+        "consume-icons": {
+            "on": " "
+        },
+    "random-icons": {
+            "off": "<span color=\"#f53c3c\"></span> ",
+            "on": " "
+        },
+    "repeat-icons": {
+            "on": " "
+        },
+    "single-icons": {
+            "on": "1 "
+        },
+    "state-icons": {
+            "paused": "",
+            "playing": ""
+        },
+    "tooltip-format": "MPD (connected)",
+        "tooltip-format-disconnected": "MPD (disconnected)"
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+    "tray": {
+    <span class="comment">// "icon-size": 21,</span>
+        "spacing": 10,
+        <span class="comment">// "icons": {</span>
+        <span class="comment">//    "blueman": "bluetooth",</span>
+        <span class="comment">//    "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"</span>
+        <span class="comment">// }</span>
+    },
+    "clock": {
+        "timezone": "Asia/Manila",
+        "format": "{:%I:%M %p}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}"
+    },
+    "cpu": {
+    "format": "{usage}% ",
+        "tooltip": false
+    },
+    "memory": {
+        "format": "{}% "
+    },
+    "temperature": {
+        <span class="comment">// "thermal-zone": 2,</span>
+        <span class="comment">// "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",</span>
+        "critical-threshold": 80,
+        <span class="comment">// "format-critical": "{temperatureC}°C {icon}",</span>
+        "format": "{temperatureC}°C {icon}",
+        "format-icons": ["", "", ""]
+    },
+    "backlight": {
+        <span class="comment">// "device": "acpi_video1",</span>
+        "format": "{percent}% {icon}",
+        "format-icons": ["🌑", "🌘", "🌗", "🌖", "🌕"]
+    },
+    "battery": {
+        "states": {
+            <span class="comment">// "good": 95,</span>
+            "warning": 30,
+            "critical": 15
+        },
+    "format": "{capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        <span class="comment">// "format-good": "", // An empty format will hide the module</span>
+        <span class="comment">// "format-full": "",</span>
+        "format-icons": ["", "", "", "", ""]
+    },
+    "battery#bat2": {
+        "bat": "BAT2"
+    },
+    "power-profiles-daemon": {
+      "format": "{icon}",
+      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+      "tooltip": true,
+      "format-icons": {
+        "default": "",
+        "performance": "",
+        "balanced": "",
+        "power-saver": ""
+      }
+    },
+    "pulseaudio": {
+        <span class="comment">// "scroll-step": 1, // %, can be a float</span>
+        "format": "{volume}% {icon} {format_source}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": " {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+    "on-click": "pavucontrol"
+    },
+    "custom/media": {
+        "format": "{icon} {text}",
+        "return-type": "json",
+        "max-length": 40,
+        "format-icons": {
+            "spotify": "",
+            "default": "🎜"
+        },
+    "escape": true,
+        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" <span class="comment">// Script in resources folder</span>
+        <span class="comment">// "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name</span>
+    },
+    "custom/power": {
+        "format" : "⏻ ",
+                        "tooltip": false,
+                        "menu": "on-click",
+                        "menu-file": "$HOME/.config/waybar/power_menu.xml", <span class="comment">// Menu file in resources folder</span>
+                        "menu-actions": {
+                                "shutdown": "shutdown",
+                                "reboot": "reboot",
+                                "suspend": "systemctl suspend",
+                                "hibernate": "systemctl hibernate"
+                        }
+    }
+}</code></pre>
+
+        <h3 id="waybar-style-file">Create style.css</h3>
+        <p>This file defines the appearance of the bar, including colors, fonts, and spacing.</p>
+        <pre><code><span class="command">nano ~/.config/waybar/style.css</span></code></pre>
+        <p><strong>Content of <code class="file-path">~/.config/waybar/style.css</code>:</strong></p>
+        <pre><code>* {
+    font-family: 'Noto Sans Mono', 'Font Awesome 6 Free', 'Font Awesome 6 Brands', monospace;
+    font-size: 13px;
+}
+
+window#waybar {
+    background-color: rgba(43, 48, 59, 0.5);
+    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    color: #ffffff;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/*
+window#waybar.empty {
+    background-color: transparent;
+}
+window#waybar.solo {
+    background-color: #FFFFFF;
+}
+*/
+
+window#waybar.termite {
+    background-color: #3F3F3F;
+}
+
+window#waybar.chromium {
+    background-color: #000000;
+    border: none;
+}
+
+button {
+    /* Use box-shadow instead of border so the text isn't offset */
+    box-shadow: inset 0 -3px transparent;
+    /* Avoid rounded borders under each button name */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+/* you can set a style on hover for any module like this */
+#pulseaudio:hover {
+    background-color: #a37800;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+#workspaces button:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#workspaces button.focused {
+    background-color: #64727D;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+#workspaces button.urgent {
+    background-color: #eb4d4b;
+}
+
+#mode {
+    background-color: #64727D;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#mpd {
+    padding: 0 10px;
+    color: #ffffff;
+}
+
+#window,
+#workspaces {
+    margin: 0 4px;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
+
+#clock {
+    background-color: #64727D;
+}
+
+#battery {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+#battery.charging, #battery.plugged {
+    color: #ffffff;
+    background-color: #26A65B;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#power-profiles-daemon {
+    padding-right: 15px;
+}
+
+#power-profiles-daemon.performance {
+    background-color: #f53c3c;
+    color: #ffffff;
+}
+
+#power-profiles-daemon.balanced {
+    background-color: #2980b9;
+    color: #ffffff;
+}
+
+#power-profiles-daemon.power-saver {
+    background-color: #2ecc71;
+    color: #000000;
+}
+
+label:focus {
+    background-color: #000000;
+}
+
+#cpu {
+    background-color: #2ecc71;
+    color: #000000;
+}
+
+#memory {
+    background-color: #9b59b6;
+}
+
+#disk {
+    background-color: #964B00;
+}
+
+#backlight {
+    background-color: #90b1b1;
+}
+
+#network {
+    background-color: #2980b9;
+}
+
+#network.disconnected {
+    background-color: #f53c3c;
+}
+
+#pulseaudio {
+    background-color: #f1c40f;
+    color: #000000;
+}
+
+#pulseaudio.muted {
+    background-color: #90b1b1;
+    color: #2a5c45;
+}
+
+#wireplumber {
+    background-color: #fff0f5;
+    color: #000000;
+}
+
+#wireplumber.muted {
+    background-color: #f53c3c;
+}
+
+#custom-media {
+    background-color: #66cc99;
+    color: #2a5c45;
+    min-width: 100px;
+}
+
+#custom-media.custom-spotify {
+    background-color: #66cc99;
+}
+
+#custom-media.custom-vlc {
+    background-color: #ffa000;
+}
+
+#temperature {
+    background-color: #f0932b;
+}
+
+#temperature.critical {
+    background-color: #eb4d4b;
+}
+
+#tray {
+    background-color: #2980b9;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eb4d4b;
+}
+
+#idle_inhibitor {
+    background-color: #2d3436;
+}
+
+#idle_inhibitor.activated {
+    background-color: #ecf0f1;
+    color: #2d3436;
+}
+
+#mpd {
+    background-color: #66cc99;
+    color: #2a5c45;
+}
+
+#mpd.disconnected {
+    background-color: #f53c3c;
+}
+
+#mpd.stopped {
+    background-color: #90b1b1;
+}
+
+#mpd.paused {
+    background-color: #51a37a;
+}
+
+#language {
+    background: #00b093;
+    color: #740864;
+    padding: 0 5px;
+    margin: 0 5px;
+    min-width: 16px;
+}
+
+#keyboard-state {
+    background: #97e1ad;
+    color: #000000;
+    padding: 0 0px;
+    margin: 0 5px;
+    min-width: 16px;
+}
+
+#keyboard-state > label {
+    padding: 0 5px;
+}
+
+#keyboard-state > label.locked {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#scratchpad {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#scratchpad.empty {
+    background-color: transparent;
+}
+
+#privacy {
+    padding: 0;
+}
+
+#privacy-item {
+    padding: 0 5px;
+    color: white;
+}
+
+#privacy-item.screenshare {
+    background-color: #cf5700;
+}
+
+#privacy-item.audio-in {
+    background-color: #1ca000;
+}
+
+#privacy-item.audio-out {
+    background-color: #0069d4;
+}</code></pre>
+
+        <hr>
+
         <h2 id="final-config">Final Sway Configuration</h2>
         <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, including the custom commands, keybindings, and color definitions.</p>
         
@@ -587,11 +1141,18 @@ esac</code></pre>
 <span class="comment"># Copy this to ~/.config/sway/config and edit it to your liking.</span>
 <span class="comment"># Read `man 5 sway` for a complete reference.</span>
 
+<span class="comment"># Set scale factor for eDP-1 to make elements appear larger</span>
+<span class="comment"># Change '1.2' to '1.0' if your 1080p display is comfortable, or increase it for HiDPI/smaller screens.</span>
+<span class="command">output eDP-1 scale 1.2</span>
+
 <span class="comment"># Signal to applications that we prefer dark mode</span>
 <span class="command">exec_always gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"</span>
 
 <span class="comment"># Set the actual dark GTK theme to be used</span>
 <span class="command">exec_always gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"</span>
+
+<span class="comment"># Start Waybar (requires the config.jsonc and style.css files created above)</span>
+<span class="command">exec waybar</span>
 
 <span class="comment"># Start qBittorrent on login</span>
 <span class="command">exec qbittorrent</span>
