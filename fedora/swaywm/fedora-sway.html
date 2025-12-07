@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fedora Sway Walkthrough</title>
+    <style>
+        /* Fedora-Inspired Color Palette */
+        :root {
+            --fedora-blue: #2965CC; /* Primary Fedora Blue */
+            --fedora-red: #D21F3C; /* Accent/Highlight Red */
+            --dark-background: #2D2D2D; /* Dark main background */
+            --light-text: #F0F0F0; /* Light text for dark backgrounds */
+            --secondary-background: #3C4043; /* Sidebar/Code background */
+            --code-text: #E0E0E0; /* Code text color */
+            --link-color: #79A8FF; /* Light blue for links */
+            --border-color: #555555;
+            --code-comment: #999999;
+        }
+
+        body {
+            font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: var(--dark-background);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
+        /* Navigational Pane */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-background);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar h2 {
+            color: var(--fedora-blue);
+            border-bottom: 2px solid var(--fedora-blue);
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: var(--light-text);
+            text-decoration: none;
+            padding: 8px 0;
+            transition: background-color 0.2s, color 0.2s, padding-left 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover {
+            color: var(--fedora-blue);
+            border-left: 3px solid var(--fedora-blue);
+            padding-left: 5px;
+        }
+
+        /* Styling for clickable subsections */
+        .sidebar a.subsection {
+            font-size: 0.9em;
+            color: #AAAAAA;
+            margin-left: 20px; /* Indent more */
+            padding: 3px 0; /* Less vertical padding */
+            border-left: none; /* No border for sub-sections initially */
+        }
+        
+        .sidebar a.subsection:hover {
+            color: var(--fedora-blue);
+            border-left: 3px solid var(--fedora-blue);
+            padding-left: 5px;
+        }
+        
+        /* Main Content - Adjusted margin for 1 inch (approx. 96px) space on right */
+        .content {
+            margin-left: calc(250px + 96px); /* Sidebar width + 96px (approx. 1 inch margin) */
+            padding: 20px 96px 20px 0; /* Top, 96px Right, Bottom, 0 Left (Handled by margin-left) */
+            flex-grow: 1;
+            max-width: 1000px;
+        }
+
+        .content h1 {
+            color: var(--fedora-red);
+            border-bottom: 2px solid var(--fedora-red);
+            padding-bottom: 10px;
+        }
+        
+        .content h2 {
+            color: var(--fedora-blue);
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Code Block Styling */
+        pre {
+            background-color: var(--secondary-background);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 3px solid var(--fedora-blue);
+            white-space: pre-wrap; /* Allows long lines to wrap */
+        }
+
+        code {
+            color: var(--code-text);
+            font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+        }
+
+        .inline-code {
+            background-color: var(--secondary-background);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        /* Specific code highlighting for readability */
+        .command { color: #A0FFA0; } /* Light green for commands */
+        .file-path { color: #FFD700; } /* Gold for file paths */
+        .comment { color: var(--code-comment); } /* Gray for comments in configs */
+
+        /* Utility classes */
+        .note {
+            background-color: rgba(41, 101, 204, 0.2);
+            border-left: 4px solid var(--fedora-blue);
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .caution {
+            background-color: rgba(210, 31, 60, 0.2);
+            border-left: 4px solid var(--fedora-red);
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>&#x1F680; Sway Setup Guide</h2>
+        <a href="#initial-setup">1. Initial Setup &amp; Network</a>
+        <a href="#brightness-network" class="subsection">Set Initial Brightness and Network</a>
+        <a href="#change-passwords" class="subsection">Change User and Root Passwords</a>
+        
+        <a href="#system-prep">2. System Preparation</a>
+        <a href="#set-hostname" class="subsection">Set Hostname</a>
+        <a href="#foot-settings" class="subsection">Change Foot Terminal Settings</a>
+        <a href="#rofi-theme" class="subsection">Change Rofi Theme</a>
+        <a href="#delete-apps" class="subsection">Delete Unneeded Applications and Install Screenshot Tools</a>
+        
+        <a href="#partition-config">3. Extended Partition Configuration</a>
+        <a href="#add-label" class="subsection">Add/Edit Label to Partition</a>
+        <a href="#set-mount-options" class="subsection">Set Extended Partition Mount Options (via GNOME Disks)</a>
+        
+        <a href="#grub-dnf">4. GRUB and DNF Tuning</a>
+        <a href="#edit-grub" class="subsection">Edit GRUB Configuration</a>
+        <a href="#edit-dnf" class="subsection">Edit DNF Configuration</a>
+        
+        <a href="#repos-packages">5. Upgrade, Repos, and Package Installation</a>
+        <a href="#upgrade-reboot" class="subsection">Upgrade and Reboot System</a>
+        <a href="#add-repos" class="subsection">Add RPM Fusion and Flathub Repositories</a>
+        <a href="#install-dnf-pkgs" class="subsection">Install Essential DNF Packages</a>
+        <a href="#install-flatpak-apps" class="subsection">Install Flatpak Applications</a>
+        <a href="#browser-downloads" class="subsection">Browser-Downloaded Applications</a>
+        
+        <a href="#dark-mode">6. Dark Mode Theming</a>
+        <a href="#set-env-gtk" class="subsection">Set Environment Variables and GTK Settings</a>
+        <a href="#edit-qtct" class="subsection">Edit Qt5ct &amp; Qt6ct Settings</a>
+        <a href="#theming-reboot" class="subsection">Reboot</a>
+        
+        <a href="#config-scripts">7. Sway Scripts and Configuration Files</a>
+        <a href="#battery-monitor" class="subsection">Create and Enable Battery Monitor Script</a>
+        <a href="#custom-lock" class="subsection">Create and Enable Custom Lock Script</a>
+        <a href="#exit-menu" class="subsection">Create Exit Menu Script</a>
+        
+        <a href="#final-config">8. Final Sway Configuration</a>
+        <a href="#apply-config" class="subsection">Apply Final Sway Config</a>
+        <a href="#reload-sway" class="subsection">Reload Sway Configuration</a> 
+        
+        <a href="#final-touches">9. Final Touches &amp; System Cleanup</a>
+        <a href="#ffmpeg-install" class="subsection">Install FFmpeg</a>
+        <a href="#dnf-cleanup" class="subsection">Clean DNF Cache and Final Upgrade</a>
+    </div>
+
+    <div class="content">
+        <h1>Fedora Sway: Customized Walkthrough</h1>
+        <p>This guide documents the specific steps for setting up and customizing your Fedora Linux environment with the <strong>Sway Wayland compositor</strong> to meet your unique configuration needs.</p>
+
+        <div class="note">
+            <strong>&#x26A0;&#xFE0F; Important:</strong> Replace all placeholders (e.g., <code class="inline-code">username</code>, <code class="inline-code">......</code>, <code class="inline-code">/dev/sdXX</code>) with your actual values.
+        </div>
+        
+        <h2 id="initial-setup">1. Initial Setup &amp; Network</h2>
+        
+        <h3 id="brightness-network">Set Initial Brightness and Network</h3>
+        <p>Set the screen brightness and connect to the internet using the GNOME NetworkManager applet.</p>
+        <pre><code><span class="command">brightnessctl set 25%</span></code></pre>
+        <ul>
+            <li>Click the <code class="inline-code">nm-applet</code> and connect to the internet.</li>
+        </ul>
+        
+        <h3 id="change-passwords">Change User and Root Passwords</h3>
+        <p>Set or change passwords for your standard user and the root user for security.</p>
+        <pre><code><span class="command">sudo passwd username</span>
+<span class="command">sudo passwd root</span></code></pre>
+
+        <h2 id="system-prep">2. System Preparation</h2>
+        
+        <h3 id="set-hostname">Set Hostname</h3>
+        <p>Define a hostname for your system (replace <code class="inline-code">......</code> with your desired hostname).</p>
+        <pre><code><span class="command">sudo hostnamectl set-hostname ......</span></code></pre>
+        
+        <h3 id="foot-settings">Change Foot Terminal Settings</h3>
+        <p>Configure the font size for the <code class="inline-code">foot</code> terminal.</p>
+        <pre><code><span class="command">mkdir -p ~/.config/foot</span>
+<span class="command">cp /etc/xdg/foot/foot.ini ~/.config/foot/foot.ini</span>
+<span class="command">nano ~/.config/foot/foot.ini</span>
+<span class="comment"># Search for "8" (Ctrl + W, 8) and change it to "15" in the font section.</span></code></pre>
+
+        <h3 id="rofi-theme">Change Rofi Theme</h3>
+        <p>Change the theme for the <code class="inline-code">rofi</code> application launcher.</p>
+        <ul>
+            <li>Launch Rofi with <kbd>Win + D</kbd>.</li>
+            <li>Type <code class="inline-code">Rofi Theme Selector</code> and launch it.</li>
+            <li>Select <code class="inline-code">gruvbox-dark-hard</code>.</li>
+        </ul>
+        
+        <h3 id="delete-apps">Delete Unneeded Applications and Install Screenshot Tools</h3>
+        <p>Remove unneeded packages and install required tools that are not part of the default Sway Spin installation. <code class="inline-code">grim</code>, <code class="inline-code">slurp</code>, and <code class="inline-code">swappy</code> are required for the screenshot binding.</p>
+        <pre><code><span class="command">sudo dnf remove Jxrdecapp Jxrencapp ModemManager Vgauthservice 'vbox*' setroubleshoot setroubleshoot-server -y &amp;&amp; sudo dnf install -y grim slurp swappy &amp;&amp; sudo systemctl daemon-reload</span></code></pre>
+
+        <h2 id="partition-config">3. Extended Partition Configuration</h2>
+        
+        <h3 id="add-label">Add/Edit Label to Partition</h3>
+        <p>Identify your desired partition (e.g., for storage) and set a label for easy identification.</p>
+        <pre><code><span class="command">lsblk</span>
+<span class="comment"># Take note of the "dev name" (e.g., sda1). Specify the actual partition you want to label/relabel.</span>
+<span class="command">sudo e2label /dev/sdXX newlabel</span> <span class="comment"># Replace /dev/sdXX and newlabel</span></code></pre>
+        
+        <h3 id="set-mount-options">Set Extended Partition Mount Options (via GNOME Disks)</h3>
+        <p>Configure the partition to mount automatically at startup.</p>
+        <ul>
+            <li>Go to <code class="inline-code">gnome-disks</code> via Rofi.</li>
+            <li>Select the partition and take ownership (if needed).</li>
+            <li>Edit <strong>Mount Options</strong>:
+                <ul>
+                    <li>Untick <strong>User Session Defaults</strong>.</li>
+                    <li>Ensure <strong>Mount at system startup</strong> and <strong>Show in user interface</strong> are both ticked on.</li>
+                    <li>Identify as: <code class="inline-code">LABEL=Extended</code> (Assuming your label is 'Extended').</li>
+                </ul>
+            </li>
+            <li>Click <strong>OK</strong>.</li>
+        </ul>
+
+        <h2 id="grub-dnf">4. GRUB and DNF Tuning</h2>
+        
+        <h3 id="edit-grub">Edit GRUB Configuration</h3>
+        <p>Modify GRUB to disable ACPI error reporting and remove the Plymouth splash screen.</p>
+        <pre><code><span class="command">sudo su</span>
+<span class="command">sudo nano /etc/default/grub</span>
+<span class="comment"># Change the line to:</span>
+GRUB_CMDLINE_LINUX="pci=noaer rd.plymouth=0 plymouth.enable=0"
+<span class="comment"># Then regenerate the GRUB configuration file:</span>
+<span class="command">sudo grub2-mkconfig -o /boot/grub2/grub.cfg</span></code></pre>
+
+        <h3 id="edit-dnf">Edit DNF Configuration</h3>
+        <p>Speed up package downloads by enabling parallel downloads.</p>
+        <pre><code><span class="command">sudo nano /etc/dnf/dnf.conf</span>
+<span class="comment"># Add the following line under [main]:</span>
+[main]
+max_parallel_downloads=10</code></pre>
+
+        <h2 id="repos-packages">5. Upgrade, Repos, and Package Installation</h2>
+        
+        <h3 id="upgrade-reboot">Upgrade and Reboot System</h3>
+        <p>Perform a full system upgrade and then reboot to apply all foundational changes.</p>
+        <pre><code><span class="command">sudo dnf upgrade -y --refresh &amp;&amp; reboot</span></code></pre>
+
+        <h3 id="add-repos">Add RPM Fusion and Flathub Repositories</h3>
+        <p>Add the necessary third-party repositories and enable Flathub.</p>
+        <pre><code><span class="command">sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm &amp;&amp; sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &amp;&amp; sudo dnf upgrade -y --refresh</span></code></pre>
+
+        <h3 id="install-dnf-pkgs">Install Essential DNF Packages</h3>
+        <p>Install the required applications and utilities.</p>
+        <pre><code><span class="command">sudo dnf install -y gnome-themes-extra gnome-text-editor btop acpi libreoffice-writer libreoffice-calc libreoffice-impress qbittorrent lollypop gimp foliate speedtest-cli qt5ct qt6ct swayimg torbrowser-launcher</span></code></pre>
+        
+        <h3 id="install-flatpak-apps">Install Flatpak Applications</h3>
+        <p>Install <strong>OBS Studio</strong> and <strong>Shortwave</strong> from Flathub in a single command.</p>
+        <pre><code><span class="command">sudo flatpak install flathub com.obsproject.Studio de.haeckerfelix.Shortwave -y</span></code></pre>
+        
+        <h3 id="browser-downloads">Browser-Downloaded Applications</h3>
+        <p>Please download and install these applications directly from their respective websites:</p>
+        <ul>
+            <li><strong>OnlyOffice:</strong> Download the installer from the official website and install it.</li>
+            <li><strong>go-to-library.sk:</strong> Download the installer from the official website and install it.</li>
+        </ul>
+        
+        <h2 id="dark-mode">6. Dark Mode Theming</h2>
+        
+        <h3 id="set-env-gtk">Set Environment Variables and GTK Settings</h3>
+        <p>Apply dark mode settings for GTK3/4/Libadwaita applications and set the required environment variable for Qt applications to use <code class="inline-code">qt5ct</code>.</p>
+        <pre><code><span class="command">nano ~/.bashrc</span>
+<span class="comment"># Add the following to the end of the file:</span>
+<span class="command">export QT_QPA_PLATFORMTHEME=qt5ct</span>
+<span class="command">source ~/.bashrc</span>
+
+<span class="command">mkdir -p ~/.config/gtk-3.0</span>
+<span class="command">nano ~/.config/gtk-3.0/settings.ini</span>
+<span class="comment"># Add the following lines:</span>
+[Settings]
+gtk-application-prefer-dark-theme=1</code></pre>
+
+        <h3 id="edit-qtct">Edit Qt5ct &amp; Qt6ct Settings</h3>
+        <p>Manually configure Qt theming using the installed tools.</p>
+        <ul>
+            <li>Launch <code class="inline-code">qt5ct</code> and <code class="inline-code">qt6ct</code> via Rofi.</li>
+            <li>Apply the settings: <strong>Fusion</strong>, <strong>Darker</strong> palette, <strong>Default</strong> icons, and <strong>Sans Serif 9</strong> for fonts.</li>
+        </ul>
+        
+        <h3 id="theming-reboot">Reboot</h3>
+        <p>A reboot is recommended after major theming and configuration changes.</p>
+        <pre><code><span class="command">reboot</span></code></pre>
+        
+        <h2 id="config-scripts">7. Sway Scripts and Configuration Files</h2>
+        
+        <h3 id="battery-monitor">Create and Enable Battery Monitor Script</h3>
+        <p>This script monitors battery charge and displays a notification when it reaches the set max/min thresholds.</p>
+        <pre><code><span class="command">mkdir -p ~/.local/bin</span>
+<span class="command">nano ~/.local/bin/battery_monitor.sh</span></code></pre>
+        
+        <p><strong>Content of <code class="file-path">~/.local/bin/battery_monitor.sh</code>:</strong></p>
+        <pre><code><span class="comment">#!/bin/bash</span>
+
+<span class="comment"># Configuration</span>
+MAX_CHARGE=80
+MIN_CHARGE=50
+BATTERY_PATH="/sys/class/power_supply/BAT1"
+
+<span class="comment"># Function to get current capacity</span>
+get_capacity() {
+    cat $BATTERY_PATH/capacity
+}
+
+<span class="comment"># Function to get charging status</span>
+get_status() {
+    cat $BATTERY_PATH/status
+}
+
+<span class="comment"># Main loop</span>
+while true; do
+    CAPACITY=$(get_capacity)
+    STATUS=$(get_status)
+
+    if [[ "$STATUS" == "Charging" &amp;&amp; "$CAPACITY" -ge "$MAX_CHARGE" ]]; then
+        notify-send -u critical "&#x1F50B; UNPLUG CHARGER!" "Battery is at ${CAPACITY}%. UNPLUG NOW to preserve health (Target: ${MAX_CHARGE}%)."
+
+    elif [[ "$STATUS" != "Charging" &amp;&amp; "$CAPACITY" -le "$MIN_CHARGE" ]]; then
+        notify-send -u critical "&#x1F50C; PLUG IN CHARGER!" "Battery is low at ${CAPACITY}%. PLUG IN to continue the cycle (Target: ${MIN_CHARGE}%)."
+    fi
+
+    <span class="comment"># Check every 60 seconds (adjust if needed)</span>
+    sleep 60
+done</code></pre>
+        <pre><code><span class="command">chmod +x ~/.local/bin/battery_monitor.sh</span></code></pre>
+
+        <h3 id="custom-lock">Create and Enable Custom Lock Script</h3>
+        <p>This script dims the screen to 0% before locking and restores brightness upon unlocking.</p>
+        <pre><code><span class="command">mkdir -p ~/.local/bin</span>
+<span class="command">nano ~/.local/bin/lock_and_dim.sh</span></code></pre>
+        
+        <p><strong>Content of <code class="file-path">~/.local/bin/lock_and_dim.sh</code>:</strong></p>
+        <pre><code><span class="comment">#!/bin/bash</span>
+
+<span class="comment"># =========================================================================</span>
+<span class="comment"># Custom Lock and Dim Script for Sway/Wayland</span>
+<span class="comment"># Requires: swaylock, brightnessctl (and a working backlight driver)</span>
+<span class="comment"># =========================================================================</span>
+
+<span class="comment"># --- 1. Get Current Brightness ---</span>
+<span class="comment"># Check if brightnessctl is available (standard in Fedora) and save the level.</span>
+if command -v brightnessctl &gt; /dev/null; then
+    CURRENT_BRIGHTNESS=$(brightnessctl get)
+    BRIGHTNESS_AVAILABLE=true
+else
+    BRIGHTNESS_AVAILABLE=false
+fi
+
+<span class="comment"># --- 2. Dim Screen ---</span>
+<span class="comment"># Only dim if brightnessctl is available</span>
+if $BRIGHTNESS_AVAILABLE; then
+    brightnessctl set 0%
+fi
+
+<span class="comment"># --- 3. Lock the Screen ---</span>
+<span class="comment"># Use swaylock (the native Wayland locker)</span>
+swaylock -c 000000 &amp;
+
+<span class="comment"># Store the Process ID of the new swaylock instance</span>
+LOCK_PID=$!
+
+<span class="comment"># Force display off (optional, as dimming to 0% often achieves the same effect)</span>
+swaymsg "output * dpms off"
+
+<span class="comment"># --- 4. Wait for Unlock ---</span>
+<span class="comment"># Wait for the swaylock process to exit (i.e., the user unlocked the screen)</span>
+wait $LOCK_PID
+
+<span class="comment"># --- 5. Restore Brightness ---</span>
+<span class="comment"># First, turn the screen back on (DPMS on)</span>
+swaymsg "output * dpms on"
+
+<span class="comment"># Restore original brightness after unlocking</span>
+if $BRIGHTNESS_AVAILABLE; then
+    <span class="comment"># Give a small delay to ensure the DPMS signal registers</span>
+    sleep 0.1
+    brightnessctl set "$CURRENT_BRIGHTNESS"
+fi
+
+exit 0</code></pre>
+        <pre><code><span class="command">chmod +x ~/.local/bin/lock_and_dim.sh</span></code></pre>
+        
+        <h3 id="exit-menu">Create Exit Menu Script</h3>
+        <p>A Rofi-based script to manage logout, reboot, shutdown, and the custom lock script.</p>
+        <pre><code><span class="command">mkdir -p ~/.local/bin</span>
+<span class="command">nano ~/.local/bin/power_menu.sh</span></code></pre>
+        
+        <p><strong>Content of <code class="file-path">~/.local/bin/power_menu.sh</code>:</strong></p>
+        <pre><code><span class="comment">#!/bin/bash</span>
+
+<span class="comment"># =========================================================================</span>
+<span class="comment"># Sway/Rofi Power Menu</span>
+<span class="comment"># Calls the custom lock_and_dim.sh script for the Lock action.</span>
+<span class="comment"># =========================================================================</span>
+
+<span class="comment"># Rofi options: -dmenu for list mode, -i for case-insensitive filtering,</span>
+<span class="comment"># and -p sets the prompt text.</span>
+ROFI_OPTIONS="-dmenu -i -p 'Power options:'"
+
+<span class="comment"># Define the menu options, separated by newlines</span>
+MENU_OPTIONS="Lock\nLogout\nReboot\nShutdown"
+
+<span class="comment"># Use rofi to prompt the user and capture the choice</span>
+choice=$(echo -e "$MENU_OPTIONS" | rofi $ROFI_OPTIONS)
+
+case "$choice" in
+    Lock)
+        <span class="comment"># Calls the custom script to dim the screen, lock, and then restore brightness.</span>
+        ~/.local/bin/lock_and_dim.sh
+        ;;
+    Logout)
+        <span class="comment"># Standard Wayland/Sway command to exit the session</span>
+        swaymsg exit
+        ;;
+    Reboot)
+        <span class="comment"># Systemd command (used by Fedora)</span>
+        systemctl reboot
+        ;;
+    Shutdown)
+        <span class="comment"># Systemd command (used by Fedora)</span>
+        systemctl poweroff
+        ;;
+    *)
+        <span class="comment"># Do nothing if selection is cancelled (Escape or click outside)</span>
+        ;;
+esac</code></pre>
+        <pre><code><span class="command">chmod +x ~/.local/bin/power_menu.sh</span></code></pre>
+
+        <h2 id="final-config">8. Final Sway Configuration</h2>
+        <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, including the custom commands, keybindings, and color definitions.</p>
+        
+        <div class="caution">
+            <h3 id="apply-config" style="margin-top: 0; padding-top: 0;">&#x2757; Action Required: Apply Final Sway Config</h3>
+            Ensure you copy your initial config file first:
+            <pre><code><span class="command">mkdir -p ~/.config/sway</span>
+<span class="command">cp /etc/sway/config ~/.config/sway/config.bak</span>
+<span class="command">nano ~/.config/sway/config</span></code></pre>
+        </div>
+
+        <p><strong>Content of <code class="file-path">~/.config/sway/config</code>:</strong></p>
+        <pre><code><span class="comment"># Default config for sway</span>
+<span class="comment"># Copy this to ~/.config/sway/config and edit it to your liking.</span>
+<span class="comment"># Read `man 5 sway` for a complete reference.</span>
+
+<span class="comment"># Signal to applications that we prefer dark mode</span>
+<span class="command">exec_always gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"</span>
+
+<span class="comment"># Set the actual dark GTK theme to be used</span>
+<span class="command">exec_always gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"</span>
+
+<span class="comment"># Start qBittorrent on login</span>
+<span class="command">exec qbittorrent</span>
+
+<span class="comment"># Start battery monitor script in the background</span>
+<span class="command">exec ~/.local/bin/battery_monitor.sh &amp;</span> <span class="comment"># Added '&amp;' to run in background</span>
+
+<span class="comment">### Variables</span>
+<span class="comment"># Logo key.</span>
+<span class="comment"># Use Mod1 for Alt.</span>
+set $mod Mod4
+<span class="comment"># Home row direction keys, like vim</span>
+set $vim_left h
+set $vim_down j
+set $vim_up k
+set $vim_right l
+<span class="comment"># Your preferred terminal emulator</span>
+<span class="comment"># Recommends: foot</span>
+set $term foot
+<span class="comment"># Your preferred application launcher</span>
+set $rofi_cmd rofi \
+         -terminal '$term'
+set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
+
+<span class="comment">### Output configuration</span>
+<span class="comment"># Default wallpaper path. Use 'nano' to search for 'output * bg' to replace this path.</span>
+<span class="comment"># REPLACE PATH BELOW WITH ACTUAL IMAGE LOCATION:</span>
+output * bg /home/primekeeper/Pictures/Embracing nostalgia as sunset paints the boulevard.jpg fill
+
+<span class="comment">### Idle configuration</span>
+<span class="comment"># Custom Automatic Screen Locking: Screen Off at 60s, Lock at 62s.</span>
+<span class="command">exec swayidle -w timeout 60 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' timeout 62 'swaylock -c 000000' before-sleep 'swaylock -c 000000'</span>
+
+<span class="comment">### Key bindings</span>
+
+<span class="comment"># Basics:</span>
+<span class="command">bindsym $mod+Return exec $term</span>
+<span class="command">bindsym $mod+Shift+q kill</span>
+<span class="command">bindsym $mod+d exec $menu</span>
+floating_modifier $mod normal
+<span class="command">bindsym $mod+Shift+c reload</span>
+
+<span class="comment"># Power menu using Rofi (Replaced default $mod+Shift+e)</span>
+<span class="command">bindsym $mod+Shift+e exec ~/.local/bin/power_menu.sh</span>
+
+<span class="comment"># Keybinding for the custom lock_and_dim script (Your required binding)</span>
+<span class="command">bindsym $mod+l exec ~/.local/bin/lock_and_dim.sh</span>
+
+<span class="comment"># Moving around:</span>
+<span class="command">bindsym $mod+$vim_left focus left</span>
+<span class="command">bindsym $mod+$vim_down focus down</span>
+<span class="command">bindsym $mod+$vim_up focus up</span>
+<span class="comment"># WARNING: $mod+$vim_right is intentionally left out to avoid conflicting with $mod+l (lock script)</span>
+<span class="comment"># bindsym $mod+$vim_right focus right</span>
+<span class="command">bindsym $mod+Left focus left</span>
+<span class="command">bindsym $mod+Down focus down</span>
+<span class="command">bindsym $mod+Up focus up</span>
+<span class="command">bindsym $mod+Right focus right</span>
+<span class="command">bindsym $mod+Shift+$vim_left move left</span>
+<span class="command">bindsym $mod+Shift+$vim_down move down</span>
+<span class="command">bindsym $mod+Shift+$vim_up move up</span>
+<span class="command">bindsym $mod+Shift+$vim_right move right</span>
+<span class="command">bindsym $mod+Shift+Left move left</span>
+<span class="command">bindsym $mod+Shift+Down move down</span>
+<span class="command">bindsym $mod+Shift+Up move up</span>
+<span class="command">bindsym $mod+Shift+Right move right</span>
+
+<span class="comment"># Workspaces:</span>
+<span class="command">bindsym $mod+1 workspace number 1</span>
+<span class="command">bindsym $mod+2 workspace number 2</span>
+<span class="command">bindsym $mod+3 workspace number 3</span>
+<span class="command">bindsym $mod+4 workspace number 4</span>
+<span class="command">bindsym $mod+5 workspace number 5</span>
+<span class="command">bindsym $mod+6 workspace number 6</span>
+<span class="command">bindsym $mod+7 workspace number 7</span>
+<span class="command">bindsym $mod+8 workspace number 8</span>
+<span class="command">bindsym $mod+9 workspace number 9</span>
+<span class="command">bindsym $mod+0 workspace number 10</span>
+<span class="command">bindsym $mod+Shift+1 move container to workspace number 1</span>
+<span class="command">bindsym $mod+Shift+2 move container to workspace number 2</span>
+<span class="command">bindsym $mod+Shift+3 move container to workspace number 3</span>
+<span class="command">bindsym $mod+Shift+4 move container to workspace number 4</span>
+<span class="command">bindsym $mod+Shift+5 move container to workspace number 5</span>
+<span class="command">bindsym $mod+Shift+6 move container to workspace number 6</span>
+<span class="command">bindsym $mod+Shift+7 move container to workspace number 7</span>
+<span class="command">bindsym $mod+Shift+8 move container to workspace number 8</span>
+<span class="command">bindsym $mod+Shift+9 move container to workspace number 9</span>
+<span class="command">bindsym $mod+Shift+0 move container to workspace number 10</span>
+
+<span class="comment"># Layout stuff:</span>
+<span class="command">bindsym $mod+b splith</span>
+<span class="command">bindsym $mod+v splitv</span>
+<span class="command">bindsym $mod+s layout stacking</span>
+<span class="command">bindsym $mod+w layout tabbed</span>
+<span class="command">bindsym $mod+e layout toggle split</span>
+<span class="command">bindsym $mod+f fullscreen</span>
+<span class="command">bindsym $mod+Shift+space floating toggle</span>
+<span class="command">bindsym $mod+space focus mode_toggle</span>
+<span class="command">bindsym $mod+a focus parent</span>
+
+<span class="comment"># Capture selected region, edit, and copy to clipboard</span>
+<span class="command">bindsym $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f - &amp;&amp; notify-send "Screenshot Captured"</span>
+
+<span class="comment"># Scratchpad:</span>
+<span class="command">bindsym $mod+Shift+minus move scratchpad</span>
+<span class="command">bindsym $mod+minus scratchpad show</span>
+
+<span class="comment"># Resizing containers:</span>
+mode "resize" {
+ <span class="command">bindsym $vim_left resize shrink width 10px</span>
+ <span class="command">bindsym $vim_down resize grow height 10px</span>
+ <span class="command">bindsym $vim_up resize shrink height 10px</span>
+ <span class="command">bindsym $vim_right resize grow width 10px</span>
+ <span class="command">bindsym Left resize shrink width 10px</span>
+ <span class="command">bindsym Down resize grow height 10px</span>
+ <span class="command">bindsym Up resize shrink height 10px</span>
+ <span class="command">bindsym Right resize grow width 10px</span>
+ <span class="command">bindsym Return mode "default"</span>
+ <span class="command">bindsym Escape mode "default"</span>
+}
+<span class="command">bindsym $mod+r mode "resize"</span>
+
+<span class="comment"># Include layered configuration files</span>
+include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
+
+<span class="comment"># =========================================================================</span>
+<span class="comment"># Sway Window Colors Configuration (i3 Syntax)</span>
+<span class="comment"># Format: class | border | background | text | indicator</span>
+<span class="comment"># =========================================================================</span>
+
+<span class="comment"># --- Focused Window (Active) ---</span>
+client.focused         #FF1493      #FF69B4      #FFFFFF      #FF00FF
+
+<span class="comment"># --- Focused Inactive Window (In the current workspace, but not selected) ---</span>
+client.focused_inactive #FFC0CB      #FFB6C1      #000000      #FFC0CB
+
+<span class="comment"># --- Unfocused Window (In a different workspace) ---</span>
+client.unfocused        #D8BFD8      #3C4043      #A0A0A0      #D8BFD8
+
+<span class="comment"># --- Urgent Window (Requires attention) ---</span>
+client.urgent           #FF00FF      #FF1493      #FFFFFF      #FF00FF
+
+<span class="comment"># --- Placeholder Window ---</span>
+client.placeholder      #D8BFD8      #3C4043      #A0A0A0      #D8BFD8</code></pre>
+
+        <h3 id="reload-sway">Reload Sway Configuration</h3>
+        <p>After saving the new configuration file, press the key combination to reload Sway and apply all settings, keybindings, and startup commands.</p>
+        <pre><code><span class="command">$mod+Shift+c</span></code></pre>
+        <p>The system should respond with a notification indicating the configuration has been reloaded.</p>
+
+        <h2 id="final-touches">9. Final Touches &amp; System Cleanup</h2>
+
+        <h3 id="ffmpeg-install">Install FFmpeg</h3>
+        <p>Install <strong>FFmpeg</strong>, allowing for package conflicts to be resolved. This is the last step for application installation.</p>
+        <pre><code><span class="command">sudo dnf install ffmpeg --allowerasing -y</span></code></pre>
+
+        <hr>
+
+        <h3 id="dnf-cleanup">Clean DNF Cache and Final Upgrade</h3>
+        <p>Run this final command to <strong>clean up</strong> installation files, <strong>remove unneeded dependencies</strong> (<code class="inline-code">autoremove</code>), and perform one last <strong>full system update</strong> to ensure everything is settled.</p>
+        <pre><code><span class="command">sudo dnf clean all &amp;&amp; sudo dnf autoremove -y &amp;&amp; sudo dnf upgrade -y --refresh</span></code></pre>
+        
+        <div class="note">
+            The setup is now complete! You can now reboot to fully apply all kernel, systemd, and service changes.
+        </div>
+    </div>
+</body>
+</html>
