@@ -1126,7 +1126,7 @@ label:focus {
         <hr>
 
         <h2 id="final-config">Final Sway Configuration</h2>
-        <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, including the custom commands, keybindings, and color definitions.</p>
+        <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, including the custom commands, keybindings, and the **corrected `swayidle` command**.</p>
         
         <div class="caution">
             <h3 id="apply-config" style="margin-top: 0; padding-top: 0;">&#x2757; Action Required: Apply Final Sway Config</h3>
@@ -1141,8 +1141,19 @@ label:focus {
 <span class="comment"># Copy this to ~/.config/sway/config and edit it to your liking.</span>
 <span class="comment"># Read `man 5 sway` for a complete reference.</span>
 
+<span class="comment"># -------------------------------------------------------------</span>
+<span class="comment"># *** CRITICAL WAYLAND/DBUS ENVIRONMENT SETUP ***</span>
+<span class="comment"># These variables help applications (like portals and browsers) correctly</span>
+<span class="comment"># interact with the Wayland compositor (Sway) and D-Bus services.</span>
+<span class="comment"># Must be executed on login.</span>
+<span class="comment"># -------------------------------------------------------------</span>
+<span class="command">exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway</span>
+<span class="command">set $env XDG_CURRENT_DESKTOP sway</span>
+
+<span class="comment"># -------------------------------------------------------------</span>
+<span class="comment"># *** STARTUP & THEME CONFIGURATION ***</span>
+<span class="comment"># -------------------------------------------------------------</span>
 <span class="comment"># Set scale factor for eDP-1 to make elements appear larger</span>
-<span class="comment"># Change '1.3' to '1.0' if your 1080p display is comfortable, or increase it for HiDPI/smaller screens.</span>
 <span class="command">output eDP-1 scale 1.3</span>
 
 <span class="comment"># Signal to applications that we prefer dark mode</span>
@@ -1159,6 +1170,20 @@ label:focus {
 
 <span class="comment"># Start battery monitor script in the background</span>
 <span class="command">exec ~/.local/bin/battery_monitor.sh &amp;</span> <span class="comment"># Added '&amp;' to run in background</span>
+
+<span class="comment"># -------------------------------------------------------------</span>
+<span class="comment"># *** IDLE CONFIGURATION (FIXED) ***</span>
+<span class="comment"># The use of exec_always + killall ensures only one instance runs, and the</span>
+<span class="comment"># 'idlehint 1' flag respects video player activity.</span>
+<span class="comment"># -------------------------------------------------------------</span>
+<span class="command">exec_always killall swayidle || true</span>
+<span class="command">exec swayidle -w \</span>
+<span class="command">    timeout 60 'swaymsg "output * dpms off"' \</span>
+<span class="command">    resume 'swaymsg "output * dpms on"' \</span>
+<span class="command">    timeout 62 'swaylock -c 000000' \</span>
+<span class="command">    before-sleep 'swaylock -c 000000' \</span>
+<span class="command">    lock 'exec ~/.local/bin/lock_and_dim.sh' \</span>
+<span class="command">    idlehint 1</span>
 
 <span class="comment">### Variables</span>
 <span class="comment"># Logo key.</span>
@@ -1180,98 +1205,95 @@ set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
 <span class="comment">### Output configuration</span>
 <span class="comment"># Default wallpaper path. Use 'nano' to search for 'output * bg' to replace this path.</span>
 <span class="comment"># REPLACE PATH BELOW WITH ACTUAL IMAGE LOCATION:</span>
-output * bg /home/primekeeper/Pictures/Embracing nostalgia as sunset paints the boulevard.jpg fill
-
-<span class="comment">### Idle configuration</span>
-<span class="command">exec swayidle -w timeout 60 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' timeout 62 'swaylock -c 000000' before-sleep 'swaylock -c 000000'</span>
+output * bg "/home/ironsentinel/Pictures/Mountains, Clouds, and Sunsets.jpg" fill
 
 <span class="comment">### Key bindings</span>
 
 <span class="comment"># Basics:</span>
-<span class="command">bindsym $mod+Return exec $term</span>
-<span class="command">bindsym $mod+Shift+q kill</span>
-<span class="command">bindsym $mod+d exec $menu</span>
+bindsym $mod+Return exec $term
+bindsym $mod+Shift+q kill
+bindsym $mod+d exec $menu
 floating_modifier $mod normal
-<span class="command">bindsym $mod+Shift+c reload</span>
+bindsym $mod+Shift+c reload
 
 <span class="comment"># Power menu using Rofi (Replaced default $mod+Shift+e)</span>
-<span class="command">bindsym $mod+Shift+e exec ~/.local/bin/power_menu.sh</span>
+bindsym $mod+Shift+e exec ~/.local/bin/power_menu.sh
 
 <span class="comment"># Keybinding for the custom lock_and_dim script (Your required binding)</span>
-<span class="command">bindsym $mod+l exec ~/.local/bin/lock_and_dim.sh</span>
+bindsym $mod+l exec ~/.local/bin/lock_and_dim.sh
 
 <span class="comment"># Moving around:</span>
-<span class="command">bindsym $mod+$vim_left focus left</span>
-<span class="command">bindsym $mod+$vim_down focus down</span>
-<span class="command">bindsym $mod+$vim_up focus up</span>
+bindsym $mod+$vim_left focus left
+bindsym $mod+$vim_down focus down
+bindsym $mod+$vim_up focus up
 <span class="comment"># WARNING: $mod+$vim_right is intentionally left out to avoid conflicting with $mod+l (lock script)</span>
-<span class="command">bindsym $mod+Left focus left</span>
-<span class="command">bindsym $mod+Down focus down</span>
-<span class="command">bindsym $mod+Up focus up</span>
-<span class="command">bindsym $mod+Right focus right</span>
-<span class="command">bindsym $mod+Shift+$vim_left move left</span>
-<span class="command">bindsym $mod+Shift+$vim_down move down</span>
-<span class="command">bindsym $mod+Shift+$vim_up move up</span>
-<span class="command">bindsym $mod+Shift+$vim_right move right</span>
-<span class="command">bindsym $mod+Shift+Left move left</span>
-<span class="command">bindsym $mod+Shift+Down move down</span>
-<span class="command">bindsym $mod+Shift+Up move up</span>
-<span class="command">bindsym $mod+Shift+Right move right</span>
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+Shift+$vim_left move left
+bindsym $mod+Shift+$vim_down move down
+bindsym $mod+Shift+$vim_up move up
+bindsym $mod+Shift+$vim_right move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
 <span class="comment"># Workspaces:</span>
-<span class="command">bindsym $mod+1 workspace number 1</span>
-<span class="command">bindsym $mod+2 workspace number 2</span>
-<span class="command">bindsym $mod+3 workspace number 3</span>
-<span class="command">bindsym $mod+4 workspace number 4</span>
-<span class="command">bindsym $mod+5 workspace number 5</span>
-<span class="command">bindsym $mod+6 workspace number 6</span>
-<span class="command">bindsym $mod+7 workspace number 7</span>
-<span class="command">bindsym $mod+8 workspace number 8</span>
-<span class="command">bindsym $mod+9 workspace number 9</span>
-<span class="command">bindsym $mod+0 workspace number 10</span>
-<span class="command">bindsym $mod+Shift+1 move container to workspace number 1</span>
-<span class="command">bindsym $mod+Shift+2 move container to workspace number 2</span>
-<span class="command">bindsym $mod+Shift+3 move container to workspace number 3</span>
-<span class="command">bindsym $mod+Shift+4 move container to workspace number 4</span>
-<span class="command">bindsym $mod+Shift+5 move container to workspace number 5</span>
-<span class="command">bindsym $mod+Shift+6 move container to workspace number 6</span>
-<span class="command">bindsym $mod+Shift+7 move container to workspace number 7</span>
-<span class="command">bindsym $mod+Shift+8 move container to workspace number 8</span>
-<span class="command">bindsym $mod+Shift+9 move container to workspace number 9</span>
-<span class="command">bindsym $mod+Shift+0 move container to workspace number 10</span>
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
 
 <span class="comment"># Layout stuff:</span>
-<span class="command">bindsym $mod+b splith</span>
-<span class="command">bindsym $mod+v splitv</span>
-<span class="command">bindsym $mod+s layout stacking</span>
-<span class="command">bindsym $mod+w layout tabbed</span>
-<span class="command">bindsym $mod+e layout toggle split</span>
-<span class="command">bindsym $mod+f fullscreen</span>
-<span class="command">bindsym $mod+Shift+space floating toggle</span>
-<span class="command">bindsym $mod+space focus mode_toggle</span>
-<span class="command">bindsym $mod+a focus parent</span>
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
 
 <span class="comment"># Capture selected region, edit, and copy to clipboard</span>
-<span class="command">bindsym $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f - &amp;&amp; notify-send "Screenshot Captured"</span>
+bindsym $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f - && notify-send "Screenshot Captured"
 
 <span class="comment"># Scratchpad:</span>
-<span class="command">bindsym $mod+Shift+minus move scratchpad</span>
-<span class="command">bindsym $mod+minus scratchpad show</span>
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
 
 <span class="comment"># Resizing containers:</span>
 mode "resize" {
- <span class="command">bindsym $vim_left resize shrink width 10px</span>
- <span class="command">bindsym $vim_down resize grow height 10px</span>
- <span class="command">bindsym $vim_up resize shrink height 10px</span>
- <span class="command">bindsym $vim_right resize grow width 10px</span>
- <span class="command">bindsym Left resize shrink width 10px</span>
- <span class="command">bindsym Down resize grow height 10px</span>
- <span class="command">bindsym Up resize shrink height 10px</span>
- <span class="command">bindsym Right resize grow width 10px</span>
- <span class="command">bindsym Return mode "default"</span>
- <span class="command">bindsym Escape mode "default"</span>
+ bindsym $vim_left resize shrink width 10px
+ bindsym $vim_down resize grow height 10px
+ bindsym $vim_up resize shrink height 10px
+ bindsym $vim_right resize grow width 10px
+ bindsym Left resize shrink width 10px
+ bindsym Down resize grow height 10px
+ bindsym Up resize shrink height 10px
+ bindsym Right resize grow width 10px
+ bindsym Return mode "default"
+ bindsym Escape mode "default"
 }
-<span class="command">bindsym $mod+r mode "resize"</span>
+bindsym $mod+r mode "resize"
 
 <span class="comment"># Include layered configuration files</span>
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
@@ -1282,19 +1304,19 @@ include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "
 <span class="comment"># =========================================================================</span>
 
 <span class="comment"># --- Focused Window (Active) ---</span>
-client.focused         #FF1493      #FF69B4      #FFFFFF      #FF00FF
+client.focused         #FF1493      #FF69B4	 #FFFFFF      #FF00FF
 
 <span class="comment"># --- Focused Inactive Window (In the current workspace, but not selected) ---</span>
-client.focused_inactive #FFC0CB      #FFB6C1      #000000      #FFC0CB
+client.focused_inactive #FFC0CB      #FFB6C1	  #000000      #FFC0CB
 
 <span class="comment"># --- Unfocused Window (In a different workspace) ---</span>
-client.unfocused        #D8BFD8      #3C4043      #A0A0A0      #D8BFD8
+client.unfocused        #D8BFD8      #3C4043	  #A0A0A0      #D8BFD8
 
 <span class="comment"># --- Urgent Window (Requires attention) ---</span>
-client.urgent           #FF00FF      #FF1493      #FFFFFF      #FF00FF
+client.urgent           #FF00FF      #FF1493	  #FFFFFF      #FF00FF
 
 <span class="comment"># --- Placeholder Window ---</span>
-client.placeholder      #D8BFD8      #3C4043      #A0A0A0      #D8BFD8</code></pre>
+client.placeholder	#D8BFD8      #3C4043	  #A0A0A0      #D8BFD8</code></pre>
 
         <h3 id="reload-sway">Reload Sway Configuration</h3>
         <p>After saving the new configuration file, press the key combination to reload Sway and apply all settings, keybindings, and startup commands.</p>
