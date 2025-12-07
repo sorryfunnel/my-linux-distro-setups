@@ -12,6 +12,7 @@
             --dark-background: #2D2D2D; /* Dark main background */
             --light-text: #F0F0F0; /* Light text for dark backgrounds */
             --secondary-background: #3C4043; /* Sidebar/Code background */
+            --tertiary-background: #4A4E51; /* Lighter background for TOC buttons */
             --code-text: #E0E0E0; /* Code text color */
             --link-color: #79A8FF; /* Light blue for links */
             --border-color: #555555;
@@ -37,49 +38,95 @@
             height: 100vh;
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
+            /* Maximized padding and added margin for smooth scrolling to the end */
+            padding-bottom: 200px; 
+            margin-bottom: 50px; 
         }
 
         .sidebar h2 {
             color: var(--fedora-blue);
             border-bottom: 2px solid var(--fedora-blue);
             padding-bottom: 5px;
-            margin-top: 0;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
         
+        /* --- Button Styling for all links in the Sidebar --- */
         .sidebar a {
             display: block;
             color: var(--light-text);
             text-decoration: none;
-            padding: 8px 0;
-            transition: background-color 0.2s, color 0.2s, padding-left 0.2s;
-            border-left: 3px solid transparent;
+            transition: background-color 0.2s, color 0.2s;
+            border-radius: 5px;
+            margin: 5px 0;
+            padding: 8px 10px;
+            text-align: left;
         }
 
-        .sidebar a:hover {
-            color: var(--fedora-blue);
-            border-left: 3px solid var(--fedora-blue);
-            padding-left: 5px;
+        /* Styling for the 3 main navigation buttons (always visible backgrounds) */
+        .primary-nav-button {
+            text-align: center;
+            font-weight: bold;
+            background-color: var(--fedora-blue);
+            margin-bottom: 10px;
+            padding: 10px;
         }
 
-        /* Styling for clickable subsections */
-        .sidebar a.subsection {
-            font-size: 0.9em;
-            color: #AAAAAA;
-            margin-left: 20px; /* Indent more */
-            padding: 3px 0; /* Less vertical padding */
-            border-left: none; /* No border for sub-sections initially */
+        .primary-nav-button:hover {
+            background-color: #4A85E7;
+            color: white;
+        }
+
+        /* List styling for TOC (using HTML list structure) */
+        .toc-entries ul {
+            list-style: none; /* Remove bullet points */
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-entries li {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Styling for TOC entries (Headings) */
+        .toc-entries a.toc-entry {
+            /* Initial state: Transparent background (only text is visible) */
+            background-color: transparent;
+            color: var(--light-text);
+            padding: 5px 10px;
+            margin: 3px 0;
+            text-align: left;
+            font-weight: bold; /* Make primary headers stand out */
         }
         
-        .sidebar a.subsection:hover {
-            color: var(--fedora-blue);
-            border-left: 3px solid var(--fedora-blue);
-            padding-left: 5px;
+        .toc-entries a.toc-entry:hover {
+            /* Hover state: Button background appears */
+            background-color: var(--fedora-blue);
+            color: white; 
+        }
+
+        /* Styling for clickable subsections (smaller, indented buttons) */
+        .toc-entries a.subsection {
+            /* Initial state: Transparent background (only text is visible) */
+            font-size: 0.9em;
+            font-weight: normal; /* Subsections are regular font weight */
+            background-color: transparent;
+            color: #CCCCCC;
+            margin-left: 15px;
+            padding: 3px 10px;
+        }
+        
+        .toc-entries a.subsection:hover {
+            /* Hover state: Button background appears */
+            background-color: var(--fedora-blue);
+            color: white;
         }
         
         /* Main Content - Adjusted margin for 1 inch (approx. 96px) space on right */
         .content {
             margin-left: calc(250px + 96px); /* Sidebar width + 96px (approx. 1 inch margin) */
-            padding: 20px 96px 20px 0; /* Top, 96px Right, Bottom, 0 Left (Handled by margin-left) */
+            padding: 20px 96px 100px 0; /* Top, 96px Right, 100px Bottom, 0 Left */
             flex-grow: 1;
             max-width: 1000px;
         }
@@ -143,51 +190,88 @@
     </style>
 </head>
 <body>
-
-    <div class="sidebar">
+    <div id="top"></div> <div class="sidebar">
+        <div class="primary-nav">
+            <a href="my-linux-distro-setups/index.html" class="primary-nav-button">Main Setups</a>
+            <a href="my-linux-distro-setups/fedora/index_fedora.html" class="primary-nav-button">Fedora Setups</a>
+            <a href="#top" class="primary-nav-button">Back to Top</a>
+        </div>
+        
         <h2>&#x1F680; Sway Setup Guide</h2>
-        <a href="#initial-setup">1. Initial Setup &amp; Network</a>
-        <a href="#brightness-network" class="subsection">Set Initial Brightness and Network</a>
-        <a href="#change-passwords" class="subsection">Change User and Root Passwords</a>
         
-        <a href="#system-prep">2. System Preparation</a>
-        <a href="#set-hostname" class="subsection">Set Hostname</a>
-        <a href="#foot-settings" class="subsection">Change Foot Terminal Settings</a>
-        <a href="#rofi-theme" class="subsection">Change Rofi Theme</a>
-        <a href="#delete-apps" class="subsection">Delete Unneeded Applications and Install Screenshot Tools</a>
-        
-        <a href="#partition-config">3. Extended Partition Configuration</a>
-        <a href="#add-label" class="subsection">Add/Edit Label to Partition</a>
-        <a href="#set-mount-options" class="subsection">Set Extended Partition Mount Options (via GNOME Disks)</a>
-        
-        <a href="#grub-dnf">4. GRUB and DNF Tuning</a>
-        <a href="#edit-grub" class="subsection">Edit GRUB Configuration</a>
-        <a href="#edit-dnf" class="subsection">Edit DNF Configuration</a>
-        
-        <a href="#repos-packages">5. Upgrade, Repos, and Package Installation</a>
-        <a href="#upgrade-reboot" class="subsection">Upgrade and Reboot System</a>
-        <a href="#add-repos" class="subsection">Add RPM Fusion and Flathub Repositories</a>
-        <a href="#install-dnf-pkgs" class="subsection">Install Essential DNF Packages</a>
-        <a href="#install-flatpak-apps" class="subsection">Install Flatpak Applications</a>
-        <a href="#browser-downloads" class="subsection">Browser-Downloaded Applications</a>
-        
-        <a href="#dark-mode">6. Dark Mode Theming</a>
-        <a href="#set-env-gtk" class="subsection">Set Environment Variables and GTK Settings</a>
-        <a href="#edit-qtct" class="subsection">Edit Qt5ct &amp; Qt6ct Settings</a>
-        <a href="#theming-reboot" class="subsection">Reboot</a>
-        
-        <a href="#config-scripts">7. Sway Scripts and Configuration Files</a>
-        <a href="#battery-monitor" class="subsection">Create and Enable Battery Monitor Script</a>
-        <a href="#custom-lock" class="subsection">Create and Enable Custom Lock Script</a>
-        <a href="#exit-menu" class="subsection">Create Exit Menu Script</a>
-        
-        <a href="#final-config">8. Final Sway Configuration</a>
-        <a href="#apply-config" class="subsection">Apply Final Sway Config</a>
-        <a href="#reload-sway" class="subsection">Reload Sway Configuration</a> 
-        
-        <a href="#final-touches">9. Final Touches &amp; System Cleanup</a>
-        <a href="#ffmpeg-install" class="subsection">Install FFmpeg</a>
-        <a href="#dnf-cleanup" class="subsection">Clean DNF Cache and Final Upgrade</a>
+        <nav class="toc-entries">
+            <ul>
+                <li><a href="#initial-setup" class="toc-entry">Initial Setup &amp; Network</a>
+                    <ul>
+                        <li><a href="#brightness-network" class="subsection">Set Initial Brightness and Network</a></li>
+                        <li><a href="#change-passwords" class="subsection">Change User and Root Passwords</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#system-prep" class="toc-entry">System Preparation</a>
+                    <ul>
+                        <li><a href="#set-hostname" class="subsection">Set Hostname</a></li>
+                        <li><a href="#foot-settings" class="subsection">Change Foot Terminal Settings</a></li>
+                        <li><a href="#rofi-theme" class="subsection">Change Rofi Theme</a></li>
+                        <li><a href="#delete-apps" class="subsection">Delete Unneeded Applications and Install Screenshot Tools</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#partition-config" class="toc-entry">Extended Partition Configuration</a>
+                    <ul>
+                        <li><a href="#add-label" class="subsection">Add/Edit Label to Partition</a></li>
+                        <li><a href="#set-mount-options" class="subsection">Set Extended Partition Mount Options (via GNOME Disks)</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#grub-dnf" class="toc-entry">GRUB and DNF Tuning</a>
+                    <ul>
+                        <li><a href="#edit-grub" class="subsection">Edit GRUB Configuration</a></li>
+                        <li><a href="#edit-dnf" class="subsection">Edit DNF Configuration</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#repos-packages" class="toc-entry">Upgrade, Repos, and Package Installation</a>
+                    <ul>
+                        <li><a href="#upgrade-reboot" class="subsection">Upgrade and Reboot System</a></li>
+                        <li><a href="#add-repos" class="subsection">Add RPM Fusion and Flathub Repositories</a></li>
+                        <li><a href="#install-dnf-pkgs" class="subsection">Install Essential DNF Packages</a></li>
+                        <li><a href="#install-flatpak-apps" class="subsection">Install Flatpak Applications</a></li>
+                        <li><a href="#browser-downloads" class="subsection">Browser-Downloaded Applications</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#dark-mode" class="toc-entry">Dark Mode Theming</a>
+                    <ul>
+                        <li><a href="#set-env-gtk" class="subsection">Set Environment Variables and GTK Settings</a></li>
+                        <li><a href="#edit-qtct" class="subsection">Edit Qt5ct &amp; Qt6ct Settings</a></li>
+                        <li><a href="#theming-reboot" class="subsection">Reboot</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#config-scripts" class="toc-entry">Sway Scripts and Configuration Files</a>
+                    <ul>
+                        <li><a href="#battery-monitor" class="subsection">Create and Enable Battery Monitor Script</a></li>
+                        <li><a href="#custom-lock" class="subsection">Create and Enable Custom Lock Script</a></li>
+                        <li><a href="#exit-menu" class="subsection">Create Exit Menu Script</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#final-config" class="toc-entry">Final Sway Configuration</a>
+                    <ul>
+                        <li><a href="#apply-config" class="subsection">Apply Final Sway Config</a></li>
+                        <li><a href="#reload-sway" class="subsection">Reload Sway Configuration</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#final-touches" class="toc-entry">Final Touches &amp; System Cleanup</a>
+                    <ul>
+                        <li><a href="#ffmpeg-install" class="subsection">Install FFmpeg</a></li>
+                        <li><a href="#dnf-cleanup" class="subsection">Clean DNF Cache and Final Upgrade</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <div class="content">
@@ -198,7 +282,7 @@
             <strong>&#x26A0;&#xFE0F; Important:</strong> Replace all placeholders (e.g., <code class="inline-code">username</code>, <code class="inline-code">......</code>, <code class="inline-code">/dev/sdXX</code>) with your actual values.
         </div>
         
-        <h2 id="initial-setup">1. Initial Setup &amp; Network</h2>
+        <h2 id="initial-setup">Initial Setup &amp; Network</h2>
         
         <h3 id="brightness-network">Set Initial Brightness and Network</h3>
         <p>Set the screen brightness and connect to the internet using the GNOME NetworkManager applet.</p>
@@ -212,7 +296,9 @@
         <pre><code><span class="command">sudo passwd username</span>
 <span class="command">sudo passwd root</span></code></pre>
 
-        <h2 id="system-prep">2. System Preparation</h2>
+        <hr>
+
+        <h2 id="system-prep">System Preparation</h2>
         
         <h3 id="set-hostname">Set Hostname</h3>
         <p>Define a hostname for your system (replace <code class="inline-code">......</code> with your desired hostname).</p>
@@ -237,7 +323,9 @@
         <p>Remove unneeded packages and install required tools that are not part of the default Sway Spin installation. <code class="inline-code">grim</code>, <code class="inline-code">slurp</code>, and <code class="inline-code">swappy</code> are required for the screenshot binding.</p>
         <pre><code><span class="command">sudo dnf remove Jxrdecapp Jxrencapp ModemManager Vgauthservice 'vbox*' setroubleshoot setroubleshoot-server -y &amp;&amp; sudo dnf install -y grim slurp swappy &amp;&amp; sudo systemctl daemon-reload</span></code></pre>
 
-        <h2 id="partition-config">3. Extended Partition Configuration</h2>
+        <hr>
+
+        <h2 id="partition-config">Extended Partition Configuration</h2>
         
         <h3 id="add-label">Add/Edit Label to Partition</h3>
         <p>Identify your desired partition (e.g., for storage) and set a label for easy identification.</p>
@@ -260,7 +348,9 @@
             <li>Click <strong>OK</strong>.</li>
         </ul>
 
-        <h2 id="grub-dnf">4. GRUB and DNF Tuning</h2>
+        <hr>
+
+        <h2 id="grub-dnf">GRUB and DNF Tuning</h2>
         
         <h3 id="edit-grub">Edit GRUB Configuration</h3>
         <p>Modify GRUB to disable ACPI error reporting and remove the Plymouth splash screen.</p>
@@ -278,7 +368,9 @@ GRUB_CMDLINE_LINUX="pci=noaer rd.plymouth=0 plymouth.enable=0"
 [main]
 max_parallel_downloads=10</code></pre>
 
-        <h2 id="repos-packages">5. Upgrade, Repos, and Package Installation</h2>
+        <hr>
+
+        <h2 id="repos-packages">Upgrade, Repos, and Package Installation</h2>
         
         <h3 id="upgrade-reboot">Upgrade and Reboot System</h3>
         <p>Perform a full system upgrade and then reboot to apply all foundational changes.</p>
@@ -302,8 +394,10 @@ max_parallel_downloads=10</code></pre>
             <li><strong>OnlyOffice:</strong> Download the installer from the official website and install it.</li>
             <li><strong>go-to-library.sk:</strong> Download the installer from the official website and install it.</li>
         </ul>
+
+        <hr>
         
-        <h2 id="dark-mode">6. Dark Mode Theming</h2>
+        <h2 id="dark-mode">Dark Mode Theming</h2>
         
         <h3 id="set-env-gtk">Set Environment Variables and GTK Settings</h3>
         <p>Apply dark mode settings for GTK3/4/Libadwaita applications and set the required environment variable for Qt applications to use <code class="inline-code">qt5ct</code>.</p>
@@ -322,14 +416,16 @@ gtk-application-prefer-dark-theme=1</code></pre>
         <p>Manually configure Qt theming using the installed tools.</p>
         <ul>
             <li>Launch <code class="inline-code">qt5ct</code> and <code class="inline-code">qt6ct</code> via Rofi.</li>
-            <li>Apply the settings: <strong>Fusion</strong>, <strong>Darker</strong> palette, <strong>Default</strong> icons, and <strong>Sans Serif 9</strong> for fonts.</li>
+            <li>Apply the settings: <strong>Fusion</strong>, <strong>Darker</strong> palette, <strong>Default</strong> icons, and **Sans Serif 9** for fonts.</li>
         </ul>
         
         <h3 id="theming-reboot">Reboot</h3>
         <p>A reboot is recommended after major theming and configuration changes.</p>
         <pre><code><span class="command">reboot</span></code></pre>
+
+        <hr>
         
-        <h2 id="config-scripts">7. Sway Scripts and Configuration Files</h2>
+        <h2 id="config-scripts">Sway Scripts and Configuration Files</h2>
         
         <h3 id="battery-monitor">Create and Enable Battery Monitor Script</h3>
         <p>This script monitors battery charge and displays a notification when it reaches the set max/min thresholds.</p>
@@ -473,7 +569,9 @@ case "$choice" in
 esac</code></pre>
         <pre><code><span class="command">chmod +x ~/.local/bin/power_menu.sh</span></code></pre>
 
-        <h2 id="final-config">8. Final Sway Configuration</h2>
+        <hr>
+
+        <h2 id="final-config">Final Sway Configuration</h2>
         <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, including the custom commands, keybindings, and color definitions.</p>
         
         <div class="caution">
@@ -524,7 +622,6 @@ set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
 output * bg /home/primekeeper/Pictures/Embracing nostalgia as sunset paints the boulevard.jpg fill
 
 <span class="comment">### Idle configuration</span>
-<span class="comment"># Custom Automatic Screen Locking: Screen Off at 60s, Lock at 62s.</span>
 <span class="command">exec swayidle -w timeout 60 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' timeout 62 'swaylock -c 000000' before-sleep 'swaylock -c 000000'</span>
 
 <span class="comment">### Key bindings</span>
@@ -547,7 +644,6 @@ floating_modifier $mod normal
 <span class="command">bindsym $mod+$vim_down focus down</span>
 <span class="command">bindsym $mod+$vim_up focus up</span>
 <span class="comment"># WARNING: $mod+$vim_right is intentionally left out to avoid conflicting with $mod+l (lock script)</span>
-<span class="comment"># bindsym $mod+$vim_right focus right</span>
 <span class="command">bindsym $mod+Left focus left</span>
 <span class="command">bindsym $mod+Down focus down</span>
 <span class="command">bindsym $mod+Up focus up</span>
@@ -644,7 +740,9 @@ client.placeholder      #D8BFD8      #3C4043      #A0A0A0      #D8BFD8</code></p
         <pre><code><span class="command">$mod+Shift+c</span></code></pre>
         <p>The system should respond with a notification indicating the configuration has been reloaded.</p>
 
-        <h2 id="final-touches">9. Final Touches &amp; System Cleanup</h2>
+        <hr>
+
+        <h2 id="final-touches">Final Touches &amp; System Cleanup</h2>
 
         <h3 id="ffmpeg-install">Install FFmpeg</h3>
         <p>Install <strong>FFmpeg</strong>, allowing for package conflicts to be resolved. This is the last step for application installation.</p>
