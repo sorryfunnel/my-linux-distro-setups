@@ -35,15 +35,12 @@
             background-color: var(--secondary-background);
             padding: 20px;
             position: fixed;
-            /* FIX: Changed height to max-height to ensure the fixed element scrolls */
-            /* and increased bottom padding to prevent cut-off */
-            max-height: 100vh;
+            height: 100vh;
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
-            
-            /* Revised padding for smooth scrolling to the end */
-            padding-bottom: 50px; 
-            margin-bottom: 0; 
+            /* Maximized padding and added margin for smooth scrolling to the end */
+            padding-bottom: 200px; 
+            margin-bottom: 50px; 
         }
 
         .sidebar h2 {
@@ -272,6 +269,7 @@
                     <ul>
                         <li><a href="#apply-config" class="subsection">Apply Final Sway Config</a></li>
                         <li><a href="#reload-sway" class="subsection">Reload Sway Configuration</a></li>
+                        <li><a href="#waybar-duplicate-fix" class="subsection">Waybar Duplicate Fix</a></li>
                     </ul>
                 </li>
                 
@@ -339,7 +337,7 @@
         </ul>
         
         <h3 id="delete-apps">Delete Unneeded Applications and Install Screenshot Tools</h3>
-        <p>Remove unneeded packages. <strong>grim</strong>, <strong>slurp</strong>, and <strong>swappy</strong> will be installed in a later step.</p>
+        <p>Remove unneeded packages. **grim**, **slurp**, and **swappy** will be installed in a later step.</p>
         <pre><code><span class="command">sudo dnf remove Jxrdecapp Jxrencapp ModemManager Vgauthservice 'vbox*' setroubleshoot setroubleshoot-server -y &amp;&amp; sudo systemctl daemon-reload</span></code></pre>
 
         <hr>
@@ -654,7 +652,7 @@ esac</code></pre>
         }
     },
     "sway/mode": {
-        "format": "<em>{}</em>"
+        "format": "<span style=\"italic\">{}</span>"
     },
     "sway/scratchpad": {
         "format": "{icon} {count}",
@@ -1326,6 +1324,24 @@ client.placeholder	#D8BFD8      #3C4043	  #A0A0A0      #D8BFD8</code></pre>
         <p>After saving the new configuration file, press the key combination to reload Sway and apply all settings, keybindings, and startup commands.</p>
         <pre><code><span class="command">$mod+Shift+c</span></code></pre>
         <p>The system should respond with a notification indicating the configuration has been reloaded.</p>
+
+        <h3 id="waybar-duplicate-fix">Waybar Duplicate Fix</h3>
+        <p>If there are any duplicate instances of Waybar upon reboot or reloading Sway, these instructions resolves it by overriding the default bar configuration and consolidating Waybar launching.</p>
+        
+        <h4>Disable System Default Bar:</h4>
+        <p>Use the following robust launch line in your Sway config file's startup section to ensure only one Waybar process is running and to prevent a ghost bar on reload.</p>
+        <pre><code><span class="command">exec_always --no-startup-id sh -c "pkill waybar; waybar &amp;"</span></code></pre>
+        
+        <p>Reload Sway: Press <kbd>$mod+Shift+c</kbd>.</p>
+
+        <h4>Additional Configuration Steps:</h4>
+        <pre><code><span class="command">mkdir -p ~/.config/sway/config.d</span>
+<span class="command">touch ~/.config/sway/config.d/90-bar.conf</span></code></pre>
+        
+        <ul>
+            <li>Edit Sway Config: In <code class="inline-code">~/.config/sway/config</code>, <strong>DELETE</strong> any <code class="inline-code">bar { ... }</code> blocks and all prior <code class="inline-code">exec waybar</code> lines.</li>
+            <li>Use Single Robust Launch Line: Add the command above to your startup section.</li>
+        </ul>
 
         <hr>
 
