@@ -35,12 +35,15 @@
             background-color: var(--secondary-background);
             padding: 20px;
             position: fixed;
-            height: 100vh;
+            /* FIX: Changed height to max-height to ensure the fixed element scrolls */
+            /* and increased bottom padding to prevent cut-off */
+            max-height: 100vh;
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
-            /* Maximized padding and added margin for smooth scrolling to the end */
-            padding-bottom: 200px; 
-            margin-bottom: 50px; 
+            
+            /* Revised padding for smooth scrolling to the end */
+            padding-bottom: 50px; 
+            margin-bottom: 0; 
         }
 
         .sidebar h2 {
@@ -190,7 +193,8 @@
     </style>
 </head>
 <body>
-    <div id="top"></div> <div class="sidebar">
+    <div id="top"></div> 
+    <div class="sidebar">
         <div class="primary-nav">
             <a href="/my-linux-distro-setups/index.html" class="primary-nav-button">Main Setups</a>
             <a href="/my-linux-distro-setups/fedora/index_fedora.html" class="primary-nav-button">Fedora Setups</a>
@@ -234,7 +238,7 @@
                 <li><a href="#repos-packages" class="toc-entry">Upgrade, Repos, and Package Installation</a>
                     <ul>
                         <li><a href="#upgrade-reboot" class="subsection">Upgrade and Reboot System</a></li>
-                        <li><li><a href="#add-repos" class="subsection">Add RPM Fusion and Flathub Repositories</a></li>
+                        <li><a href="#add-repos" class="subsection">Add RPM Fusion and Flathub Repositories</a></li>
                         <li><a href="#install-dnf-pkgs" class="subsection">Install Essential DNF Packages</a></li>
                         <li><a href="#install-flatpak-apps" class="subsection">Install Flatpak Applications</a></li>
                         <li><a href="#browser-downloads" class="subsection">Browser-Downloaded Applications</a></li>
@@ -271,6 +275,13 @@
                     </ul>
                 </li>
                 
+                <li><a href="#troubleshooting" class="toc-entry">Troubleshooting: The Double Waybar Issue</a>
+                    <ul>
+                        <li><a href="#cause-duplication" class="subsection">The Cause of Duplication</a></li>
+                        <li><a href="#resolution-steps" class="subsection">Resolution Steps (The Successful Fix)</a></li>
+                    </ul>
+                </li>
+
                 <li><a href="#final-touches" class="toc-entry">Final Touches &amp; System Cleanup</a>
                     <ul>
                         <li><a href="#ffmpeg-install" class="subsection">Install FFmpeg</a></li>
@@ -328,7 +339,7 @@
         </ul>
         
         <h3 id="delete-apps">Delete Unneeded Applications and Install Screenshot Tools</h3>
-        <p>Remove unneeded packages. **grim**, **slurp**, and **swappy** will be installed in a later step.</p>
+        <p>Remove unneeded packages. <strong>grim</strong>, <strong>slurp</strong>, and <strong>swappy</strong> will be installed in a later step.</p>
         <pre><code><span class="command">sudo dnf remove Jxrdecapp Jxrencapp ModemManager Vgauthservice 'vbox*' setroubleshoot setroubleshoot-server -y &amp;&amp; sudo systemctl daemon-reload</span></code></pre>
 
         <hr>
@@ -346,14 +357,14 @@
         <ul>
             <li>Go to <code class="inline-code">gnome-disks</code> via Rofi.</li>
             <li>Select the partition and take ownership (if needed).</li>
-            <li>Edit **Mount Options**:
+            <li>Edit <strong>Mount Options</strong>:
                 <ul>
-                    <li>Untick **User Session Defaults**.</li>
-                    <li>Ensure **Mount at system startup** and **Show in user interface** are both ticked on.</li>
+                    <li>Untick <strong>User Session Defaults</strong>.</li>
+                    <li>Ensure <strong>Mount at system startup</strong> and <strong>Show in user interface</strong> are both ticked on.</li>
                     <li>Identify as: <code class="inline-code">LABEL=Extended</code> (Assuming your label is 'Extended').</li>
                 </ul>
             </li>
-            <li>Click **OK**.</li>
+            <li>Click <strong>OK</strong>.</li>
         </ul>
 
         <hr>
@@ -389,18 +400,18 @@ max_parallel_downloads=10</code></pre>
         <pre><code><span class="command">sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm &amp;&amp; sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo &amp;&amp; sudo dnf upgrade -y --refresh</span></code></pre>
 
         <h3 id="install-dnf-pkgs">Install Essential DNF Packages</h3>
-        <p>Install the required applications and utilities, including **mediawriter** and screenshot tools.</p>
+        <p>Install the required applications and utilities, including <strong>mediawriter</strong> and screenshot tools.</p>
         <pre><code><span class="command">sudo dnf install -y gnome-themes-extra gnome-text-editor btop acpi libreoffice-writer libreoffice-calc libreoffice-impress qbittorrent lollypop gimp foliate speedtest-cli qt5ct qt6ct swayimg torbrowser-launcher grim slurp swappy mediawriter</span></code></pre>
         
         <h3 id="install-flatpak-apps">Install Flatpak Applications</h3>
-        <p>Install **OBS Studio** and **Shortwave** from Flathub in a single command.</p>
+        <p>Install <strong>OBS Studio</strong> and <strong>Shortwave</strong> from Flathub in a single command.</p>
         <pre><code><span class="command">sudo flatpak install flathub com.obsproject.Studio de.haeckerfelix.Shortwave -y</span></code></pre>
         
         <h3 id="browser-downloads">Browser-Downloaded Applications</h3>
         <p>Please download and install these applications directly from their respective websites:</p>
         <ul>
-            <li>**OnlyOffice:** Download the installer from the official website and install it.</li>
-            <li>**go-to-library.sk:** Download the installer from the official website and install it.</li>
+            <li><strong>OnlyOffice:</strong> Download the installer from the official website and install it.</li>
+            <li><strong>go-to-library.sk:</strong> Download the installer from the official website and install it.</li>
         </ul>
 
         <hr>
@@ -424,7 +435,7 @@ gtk-application-prefer-dark-theme=1</code></pre>
         <p>Manually configure Qt theming using the installed tools.</p>
         <ul>
             <li>Launch <code class="inline-code">qt5ct</code> and <code class="inline-code">qt6ct</code> via Rofi.</li>
-            <li>Apply the settings: **Fusion**, **Darker** palette, **Default** icons, and **Sans Serif 9** for fonts.</li>
+            <li>Apply the settings: <strong>Fusion</strong>, <strong>Darker</strong> palette, <strong>Default</strong> icons, and <strong>Sans Serif 9</strong> for fonts.</li>
         </ul>
         
         <h3 id="theming-reboot">Reboot</h3>
@@ -440,7 +451,7 @@ gtk-application-prefer-dark-theme=1</code></pre>
         <pre><code><span class="command">mkdir -p ~/.local/bin</span>
 <span class="command">nano ~/.local/bin/battery_monitor.sh</span></code></pre>
         
-        <p>**Content of <code class="file-path">~/.local/bin/battery_monitor.sh</code>:**</p>
+        <p><strong>Content of <code class="file-path">~/.local/bin/battery_monitor.sh</code>:</strong></p>
         <pre><code><span class="comment">#!/bin/bash</span>
 
 <span class="comment"># Configuration</span>
@@ -480,7 +491,7 @@ done</code></pre>
         <pre><code><span class="command">mkdir -p ~/.local/bin</span>
 <span class="command">nano ~/.local/bin/lock_and_dim.sh</span></code></pre>
         
-        <p>**Content of <code class="file-path">~/.local/bin/lock_and_dim.sh</code>:**</p>
+        <p><strong>Content of <code class="file-path">~/.local/bin/lock_and_dim.sh</code>:</strong></p>
         <pre><code><span class="comment">#!/bin/bash</span>
 
 <span class="comment"># =========================================================================</span>
@@ -536,7 +547,7 @@ exit 0</code></pre>
         <pre><code><span class="command">mkdir -p ~/.local/bin</span>
 <span class="command">nano ~/.local/bin/power_menu.sh</span></code></pre>
         
-        <p>**Content of <code class="file-path">~/.local/bin/power_menu.sh</code>:**</p>
+        <p><strong>Content of <code class="file-path">~/.local/bin/power_menu.sh</code>:</strong></p>
         <pre><code><span class="comment">#!/bin/bash</span>
 
 <span class="comment"># =========================================================================</span>
@@ -586,7 +597,7 @@ esac</code></pre>
         <h3 id="waybar-config-file">Create config.jsonc</h3>
         <p>This file defines the modules used by Waybar and their positioning.</p>
         <pre><code><span class="command">nano ~/.config/waybar/config.jsonc</span></code></pre>
-        <p>**Content of <code class="file-path">~/.config/waybar/config.jsonc</code>:**</p>
+        <p><strong>Content of <code class="file-path">~/.config/waybar/config.jsonc</code>:</strong></p>
         <pre><code><span class="comment">// -*- mode: jsonc -*-</span>
 {
     <span class="comment">// "layer": "top", // Waybar at top layer</span>
@@ -643,7 +654,7 @@ esac</code></pre>
         }
     },
     "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
+        "format": "<em>{}</em>"
     },
     "sway/scratchpad": {
         "format": "{icon} {count}",
@@ -796,7 +807,7 @@ esac</code></pre>
         <h3 id="waybar-style-file">Create style.css</h3>
         <p>This file defines the appearance of the bar, including colors, fonts, and spacing.</p>
         <pre><code><span class="command">nano ~/.config/waybar/style.css</span></code></pre>
-        <p>**Content of <code class="file-path">~/.config/waybar/style.css</code>:**</p>
+        <p><strong>Content of <code class="file-path">~/.config/waybar/style.css</code>:</strong></p>
         <pre><code>* {
     font-family: 'Noto Sans Mono', 'Font Awesome 6 Free', 'Font Awesome 6 Brands', monospace;
     font-size: 13px;
@@ -1127,7 +1138,7 @@ label:focus {
         <hr>
 
         <h2 id="final-config">Final Sway Configuration</h2>
-        <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, keybindings, and the **corrected, single-line `swayidle` command**.</p>
+        <p>This is the complete and final configuration file to be saved as <code class="file-path">~/.config/sway/config</code>. It incorporates all your requested changes, keybindings, and the <strong>reload-safe `swayidle` command</strong>.</p>
         
         <div class="caution">
             <h3 id="apply-config" style="margin-top: 0; padding-top: 0;">&#x2757; Action Required: Apply Final Sway Config</h3>
@@ -1137,7 +1148,7 @@ label:focus {
 <span class="command">nano ~/.config/sway/config</span></code></pre>
         </div>
 
-        <p>**Content of <code class="file-path">~/.config/sway/config</code>:**</p>
+        <p><strong>Content of <code class="file-path">~/.config/sway/config</code>:</strong></p>
         <pre><code><span class="comment"># Default config for sway</span>
 <span class="comment"># Copy this to ~/.config/sway/config and edit it to your liking.</span>
 <span class="comment"># Read `man 5 sway` for a complete reference.</span>
@@ -1160,8 +1171,8 @@ label:focus {
 <span class="comment"># Set the actual dark GTK theme to be used</span>
 <span class="command">exec_always gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"</span>
 
-<span class="comment"># Start Waybar</span>
-<span class="command">exec waybar</span>
+<span class="comment"># Start Waybar - FIX: Now runs once in background, relying on Systemd service being disabled.</span>
+<span class="command">exec waybar &amp;</span>
 
 <span class="comment"># Start qBittorrent on login</span>
 <span class="command">exec qbittorrent</span>
@@ -1170,11 +1181,11 @@ label:focus {
 <span class="command">exec ~/.local/bin/battery_monitor.sh &amp;</span>
 
 <span class="comment"># -------------------------------------------------------------</span>
-<span class="comment"># *** IDLE CONFIGURATION (FIXED, SINGLE-LINE) ***</span>
-<span class="comment"># Triggers dpms off at 60s, locks at 62s, and uses idlehint 1 to respect</span>
-<span class="comment"># video players and the Waybar idle_inhibitor module.</span>
+<span class="comment"># *** IDLE CONFIGURATION (FIXED, RELOAD-SAFE) ***</span>
+<span class="comment"># This kills the old swayidle process on reload, then starts the new one.</span>
 <span class="comment"># -------------------------------------------------------------</span>
-<span class="command">exec_always swayidle -w timeout 60 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' timeout 62 'exec ~/.local/bin/lock_and_dim.sh' before-sleep 'exec ~/.local/bin/lock_and_dim.sh' idlehint 1</span>
+<span class="command">exec_always killall swayidle || true</span>
+<span class="command">exec swayidle -w timeout 60 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' timeout 62 'exec ~/.local/bin/lock_and_dim.sh' before-sleep 'exec ~/.local/bin/lock_and_dim.sh' idlehint 1</span>
 
 
 <span class="comment">### Variables</span>
@@ -1267,7 +1278,7 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 <span class="comment"># Capture selected region, edit, and copy to clipboard</span>
-bindsym $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f - && notify-send "Screenshot Captured"
+bindsym $mod+Shift+s exec grim -g "$(slurp)" - | swappy -f - &amp;&amp; notify-send "Screenshot Captured"
 
 <span class="comment"># Scratchpad:</span>
 bindsym $mod+Shift+minus move scratchpad
@@ -1318,16 +1329,71 @@ client.placeholder	#D8BFD8      #3C4043	  #A0A0A0      #D8BFD8</code></pre>
 
         <hr>
 
+        <h2 id="troubleshooting">Troubleshooting: The Double Waybar Issue</h2>
+        
+        <p>The problem of multiple Waybar instances after reloading the Sway configuration typically arises from conflicting launch methods. The original issue was resolved by addressing both an external Systemd service and the internal configuration logic.</p>
+
+        <h3 id="cause-duplication">1. The Cause of Duplication</h3>
+        <p>The most common causes for duplicate Waybar instances were:</p>
+        <ul>
+            <li>
+                <strong>External Interference:</strong> A <strong>Systemd User Service</strong> (e.g., <code class="inline-code">waybar.service</code>), which is often enabled by default on Fedora, launching Waybar independently of Sway. This instance was unaffected by Sway reloads.
+            </li>
+            <li>
+                <strong>Internal Reload Conflict:</strong> The old <code>exec waybar</code> command in the Sway config file was re-executed every time the configuration was reloaded (via <kbd>$mod+Shift+c</kbd>), creating a new instance without killing the old one.
+            </li>
+            <li>
+                <strong>Conflicting Bar Block:</strong> An earlier issue involved a duplicate <code>bar { ... }</code> block that conflicted with system includes, causing Sway to fail to manage the bar internally.
+            </li>
+        </ul>
+
+        <h3 id="resolution-steps">2. Resolution Steps (The Successful Fix)</h3>
+        <p>If the issue of double Waybars occurs again, follow these steps to ensure only one instance is launched and managed:</p>
+        
+        <h4>Step A: Disable the Systemd Service</h4>
+        <p>This action stops and permanently disables the external, unmanaged Waybar service, which is the root cause of the "ghost" instance.</p>
+        <pre><code><span class="command"># Stop any running service instances</span>
+<span class="command">systemctl --user stop waybar.service</span>
+
+<span class="command"># Disable the service so it does not start on future logins</span>
+<span class="command">systemctl --user disable waybar.service</span>
+
+<span class="command"># Kill any remaining rogue processes</span>
+<span class="command">killall waybar</span></code></pre>
+
+        <h4>Step B: Address Changes in the Sway Configuration</h4>
+        <p>The following changes were made in the <code class="file-path">~/.config/sway/config</code> file to manage Waybar and Swayidle correctly on reload:</p>
+        
+        <ul>
+            <li>
+                <strong>Waybar Launch Change:</strong> The launch command was changed from <code>exec waybar</code> to <strong><code>exec waybar &amp;</code></strong>, ensuring it runs once in the background during initial Sway startup, and avoids duplication on reload (since the ghost Systemd instance is now disabled).
+            </li>
+            <li>
+                <strong>Swayidle Cleanup Added:</strong> The <code>swayidle</code> command was preceded by a <code>killall</code> command to ensure any old instances are terminated before a new one is launched on configuration reload.
+            </li>
+        </ul>
+        <pre><code><span class="comment">&lt;!-- The fixed Waybar launch in the STARTUP section &gt;</span>
+<span class="command">exec waybar &amp;</span>
+
+<span class="comment">&lt;!-- The Swayidle cleanup and launch in the IDLE section &gt;</span>
+<span class="command">exec_always killall swayidle || true</span>
+<span class="command">exec swayidle -w timeout 60 ... [rest of command]</span>
+</code></pre>
+        
+        <p>After performing Step A (Systemd commands), simply reload Sway using the keybind: <kbd>$mod+Shift+c</kbd>.</p>
+
+        <hr>
+
         <h2 id="final-touches">Final Touches &amp; System Cleanup</h2>
 
         <h3 id="ffmpeg-install">Install FFmpeg</h3>
-        <p>Install **FFmpeg**, allowing for package conflicts to be resolved. This is the last step for application installation.</p>
+        <p>Install <strong>FFmpeg</strong>, allowing for package conflicts to be resolved. This is the last step for application installation.</p>
         <pre><code><span class="command">sudo dnf install ffmpeg --allowerasing -y</span></code></pre>
 
         <hr>
 
         <h3 id="dnf-cleanup">Clean DNF Cache and Final Upgrade</h3>
-        <p>Run this final command to **clean up** installation files, **remove unneeded dependencies** (<code class="inline-code">autoremove</code>), and perform one last **full system update** to ensure everything is settled.</p>
+        <p>Run this final command to <strong>clean up</strong> installation files, <strong>remove unneeded dependencies</strong> (<code class="inline-code">autoremove</code>), and perform one last <strong>full system update</strong> to ensure everything is settled.</p>
         <pre><code><span class="command">sudo dnf clean all &amp;&amp; sudo dnf autoremove -y &amp;&amp; sudo dnf upgrade -y --refresh</span></code></pre>
         
         <div class="note">
