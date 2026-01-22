@@ -6,65 +6,104 @@
     <title>My Linux Distro Setups</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom font import for Inter */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-            /* Gradient background for a modern look */
             background: linear-gradient(to right bottom, #4a00e0, #8e2de2);
-            min-height: 100vh; /* Ensure full viewport height */
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem; /* Add some padding for smaller screens */
+            padding: 1rem;
         }
-        /* Styling for the container to center content and add shadow */
+
         .container-card {
-            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
-            backdrop-filter: blur(10px); /* Frosted glass effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border-radius: 1.5rem; /* More rounded corners */
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
-        /* Button styling for hover effects and consistent appearance */
-        .setup-button {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        /* Sleek Horizontal Bar */
+        .distro-bar {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .setup-button:hover {
-            transform: translateY(-3px); /* Lift effect on hover */
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+
+        .distro-bar:hover {
+            transform: translateX(10px);
+            filter: saturate(1.2) brightness(1.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
         }
+
+        /* Icon styling - subtle shadow ensures visibility on similar colors */
+        .distro-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 1.5rem;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .distro-emoji {
+            font-size: 28px;
+            margin-right: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        /* Sleek Brand Colors (slightly offset from logo colors for visibility) */
+        .bg-artix { background-color: #0d8aba; }   /* Deeper Artix Blue */
+        .bg-debian { background-color: #a00030; }  /* Deep Debian Crimson */
+        .bg-fedora { background-color: #21335a; }  /* Midnight Fedora Blue */
+        .bg-printer { background-color: #374151; } /* Slate Gray */
+
     </style>
 </head>
 <body class="antialiased">
-    <div class="container-card w-full max-w-4xl p-8 md:p-12 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+    <div class="container-card w-full max-w-xl p-8 md:p-12 text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-6">
             My Linux Distro Setups
         </h1>
-        <p class="text-lg md:text-xl text-gray-600 mb-10">
-            A centralized collection of my personal Linux distribution configurations, dotfiles, and setup instructions for various machines.
+        <p class="text-lg text-gray-600 mb-10">
+            A centralized collection of my personal Linux distribution configurations and hardware setups.
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="debian/index_debian.html" class="setup-button block p-6 bg-purple-600 text-white rounded-xl hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300">
-                <h2 class="text-2xl font-semibold mb-2">Debian Setups</h2>
-                <p class="text-purple-100 text-sm">Instructions for Debian installations.</p>
+        <div class="flex flex-col text-left">
+            
+            <a href="/my-linux-distro-setups/artix/index_artix.html" class="distro-bar bg-artix">
+                <img src="/my-linux-distro-setups/artix/artix-logo.png" alt="Artix" class="distro-icon">
+                <span class="text-xl">Artix Linux</span>
             </a>
 
-            <a href="fedora/index_fedora.html" class="setup-button block p-6 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                <h2 class="text-2xl font-semibold mb-2">Fedora Setups</h2>
-                <p class="text-blue-100 text-sm">Instructions for Fedora installations.</p>
+            <a href="debian/index_debian.html" class="distro-bar bg-debian">
+                <img src="/my-linux-distro-setups/debian/debian-logo.png" alt="Debian" class="distro-icon">
+                <span class="text-xl">Debian</span>
             </a>
 
-            <a href="printers/" class="setup-button block p-6 bg-green-600 text-white rounded-xl hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
-                <h2 class="text-2xl font-semibold mb-2">Printer Setups</h2>
-                <p class="text-green-100 text-sm">Guides for printer configurations.</p>
+            <a href="fedora/index_fedora.html" class="distro-bar bg-fedora">
+                <img src="/my-linux-distro-setups/fedora/fedora-logo.png" alt="Fedora" class="distro-icon">
+                <span class="text-xl">Fedora</span>
             </a>
+
+            <a href="printers/" class="distro-bar bg-printer">
+                <span class="distro-emoji">🖨️</span>
+                <span class="text-xl">Printer Setups</span>
+            </a>
+
         </div>
 
         <p class="text-sm text-gray-500 mt-10">
-            &copy; 2025 sorryfunnel. All rights reserved.
+            &copy; 2026 sorryfunnel. All rights reserved.
         </p>
     </div>
 </body>
