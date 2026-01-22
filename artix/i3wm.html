@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artix Linux x240 Setup Guide</title>
+    <style>
+        :root {
+            --artix-blue: #1793d1;
+            --artix-dark: #222222;
+            --artix-grey: #333333;
+            --text-light: #f4f4f4;
+            --accent: #00bcd4;
+            --warning: #ff5555;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-light);
+            background-color: var(--artix-dark);
+            margin: 0;
+        }
+
+        #sidebar {
+            width: 280px;
+            background-color: #1a1a1a;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 2px solid var(--artix-blue);
+            padding: 20px 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        #sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            display: block;
+        }
+
+        #sidebar a:hover { background-color: var(--artix-blue); }
+
+        main {
+            margin-left: 320px; 
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+        header { border-bottom: 3px solid var(--artix-blue); margin-bottom: 30px; }
+        h1 { color: var(--artix-blue); margin-top: 0; }
+        
+        section { margin-bottom: 60px; }
+
+        h2 { 
+            color: var(--accent); 
+            font-size: 1.5em;
+            margin-left: 0; 
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--artix-grey);
+        }
+
+        .indent-container {
+            margin-left: 40px;
+            border-left: 1px solid var(--artix-grey);
+            padding-left: 20px;
+        }
+
+        pre {
+            background-color: #000;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #444;
+            color: #00ff00;
+            font-family: "Cascadia Code", "Courier New", monospace;
+            margin: 15px 0;
+        }
+
+        .file-preview {
+            border: 1px solid var(--artix-blue) !important;
+            color: #ffffff !important;
+            background-color: #1a1a1a !important;
+        }
+
+        .nano-comment {
+            color: #ff9800;
+            font-weight: bold;
+            font-style: italic;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .important-note {
+            color: var(--warning);
+            font-weight: bold;
+            border: 1px solid var(--warning);
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        @media screen and (max-width: 900px) {
+            #sidebar { position: static; width: 100%; height: auto; }
+            main { margin-left: 0; padding: 20px; }
+            .indent-container { margin-left: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav id="sidebar">
+    <a href="/my-linux-distro-setups">🏠 Main Setups</a>
+    <a href="/my-linux-distro-setups/artix/index_artix.html">❄️ Artix Linux Setups</a>
+    <div style="padding: 20px; color: var(--artix-blue); font-weight: bold;">SECTIONS</div>
+    <a href="#pre-install">1. Preparation</a>
+    <a href="#internet">2. Internet</a>
+    <a href="#partition">3. Partitioning</a>
+    <a href="#base">4. Base Install</a>
+    <a href="#iso-config">5. ISO Config</a>
+    <a href="#packages">6. Package Install</a>
+    <a href="#bootloader">7. Bootloader & User</a>
+    <a href="#services">8. Service Setup</a>
+    <a href="#audio">9. Audio Setup</a>
+    <a href="#final-gui">10. GUI & Scripts</a>
+    <a href="#trash">11. Trash Setup</a>
+</nav>
+
+<main id="top">
+    <header>
+        <h1>Artix Linux x240 Comprehensive Guide</h1>
+        <p>A strictly complete walkthrough with conditional sudoer power permissions.</p>
+    </header>
+
+    <section id="pre-install">
+        <h2>1. Physical Preparation & Boot</h2>
+        <div class="indent-container">
+            <p>1. Plugin Ethernet cable.</p>
+            <p>2. Boot from Ventoy.</p>
+            <p>3. Login from artix user.</p>
+            <pre>sudo su</pre>
+        </div>
+    </section>
+
+    <section id="internet">
+        <h2>2. Internet Connection (Wi-Fi)</h2>
+        <div class="indent-container">
+            <p>1. Check name of wifi:</p>
+            <pre>ip a</pre>
+            <p>2. Unblock and bring the interface up:</p>
+            <pre>
+rfkill unblock wifi
+ip link set wlan0 up</pre>
+            <p>3. Enter the Connman utility:</p>
+            <pre>connmanctl</pre>
+            <p>4. Inside <code>connmanctl</code>, run these commands in order:</p>
+            <pre>
+scan wifi
+services
+agent on
+connect wifi_(tab)_(input first 3 characters)(tab)
+# Enter passphrase if prompted
+quit</pre>
+            <p>5. Verify connectivity and clear screen:</p>
+            <pre>
+ip a
+ping -c 50 8.8.8.8
+clear</pre>
+        </div>
+    </section>
+
+    <section id="partition">
+        <h2>3. Disk Partitioning</h2>
+        <div class="indent-container">
+            <p>1. Check device name (usually /dev/sda):</p>
+            <pre>lsblk</pre>
+            <p>2. Setup partitions via cfdisk:</p>
+            <pre>sudo cfdisk</pre>
+            <p>3. Format the partitions:</p>
+            <pre>
+mkfs.fat -F32 /dev/sda1
+mkfs.ext4 /dev/sda2</pre>
+            <p>4. Mount and check status:</p>
+            <pre>
+mount /dev/sda2 /mnt
+mkdir -p /mnt/boot/efi
+mount /dev/sda1 /mnt/boot/efi
+lsblk</pre>
+        </div>
+    </section>
+
+    <section id="base">
+        <h2>4. Base System</h2>
+        <div class="indent-container">
+            <p>1. Install base system and drivers:</p>
+            <pre>basestrap /mnt base base-devel runit elogind-runit linux linux-firmware nano intel-ucode</pre>
+            <p>2. Setup filesystems:</p>
+            <pre>
+fstabgen -U /mnt >> /mnt/etc/fstab
+cat /mnt/etc/fstab</pre>
+            <pre>
+clear
+artix-chroot /mnt</pre>
+        </div>
+    </section>
+
+    <section id="iso-config">
+        <h2>5. ISO Configuration (Inside Chroot)</h2>
+        <div class="indent-container">
+            <h3>5.1 Swap File</h3>
+            <p>1. Create 2G swap file:</p>
+            <pre>
+dd if=/dev/zero of=/swapfile bs=1G count=2 status=progress
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile</pre>
+            <span class="nano-comment">Add entry to fstab:</span>
+            <pre>nano /etc/fstab</pre>
+            <pre class="file-preview">/swapfile none swap default 0 0</pre>
+
+            <h3>5.2 Time and Locale</h3>
+            <p>1. Set Timezone:</p>
+            <pre>
+ln -sf /usr/share/zoneinfo/Asia/Manila /etc/localtime
+hwclock --systohc</pre>
+            <span class="nano-comment">Uncomment en_PH.UTF-8 UTF-8 in locale.gen:</span>
+            <pre>nano /etc/locale.gen</pre>
+            <pre class="file-preview">en_PH.UTF-8 UTF-8</pre>
+            <p>2. Generate locale and set language:</p>
+            <pre>
+locale-gen
+nano /etc/locale.conf</pre>
+            <pre class="file-preview">LANG=en_PH.UTF-8</pre>
+
+            <h3>5.3 Hostname and Hosts</h3>
+            <span class="nano-comment">Set machine name to x240:</span>
+            <pre>nano /etc/hostname</pre>
+            <pre class="file-preview">x240</pre>
+            <span class="nano-comment">Add entry to the last line:</span>
+            <pre>nano /etc/hosts</pre>
+            <pre class="file-preview">127.0.1.1 x240.localdomain x240</pre>
+            <p>3. Set root password:</p>
+            <pre>passwd</pre>
+        </div>
+    </section>
+
+    <section id="packages">
+        <h2>6. Package Installation</h2>
+        <div class="indent-container">
+            <p>1. Perform the full package sync:</p>
+            <pre>
+pacman -S linux linux-firmware base-devel grub efibootmgr \
+dosfstools xdg-user-dirs xdg-utils \
+networkmanager networkmanager-runit nm-connection-editor network-manager-applet \
+bluez bluez-runit bluez-utils cups cups-runit \
+xorg-server xorg-xinit xorg-xrandr \
+i3-wm i3status i3lock dmenu \
+foot thunar rofi flatpak pavucontrol \
+pipewire pipewire-pulse pipewire-runit \
+xdg-desktop-portal xdg-desktop-portal-gtk firefox-esr \
+ttf-dejavu ttf-liberation font-awesome noto-fonts-emoji \
+lxappearance</pre>
+        </div>
+    </section>
+
+    <section id="bootloader">
+        <h2>7. Bootloader & User Account</h2>
+        <div class="indent-container">
+            <p>1. Install and update GRUB:</p>
+            <pre>
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg</pre>
+            <p>2. Create user x240 and set password:</p>
+            <pre>
+useradd -mG wheel x240
+passwd x240</pre>
+            
+            <span class="nano-comment">Open the sudoers file to grant wheel permissions:</span>
+            <pre>VISUAL=nano visudo</pre>
+            <p>Locate the wheel group line and uncomment it:</p>
+            <pre class="file-preview">%wheel ALL=(ALL:ALL) ALL</pre>
+
+            <span class="nano-comment">Add the NOPASSWD power commands at the very end of the file:</span>
+            <pre class="file-preview"># Custom power commands for x240
+x240 ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/poweroff, /sbin/reboot</pre>
+
+            <p>3. Finalize and reboot:</p>
+            <pre>
+exit
+umount -R /mnt
+reboot</pre>
+        </div>
+    </section>
+
+    <section id="services">
+        <h2>8. Post-Reboot Service Setup</h2>
+        <div class="indent-container">
+            <p>1. Login as user and enter sudo su.</p>
+            <p>2. Check entries in service directory:</p>
+            <pre>
+cd /run/runit/service
+ls
+cd
+clear</pre>
+            <p>3. Enable network and wifi:</p>
+            <pre>
+ln -s /etc/runit/sv/NetworkManager /run/runit/service/NetworkManager
+nmtui
+ping -c 50 8.8.8.8</pre>
+            <p>4. Unplug LAN Ethernet cable if ping is successful.</p>
+            <p>5. Enable other services and video driver:</p>
+            <pre>
+ln -s /etc/runit/sv/bluetoothd /run/runit/service/bluetoothd
+ln -s /etc/runit/sv/cupsd /run/runit/service/cupsd
+pacman -S xf86-video-intel
+ln -s /etc/runit/sv/dbus /etc/runit/runsvdir/default/</pre>
+        </div>
+    </section>
+
+    <section id="audio">
+        <h2>9. Audio Setup</h2>
+        <div class="indent-container">
+            <p>1. Install bridges and engines:</p>
+            <pre>sudo pacman -S pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber alsa-utils</pre>
+            <div class="important-note">IMPORTANT: When prompted to remove jack2 in favor of pipewire-jack, choose 'y'.</div>
+            <p>2. Configure realtime priority:</p>
+            <pre>
+sudo groupadd realtime
+sudo usermod -aG audio,realtime x240
+sudo mkdir -p /etc/security/limits.d
+sudo nano /etc/security/limits.d/99-realtime.conf</pre>
+            <pre class="file-preview">
+@realtime           -       rtprio          98
+@realtime           -       memlock         unlimited</pre>
+            <p>3. Unmute the card via Alsamixer:</p>
+            <pre>sudo alsactl init</pre>
+            <span class="nano-comment">Open alsamixer -c 1. Press M on Master, Headphone, and Speaker until they show 'OO'. Set Auto-Mute to Disabled.</span>
+        </div>
+    </section>
+
+    <section id="final-gui">
+        <h2>10. GUI & Scripts</h2>
+        <div class="indent-container">
+            <p>1. Install additional GUI tools:</p>
+            <pre>sudo pacman -S thunar mpv thunar-volman kitty</pre>
+            <p>2. Apply Kitty Theme:</p>
+            <pre>kitty +kitten themes --theme "Adventure Time"</pre>
+            <h3>10.1 Startup Scripts</h3>
+            <span class="nano-comment">Create the Pipewire automation script:</span>
+            <pre>nano ~/.start-pipewire.sh</pre>
+            <pre class="file-preview">
+#!/bin/sh
+killall pipewire wireplumber pipewire-pulse 2>/dev/null
+/usr/bin/pipewire &
+/usr/bin/pipewire-pulse &
+/usr/bin/wireplumber &</pre>
+            <pre>chmod +x ~/.start-pipewire.sh</pre>
+
+            <span class="nano-comment">Configure the Xinitrc:</span>
+            <pre>nano ~/.xinitrc</pre>
+            <pre class="file-preview">
+# Update/Sync XDG User Directories
+xdg-user-dirs-update &
+
+# Set Kitty as default terminal
+export TERMINAL=kitty
+
+# This script handles the timing of pipewire/wireplumber for you
+if [ -f /usr/bin/artix-pipewire-launcher ]; then
+    /usr/bin/artix-pipewire-launcher &
+fi
+
+# Start Pipewire
+~/.start-pipewire.sh &
+
+# This is the "secret sauce" that fixes the "NoReply" errors
+exec dbus-launch --sh-syntax --exit-with-session i3</pre>
+        </div>
+    </section>
+
+    <section id="trash">
+        <h2>11. Trash Setup</h2>
+        <div class="indent-container">
+            <p>1. Install and enable GVFS/D-Bus:</p>
+            <pre>
+sudo pacman -S gvfs
+sudo mkdir -p /var/service
+sudo ln -s /etc/runit/sv/dbus /var/service/
+sudo sv status dbus
+sudo reboot</pre>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
