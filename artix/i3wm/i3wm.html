@@ -125,8 +125,7 @@
     <a href="#bootloader">7. Bootloader & User</a>
     <a href="#services">8. Service Setup</a>
     <a href="#audio">9. Audio Setup</a>
-    <a href="#final-gui">10. GUI & Scripts</a>
-    <a href="#trash">11. Trash Setup</a>
+    <a href="#trash">10. Trash Setup</a>
 </nav>
 
 <main id="top">
@@ -182,10 +181,10 @@ clear</pre>
             <p>3. Format the partitions:</p>
             <pre>
 mkfs.fat -F32 /dev/sda1
-mkfs.ext4 /dev/sda2</pre>
+mkfs.ext4 /dev/sda3</pre>
             <p>4. Mount and check status:</p>
             <pre>
-mount /dev/sda2 /mnt
+mount /dev/sda3 /mnt
 mkdir -p /mnt/boot/efi
 mount /dev/sda1 /mnt/boot/efi
 lsblk</pre>
@@ -252,17 +251,23 @@ nano /etc/locale.conf</pre>
         <div class="indent-container">
             <p>1. Perform the full package sync:</p>
             <pre>
-pacman -S linux linux-firmware base-devel grub efibootmgr \
-dosfstools xdg-user-dirs xdg-utils \
-networkmanager networkmanager-runit nm-connection-editor network-manager-applet \
+pacman -S grub efibootmgr noto-fonts-cjk\
+dosfstools xdg-user-dirs xdg-utils btop \
+networkmanager networkmanager-runit xterm \
+nm-connection-editor network-manager-applet \
 bluez bluez-runit bluez-utils cups cups-runit \
-xorg-server xorg-xinit xorg-xrandr \
-i3-wm i3status i3lock dmenu \
-foot thunar rofi flatpak pavucontrol \
-pipewire pipewire-pulse pipewire-runit \
-xdg-desktop-portal xdg-desktop-portal-gtk firefox-esr \
-ttf-dejavu ttf-liberation font-awesome noto-fonts-emoji \
-lxappearance</pre>
+xorg-server xorg-xinit blueman noto-fonts-extra\
+i3-wm i3status i3lock mousepad engrampa \
+thunar rofi flatpak pavucontrol pipewire-alsa \
+pipewire pipewire-pulse gvfs pipewire-jack \
+xdg-desktop-portal xdg-desktop-portal-gtk \
+firefox-esr alsa-utils mpv thunar-volman \
+ttf-dejavu ttf-liberation noto-fonts-emoji \
+lxappearance noto-fonts wireplumber \
+xfce4-screenshooter xf86-video-intel \
+libreoffice-still gnome-themes-extra \
+papirus-icon-theme artix-archilinux-support \
+            </pre>
         </div>
     </section>
 
@@ -315,7 +320,6 @@ ping -c 50 8.8.8.8</pre>
             <pre>
 ln -s /etc/runit/sv/bluetoothd /run/runit/service/bluetoothd
 ln -s /etc/runit/sv/cupsd /run/runit/service/cupsd
-pacman -S xf86-video-intel
 ln -s /etc/runit/sv/dbus /etc/runit/runsvdir/default/</pre>
         </div>
     </section>
@@ -325,11 +329,11 @@ ln -s /etc/runit/sv/dbus /etc/runit/runsvdir/default/</pre>
         <div class="indent-container">
             <p>1. Install bridges and engines:</p>
             <pre>sudo pacman -S pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber alsa-utils</pre>
-            <div class="important-note">IMPORTANT: When prompted to remove jack2 in favor of pipewire-jack, choose 'y'.</div>
+            <div class="important-note">IMPORTANT: THIS PACKAGES SHOULD HAVE ALREADY BEEN INSTALLED EARLIER. When prompted to remove jack2 in favor of pipewire-jack, choose 'y'.</div>
             <p>2. Configure realtime priority:</p>
             <pre>
 sudo groupadd realtime
-sudo usermod -aG audio,realtime x240
+sudo usermod -aG audio,realtime,video,input,storage,optical x240
 sudo mkdir -p /etc/security/limits.d
 sudo nano /etc/security/limits.d/99-realtime.conf</pre>
             <pre class="file-preview">
@@ -341,52 +345,11 @@ sudo nano /etc/security/limits.d/99-realtime.conf</pre>
         </div>
     </section>
 
-    <section id="final-gui">
-        <h2>10. GUI & Scripts</h2>
-        <div class="indent-container">
-            <p>1. Install additional GUI tools:</p>
-            <pre>sudo pacman -S thunar mpv thunar-volman kitty</pre>
-            <p>2. Apply Kitty Theme:</p>
-            <pre>kitty +kitten themes --theme "Adventure Time"</pre>
-            <h3>10.1 Startup Scripts</h3>
-            <span class="nano-comment">Create the Pipewire automation script:</span>
-            <pre>nano ~/.start-pipewire.sh</pre>
-            <pre class="file-preview">
-#!/bin/sh
-killall pipewire wireplumber pipewire-pulse 2>/dev/null
-/usr/bin/pipewire &
-/usr/bin/pipewire-pulse &
-/usr/bin/wireplumber &</pre>
-            <pre>chmod +x ~/.start-pipewire.sh</pre>
-
-            <span class="nano-comment">Configure the Xinitrc:</span>
-            <pre>nano ~/.xinitrc</pre>
-            <pre class="file-preview">
-# Update/Sync XDG User Directories
-xdg-user-dirs-update &
-
-# Set Kitty as default terminal
-export TERMINAL=kitty
-
-# This script handles the timing of pipewire/wireplumber for you
-if [ -f /usr/bin/artix-pipewire-launcher ]; then
-    /usr/bin/artix-pipewire-launcher &
-fi
-
-# Start Pipewire
-~/.start-pipewire.sh &
-
-# This is the "secret sauce" that fixes the "NoReply" errors
-exec dbus-launch --sh-syntax --exit-with-session i3</pre>
-        </div>
-    </section>
-
     <section id="trash">
-        <h2>11. Trash Setup</h2>
+        <h2>10. Trash Setup</h2>
         <div class="indent-container">
-            <p>1. Install and enable GVFS/D-Bus:</p>
+            <p>1. Enable GVFS/D-Bus:</p>
             <pre>
-sudo pacman -S gvfs
 sudo mkdir -p /var/service
 sudo ln -s /etc/runit/sv/dbus /var/service/
 sudo sv status dbus
