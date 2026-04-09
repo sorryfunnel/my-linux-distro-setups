@@ -126,6 +126,13 @@
     <a href="#services">8. Service Setup</a>
     <a href="#audio">9. Audio Setup</a>
     <a href="#trash">10. Trash Setup</a>
+    <a href="#i3-launch">11. i3wm Launch</a>
+    <a href="#grub-edit">12. Edit GRUB</a>
+    <a href="#reboot-i3">13. Boot into i3</a>
+    <a href="#i3-config">14. i3 Config Files</a>
+    <a href="#repos">15. Add Repositories</a>
+    <a href="#dark-mode">16. Set Dark Mode</a>
+    <a href="#audio-fix">17. Fix Audio Issues</a>
 </nav>
 
 <main id="top">
@@ -356,6 +363,165 @@ sudo sv status dbus
 sudo reboot</pre>
         </div>
     </section>
+
+<section id="i3-launch">
+        <h2>11. Setting up i3wm Launch</h2>
+        <div class="indent-container">
+            <h3>11.1 Initial Reboot</h3>
+            <p>1. Reboot the system:</p>
+            <pre>sudo reboot</pre>
+            <p>2. Login as the <b>x240</b> user. <b>Do not</b> launch i3 through startx yet.</p>
+
+            <h3>11.2 Mount Extended Partition</h3>
+            <p>1. Create mount point and set permissions:</p>
+            <pre>
+sudo mkdir -p /mnt/Extended
+sudo chown x240:x240 /mnt/Extended
+sudo chmod 755 /mnt/Extended</pre>
+            <p>2. Edit the filesystem table:</p>
+            <pre>sudo nano /etc/fstab</pre>
+            <span class="nano-comment">Add the following entry:</span>
+            <pre class="file-preview">
+# /dev/sda4
+LABEL=Extended /mnt/Extended ext4 defaults,errors=remount-ro,user,exec 0 2</pre>
+            <p>3. Mount the partition and reboot:</p>
+            <pre>
+sudo mount -a
+sudo reboot</pre>
+
+            <h3>11.3 Copy Dotfiles</h3>
+            <p>1. Login (do not launch startx) and copy hidden configuration files from the extended partition:</p>
+            <pre>cp -r /mnt/Extended/"Artix dotfiles"/.* /home/x240/</pre>
+
+            <h3>11.4 Scripts and Resources</h3>
+            <p>1. Merge X resources and make the audio script executable:</p>
+            <pre>
+xrdb -merge ~/.Xresources
+chmod +x ~/.start-pipewire.sh</pre>
+        </div>
+    </section>
+
+    <section id="grub-edit">
+        <h2>12. Edit GRUB</h2>
+        <div class="indent-container">
+            <p>1. Open the GRUB configuration from the TTY:</p>
+            <pre>sudo nano /etc/default/grub</pre>
+            <p>2. Apply the following changes:</p>
+            <ul>
+                <li>Remove <code>quiet</code> from <code>GRUB_CMDLINE_LINUX_DEFAULT</code></li>
+                <li>Uncomment <code>GRUB_TERMINAL_OUTPUT=console</code></li>
+                <li>Set <code>GRUB_GFXMODE=1366x768x32,1024x768,auto</code></li>
+            </ul>
+            <p>3. Update the bootloader:</p>
+            <pre>sudo grub-mkconfig -o /boot/grub/grub.cfg</pre>
+        </div>
+    </section>
+
+    <section id="reboot-i3">
+        <h2>13. Reboot into i3wm</h2>
+        <div class="indent-container">
+            <pre>sudo reboot</pre>
+            <p>This should prompt you to i3wm automatically after logging in. Proceed to set the i3 config when prompted.</p>
+        </div>
+    </section>
+
+    <section id="i3-config">
+        <h2>14. Copy i3 Config Files</h2>
+        <div class="indent-container">
+            <p>1. Copy specific i3 settings:</p>
+            <pre>
+mkdir -p /home/x240/.config/i3/
+cp -r /mnt/Extended/"Artix dotfiles"/i3/* /home/x240/.config/i3/</pre>
+            <p>2. Refresh i3 and reboot:</p>
+            <p>Press <b>Shift+Mod+R</b> to reload, then:</p>
+            <pre>sudo reboot</pre>
+        </div>
+    </section>
+
+    <section id="repos">
+        <h2>15. Add Repositories</h2>
+        <div class="indent-container">
+            <p>1. Login to i3 and open pacman config:</p>
+            <pre>sudo nano /etc/pacman.conf</pre>
+            <span class="nano-comment">Add these lines to the very end of the file:</span>
+            <pre class="file-preview">
+# Artix Linux Repositories
+[universe]
+Server = https://universe.artixlinux.org/$arch
+Server = https://mirror1.artixlinux.org/universe/$arch
+Server = https://mirror.pascalpuffke.de/artix-universe/$arch
+
+# Arch Linux repositories
+[extra]
+Include = /etc/pacman.d/mirrorlist-arch
+
+[multilib]
+Include = /etc/pacman.d/mirrorlist-arch</pre>
+            <p>2. Initialize keys and sync:</p>
+            <pre>
+sudo pacman-key --init
+sudo pacman-key --populate artix
+sudo pacman-key --populate archlinux
+sudo pacman -Syy && sudo pacman -Syu</pre>
+        </div>
+    </section>
+
+    <section id="dark-mode">
+        <h2>16. Set to Dark Mode</h2>
+        <div class="indent-container">
+            <p>1. <b>GTK Settings:</b> Launch <code>lxappearance</code> via rofi.</p>
+            <ul>
+                <li>Widgets: Adwaita-dark</li>
+                <li>Icon Themes: Papirus-Dark</li>
+            </ul>
+            <p>2. <b>QT Settings:</b> Launch <code>qt5ct</code> and <code>qt6ct</code> via rofi.</p>
+            <ul>
+                <li>Style: Fusion</li>
+                <li>Color Scheme: darker</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="audio-fix">
+        <h2>17. Fix Audio Issues</h2>
+        <div class="indent-container">
+            <p>1. Create Wireplumber configuration:</p>
+            <pre>
+mkdir -p ~/.config/wireplumber/wireplumber.conf.d/
+nano ~/.config/wireplumber/wireplumber.conf.d/50-alsa-config.conf</pre>
+            <pre class="file-preview">
+monitor.alsa.rules = [
+  {
+    matches = [
+      {
+        node.name = "~alsa_output.pci.*.analog-stereo"
+      }
+    ]
+    actions = {
+      update-props = {
+        priority.driver = 1000
+        priority.session = 1000
+      }
+    }
+  }
+]</pre>
+            <p>2. Restart audio services:</p>
+            <pre>
+killall -9 pipewire pipewire-pulse wireplumber
+rm -rf ~/.local/state/pipewire
+~/.start-pipewire.sh</pre>
+            <p>3. Verify the sink:</p>
+            <pre>pactl list sinks short</pre>
+            <p>The issue is resolved if you see a line starting with <code>alsa_output.pci...analog-stereo</code>.</p>
+            <div class="important-note">
+                If video plays without sound: Ensure earphones are plugged in and pavucontrol is not muted. 
+                If issues persist, run:
+                <pre style="color:white">pactl set-sink-mute @DEFAULT_SINK@ 0
+pactl set-sink-volume @DEFAULT_SINK@ 70%</pre>
+            </div>
+        </div>
+    </section>
+    
 </main>
 
 </body>
