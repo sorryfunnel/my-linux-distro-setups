@@ -134,6 +134,7 @@
     <a href="#dark-mode">16. Set Dark Mode</a>
     <a href="#audio-fix">17. Fix Audio Issues</a>
     <a href="#brightness">18. Permanent Brightness</a>
+    <a href="#firefox-fix">19. Firefox Optimization</a>
 </nav>
 
 <main id="top">
@@ -552,6 +553,44 @@ brightnessctl get > /var/lib/brightness 2>/dev/null</pre>
             
             <div class="important-note">
                 Note: Ensure <b>brightnessctl</b> is installed. If not, run: <code>sudo pacman -S brightnessctl</code>.
+            </div>
+        </div>
+    </section>
+
+    <section id="firefox-fix">
+        <h2>19. Addressing Firefox Performance Issues</h2>
+        <div class="indent-container">
+            <p>If Firefox is lagging or consuming too much CPU on your x240, follow these steps to optimize hardware usage and process overhead.</p>
+
+            <h3>19.1 Disable Performance Settings</h3>
+            <p>1. Open Firefox and navigate to <b>Settings</b> (or type <code>about:preferences</code> in the address bar).</p>
+            <p>2. Search for "Performance" in the search bar.</p>
+            <p>3. Untick the following options:</p>
+            <ul>
+                <li>Use recommended performance settings</li>
+                <li>Use hardware acceleration when available</li>
+            </ul>
+
+            <h3>19.2 Limit Content Processes</h3>
+            <p>This forces tabs into fewer processes, saving significant memory and CPU overhead at the cost of slight tab-switching speed.</p>
+            <p>1. Type <code>about:config</code> in the address bar and click "Accept the Risk and Continue".</p>
+            <p>2. Search for the following preference:</p>
+            <pre class="file-preview">dom.ipc.processCount</pre>
+            <p>3. Set its value to <b>1</b> or <b>2</b>.</p>
+
+            <h3>19.3 Graphics Driver Optimization (Intel x240 Specific)</h3>
+            <p>Force Firefox to use the GPU more efficiently rather than dumping the load on the CPU.</p>
+            <p>1. In <code>about:config</code>, find and set the following values to <b>true</b>:</p>
+            <pre class="file-preview">
+layers.acceleration.force-enabled = true
+gfx.webrender.all = true</pre>
+
+            <h3>19.4 Finalize and Test</h3>
+            <p>1. Close all instances of Firefox completely.</p>
+            <p>2. Relaunch Firefox and test performance by playing a YouTube video.</p>
+            
+            <div class="important-note">
+                Note: If video playback becomes choppy after these changes, try toggling <b>layers.acceleration.force-enabled</b> back to false while keeping <b>gfx.webrender.all</b> enabled.
             </div>
         </div>
     </section>
