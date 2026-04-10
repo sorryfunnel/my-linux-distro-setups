@@ -278,7 +278,7 @@ lxappearance noto-fonts wireplumber pasystray \
 xfce4-screenshooter xf86-video-intel qt6ct \
 libreoffice-still gnome-themes-extra qt5ct \
 papirus-icon-theme artix-archlinux-support \
-brightnessctl xorg-xrandr\
+brightnessctl xorg-xrandr xorg-xset xss-lock \
             </pre>
         </div>
     </section>
@@ -332,6 +332,7 @@ ping -c 50 8.8.8.8</pre>
             <pre>
 ln -s /etc/runit/sv/bluetoothd /run/runit/service/bluetoothd
 ln -s /etc/runit/sv/cupsd /run/runit/service/cupsd
+ln -s /etc/runit/sv/elogind /run/runit/service/
 ln -s /etc/runit/sv/dbus /etc/runit/runsvdir/default/</pre>
         </div>
     </section>
