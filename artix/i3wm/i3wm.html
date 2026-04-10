@@ -133,6 +133,7 @@
     <a href="#repos">15. Add Repositories</a>
     <a href="#dark-mode">16. Set Dark Mode</a>
     <a href="#audio-fix">17. Fix Audio Issues</a>
+    <a href="#brightness">18. Permanent Brightness</a>
 </nav>
 
 <main id="top">
@@ -518,6 +519,39 @@ rm -rf ~/.local/state/pipewire
                 If issues persist, run:
                 <pre style="color:white">pactl set-sink-mute @DEFAULT_SINK@ 0
 pactl set-sink-volume @DEFAULT_SINK@ 70%</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="brightness">
+        <h2>18. Make Brightness Permanent</h2>
+        <div class="indent-container">
+            <p>To ensure your brightness level persists after a reboot, we will configure the runit initialization and stage scripts.</p>
+            
+            <h3>18.1 Restore Brightness on Boot</h3>
+            <p>1. Open the runit stage 1 script:</p>
+            <pre>sudo nano /etc/runit/1</pre>
+            <span class="nano-comment">Add this to the very last line of the file:</span>
+            <pre class="file-preview">
+# Restore brightness level if the saved file exists
+[ -f /var/lib/brightness ] && brightnessctl set $(cat /var/lib/brightness)</pre>
+
+            <h3>18.2 Save Brightness on Shutdown</h3>
+            <p>1. Open the runit stage 3 script:</p>
+            <pre>sudo nano /etc/runit/3</pre>
+            <span class="nano-comment">Add these lines at the very top of the file:</span>
+            <pre class="file-preview">
+#!/bin/bash
+
+PATH=/usr/bin:/usr/sbin
+
+. /usr/lib/rc/functions
+
+# Save brightness before stopping services
+brightnessctl get > /var/lib/brightness 2>/dev/null</pre>
+            
+            <div class="important-note">
+                Note: Ensure <b>brightnessctl</b> is installed. If not, run: <code>sudo pacman -S brightnessctl</code>.
             </div>
         </div>
     </section>
