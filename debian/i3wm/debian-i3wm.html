@@ -791,16 +791,7 @@ load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sin
                 <li><strong>Name:</strong> `Open New Terminal Here` (or a name of your choice)</li>
                 <li><strong>Description:</strong> `Open a new xterm terminal in the current directory`</li>
                 <li><strong>Command:</strong>
-                    <pre><code>xterm -e "cd %f && exec xterm"</code></pre>
-                    <ul class="list-circle list-inside ml-4 mt-2">
-                        <li>`xterm`: Calls the `xterm` terminal emulator.</li>
-                        <li>`-e`: Tells `xterm` to execute a command.</li>
-                        <li>`"cd %f && exec xterm"`: This is the command `xterm` will execute.
-                            <ul class="list-square list-inside ml-4">
-                                <li>`cd %f`: `%f` is a Thunar placeholder that expands to the path of the selected folder. This changes the directory within the `xterm` instance.</li>
-                                <li>`&&`: A shell operator; executes the next command only if the previous one was successful.</li>
-                                <li>`exec xterm`: Replaces the current shell process with a new `xterm` process, keeping the terminal open and interactive.</li>
-                            </ul>
+                    <pre><code>sh -c "cd %f && exec xterm"</code></pre>
                         </li>
                     </ul>
                 </li>
