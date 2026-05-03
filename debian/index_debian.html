@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debian Setups - My Linux Distro Setups</title>
-    <!-- Tailwind CSS CDN for easy styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom font import for Inter */
@@ -39,7 +38,6 @@
     </style>
 </head>
 <body class="antialiased">
-    <!-- Main container for the content, centered on the page -->
     <div class="container-card w-full max-w-2xl p-8 md:p-12 text-center">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
             Debian Installation Guides
@@ -48,9 +46,7 @@
             Choose from the available Debian setup configurations below:
         </p>
 
-        <!-- Grid layout for the navigation buttons -->
         <div class="grid grid-cols-1 gap-6">
-            <!-- Debian Headless qBittorrent Button -->
             <a href="headless-qbittorrent/debian-server-qbittorrent.html" class="setup-button block p-6 bg-purple-600 text-white rounded-xl hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-300">
                 <h2 class="text-2xl font-semibold mb-2">Headless qBittorrent Server</h2>
                 <p class="text-purple-100 text-sm">
@@ -58,16 +54,21 @@
                 </p>
             </a>
 
-            <!-- Debian i3WM Desktop Button -->
-            <a href="i3wm/debian-i3wm.html" class="setup-button block p-6 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+            <a href="i3wm/debian_i3wm_zoomrecording.html" class="setup-button block p-6 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
                 <h2 class="text-2xl font-semibold mb-2">Debian with i3 Window Manager</h2>
                 <p class="text-blue-100 text-sm">
-                    Guide for a minimal Debian installation featuring the i3 tiling window manager (no full desktop environment).
+                    A minimal Debian installation guide optimized for <strong>Zoom meetings</strong>, <strong>SimpleScreenRecorder</strong>, and GUI-based document editing and browsing.
                 </p>
             </a>
         </div>
 
-        <!-- Back to Home Button -->
+        <div class="mt-12 pt-8 border-t border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Archive</h3>
+            <a href="i3wm/debian-i3wm.html" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                View Old Debian i3WM Guide (Legacy)
+            </a>
+        </div>
+
         <div class="mt-10">
             <a href="../index.html" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
                 &larr; Back to Main Setups
