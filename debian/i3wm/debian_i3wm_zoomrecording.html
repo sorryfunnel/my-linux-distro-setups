@@ -149,6 +149,7 @@ Meant for <strong>Zoom Meetings</strong> and <strong>SimpleScreenRecorder</stron
         <a href="#reboot">Reboot System</a>
         <a href="#scripts">Execute Scripts</a>
         <a href="#mount">Mount Partition</a>
+        <a href="#network">NetworkManager Fix</a>
         <a href="#theming">Dark Mode & Icons</a>
         <a href="#hardware">Power Management</a>
         <a href="#apps">LibreOffice & Apps</a>
@@ -183,7 +184,7 @@ ejmevardo ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/poweroff, /sbin/reboot</pre>
         <pre>sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</pre>
     </section>
 
-    <section id="reboo">
+    <section id="reboot">
         <h2>Reboot Session</h2>
         <pre>sudo reboot</pre>
     </section>
@@ -205,6 +206,25 @@ sudo chmod 755 /mnt/Extended</pre>
         <pre>sudo systemctl daemon-reload && sudo mount -a</pre>
     </section>
 
+    <section id="network">
+        <h2>Fix the NetworkManager applet issue</h2>
+        <h3>Remove existing internet connection configuration</h3>
+        <pre>sudo nano /etc/network/interfaces</pre>
+        <pre>auto lo
+iface lo inet loopback
+
+# Comment out everything below this line
+# allow-hotplug wlp6s0
+# iface wlp6s0 inet dhcp
+#    Comment out existing lines, usually Wifi credentials</pre>
+        <h3>Edit network configuration file</h3>
+        <pre>sudo nano /etc/NetworkManager/NetworkManager.conf</pre>
+        <p>Find the line from that file and change its value to <strong>true</strong></p>
+        <pre>
+[ifupdown]
+managed=true</pre>
+    </section>
+    
     <section id="theming">
         <h2>Interface & Icon Theming</h2>
         <h3>Global Dark Mode</h3>
@@ -223,8 +243,8 @@ gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'</pre>
     <section id="hardware">
         <h2>Power Management & Visual Cues</h2>
         <ul>
-            <li><strong>On Battery:</strong> Screen dims to 50% at 30 seconds.</li>
-            <li><strong>Plugged In:</strong> Screen dims to 20% at 10 seconds.</li>
+            <li><strong>On Battery:</strong> Display power management: Put to sleep after <strong>One minute</strong>, Switch off after <strong>2 minutes</strong>; Brightness reduction: On inactivity reduce to <strong>10%</strong>, Reduce after <strong>20 seconds</strong></li>
+            <li><strong>Plugged In:</strong> Display power management: Put to sleep after <strong>One minute</strong>, Switch off after <strong>20 minutes</strong>; Brightness reduction: On inactivity reduce to <strong>10%</strong>, Reduce after <strong>30 seconds</strong></li>
         </ul>
         <div class="note">
             Move the mouse to reset the timer if the screen dims while reading.
