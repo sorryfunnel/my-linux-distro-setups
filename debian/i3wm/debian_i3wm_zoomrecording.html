@@ -290,18 +290,24 @@ gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'</pre>
         <div class="note">
                 Important: You'll need to do this for each application whose sound you want to capture during your recording session.
         </div>
+        </ul>
         <h3>Adjust Volumes in `pavucontrol`</h3>
+        <ul>
             <li>While recording, you might need to fine-tune the levels:</li>
             <li>"Recording" Tab in `pavucontrol`: You'll see SimpleScreenRecorder listed. Adjust the overall recording volume here.</li>
             <li>"Input Devices" Tab in `pavucontrol`: Adjust the volume slider for your `Built-in Audio Analog Stereo` (your microphone) to ensure your voice is captured at an appropriate level relative to the system audio.</li>
             <li>"Playback" Tab in `pavucontrol`: Ensure the volume for the applications routed to `Combined_Audio_for_Recording` is at a good level.</li>
+        </ul>
         <h3>Start and Test Your Recording</h3>
+        <ul>
             <li>Go back to SimpleScreenRecorder.</li>
             <li>Start your recording.</li>
             <li>Play some system audio and speak into your microphone.</li>
             <li>Stop the recording gracefully in SimpleScreenRecorder.</li>
             <li>Play the recorded video file with MPV and verify that both your system audio and microphone audio are present and at acceptable levels.</li>
+        </ul>
         <h3>Making the Setup Permanent Across Reboots (Recommended)</h3>
+        <ul>
             <pre>sudo nano /etc/pulse/default.pa</pre>
             <p>Add the following lines to the end of the file:</p>
             <pre>### For SimpleScreenRecorder - Combined Audio Input ###
@@ -309,7 +315,8 @@ load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 ra
 load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</pre>
             <p>Save the file (Ctrl+O, Enter) and exit nano (Ctrl+X).</p>
             <p>Finally, reboot your system.</p>
-            <pre>sudo reboot</pre>    
+            <pre>sudo reboot</pre>
+        </ul>
     </section>
 
     <section id="thunar">
