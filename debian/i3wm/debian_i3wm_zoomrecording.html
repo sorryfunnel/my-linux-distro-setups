@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debian i3 Setup Guide - Dell Inspiron 14 3458</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #fdfaf6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        /* Sticky Header & Navigation Section */
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #fdfaf6;
+            border-bottom: 3px solid #d70a53;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header {
+            padding: 10px 20px;
+        }
+
+        h1 {
+            color: #d70a53;
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        nav {
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+            background: #fff;
+            padding: 10px 0;
+            scrollbar-width: thin;
+        }
+        
+        nav::-webkit-scrollbar {
+            height: 4px;
+        }
+        nav::-webkit-scrollbar-thumb {
+            background: #d70a53;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #d70a53;
+            text-decoration: none;
+            padding: 0 15px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            border-right: 1px solid #d70a53;
+            flex-shrink: 0;
+        }
+
+        nav a:last-child {
+            border-right: none;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* DYNAMIC OFFSET: Responds to header height */
+        section {
+            scroll-margin-top: var(--header-height, 120px); 
+        }
+
+        h2 {
+            color: #d70a53;
+            border-left: 5px solid #d70a53;
+            padding-left: 10px;
+            margin-top: 35px;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #444;
+            margin-top: 25px;
+            border-bottom: 1px dotted #ccc;
+            font-size: 1.2rem;
+        }
+
+        pre {
+            background-color: #CCCCCC;
+            color: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;       
+            word-wrap: break-word;       
+            border-left: 4px solid #d70a53;
+            margin: 15px 0;
+        }
+
+        .note {
+            background: #fff3f3;
+            border: 1px solid #d70a53;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-block {
+            margin-bottom: 20px;
+            padding-left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 0.8rem;
+            color: #888;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sticky-wrapper" id="main-header">
+    <header>
+        <h1>Debian i3wm Workflow</h1>
+        <div class="subtitle">Installation Guide for <strong>Dell Inspiron 14 3458 <i>(with 128 GB SSD)</i></strong> <br>
+Meant for <strong>Zoom Meetings</strong> and <strong>SimpleScreenRecorder</strong> compatibility (with <strong>dmenu</strong> as application launcher), as well Basic GUI-oriented productivity work routine, featuring <strong>evince</strong>, <strong>ristretto</strong>, and so on. </div>
+    </header>
+    <nav>
+        <a href="#update">Update & Core Apps</a>
+        <a href="#sudo">User & Sudo Rights</a>
+        <a href="#flathub">Flathub Setup</a>
+        <a href="#scripts">Execute Scripts</a>
+        <a href="#mount">Mount Partition</a>
+        <a href="#theming">Dark Mode & Icons</a>
+        <a href="#hardware">Power Management</a>
+        <a href="#apps">LibreOffice & Apps</a>
+        <a href="#audio">Combined Audio</a>
+        <a href="#thunar">Thunar Terminal Fix</a>
+    </nav>
+</div>
+
+<div class="content">
+
+    <section id="update">
+        <h2>Update System & Core Packages</h2>
+        <p>Ensure the local package index is updated and all existing software is upgraded before adding new packages.</p>
+        <pre>apt update && apt upgrade -y</pre>
+        <p>Comprehensive installation list for productivity, media, and document management:</p>
+        <pre>apt install -y sudo i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw mpv simplescreenrecorder xfce4-screenshooter ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei fonts-arphic-uming fonts-arphic-ukai firefox-esr engrampa pspp xfce4-power-manager papirus-icon-theme lxappearance gnome-disk-utility network-manager network-manager-gnome evince ristretto system-config-printer cups pa-applet libreoffice-gtk3 gnome-themes-extra adwaita-icon-theme adwaita-qt adwaita-qt6 qt5ct qgnomeplatform-qt5 dconf-cli libglib2.0-bin libreoffice-style-elementary -y</pre>
+    </section>
+
+    <section id="sudo">
+        <h2>User Account & Sudo Configuration</h2>
+        <p>Add your user account to the sudo group:</p>
+        <pre>usermod -aG sudo ejmevardo</pre>
+        <h3>Passwordless Power Management</h3>
+        <pre>sudo visudo</pre>
+        <p>Append the following line to the end of the file:</p>
+        <pre># Allow passwordless power commands for ejmevardo user
+ejmevardo ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/poweroff, /sbin/reboot</pre>
+    </section>
+
+    <section id="flathub">
+        <h2>Flatpak & Flathub Support</h2>
+        <pre>sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</pre>
+    </section>
+
+    <section id="scripts">
+        <h2>Initialization of Custom Scripts</h2>
+        <p>Ensure scripts for session initialization and system dialogs are executable:</p>
+        <pre>chmod +x ~/.xinitrc && chmod +x ~/.config/i3/scripts/lock_and_dim.sh && chmod +x ~/.config/i3/scripts/exit_dialog.sh</pre>
+    </section>
+
+    <section id="mount">
+        <h2>Mounting the Extended Data Partition</h2>
+        <p>Locate the correct partition via <code>sudo blkid</code>, then create the mount point:</p>
+        <pre>sudo mkdir -p /mnt/Extended
+sudo chown ejmevardo:ejmevardo /mnt/Extended
+sudo chmod 755 /mnt/Extended</pre>
+        <p>Update <code>/etc/fstab</code> for permanent mounting:</p>
+        <pre>LABEL=Extended /mnt/Extended ext4 defaults,errors=remount-ro,user,exec 0 2</pre>
+        <pre>sudo systemctl daemon-reload && sudo mount -a</pre>
+    </section>
+
+    <section id="theming">
+        <h2>Interface & Icon Theming</h2>
+        <h3>Global Dark Mode</h3>
+        <pre>gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface icon-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'</pre>
+
+        <h3>Lxappearance & Papirus-Dark Icons</h3>
+        <p>Open <code>lxappearance</code> and apply the following:</p>
+        <ul>
+            <li><strong>Widget:</strong> Adwaita-dark</li>
+            <li><strong>Icon Theme:</strong> Papirus-Dark</li>
+        </ul>
+    </section>
+
+    <section id="hardware">
+        <h2>Power Management & Visual Cues</h2>
+        <ul>
+            <li><strong>On Battery:</strong> Screen dims to 50% at 30 seconds.</li>
+            <li><strong>Plugged In:</strong> Screen dims to 20% at 10 seconds.</li>
+        </ul>
+        <div class="note">
+            Move the mouse to reset the timer if the screen dims while reading.
+        </div>
+    </section>
+
+    <section id="apps">
+        <h2>Specific Application Configuration</h2>
+        <h3>LibreOffice</h3>
+        <ul>
+            <li>Tools > Options > LibreOffice:View > Icon Theme: <strong>Elementary</strong></li>
+            <li>Tools > Options > LibreOffice: Appearance > Customizations: Items: Color: <strong>Light Gray 5</strong></li>
+            <li>Tools > Options > LibreOffice Writer: General > Settings: Measurement units: <strong>Inches</strong></li>
+        </ul>
+        <h3>Mousepad</h3>
+        <p>Check <code>Wrap Long Lines</code> in Preferences > View.</p>
+    </section>
+
+    <section id="audio">
+        <h2>Combined Audio for Screen Recording</h2>
+        <pre>pactl load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"</pre>
+        <p>Loop back the microphone:</p>
+        <pre>pactl load-module module-loopback source=[YOUR_MIC_SOURCE] sink=Combined_Audio</pre>
+    </section>
+
+    <section id="thunar">
+        <h2>Fix Thunar "Open Terminal Here" (Custom Action)</h2>
+        <p>If you encounter "permission denied" errors, add this custom action to Thunar:</p>
+
+        <div class="step-block">
+            <strong>1. Access Custom Actions:</strong>
+            <p>Go to <code>Edit > Configure Custom Actions...</code></p>
+        </div>
+
+        <div class="step-block">
+            <strong>2. Configure the Action:</strong>
+            <p>Click (+) and fill in:</p>
+            <ul>
+                <li>Name: <code>Open New Terminal Here</code></li>
+                <li>Command: <pre>sh -c "cd %f && exec xterm"</pre></li>
+            </ul>
+        </div>
+
+        <div class="step-block">
+            <strong>3. Set Appearance Conditions:</strong>
+            <p>Under the "Appearance Conditions" tab, leave pattern as <code>*</code> and check <code>Directory</code>.</p>
+        </div>
+
+        <div class="step-block">
+            <strong>4. Save and Test:</strong>
+            <p>Click OK. Right-click in any folder to test "Open New Terminal Here".</p>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    Debian i3 Workflow &bull; Dell Inspiron 14 3458 &bull; Optimized Guide
+</footer>
+
+<script>
+    /* This script ensures that no matter how much text you add to the header, 
+       the scroll offset updates automatically. */
+    const header = document.getElementById('main-header');
+    const root = document.documentElement;
+
+    const updateHeaderHeight = () => {
+        const height = header.offsetHeight;
+        root.style.setProperty('--header-height', height + 'px');
+    };
+
+    // Run on load, on resize, and every time you might add content
+    window.addEventListener('resize', updateHeaderHeight);
+    window.addEventListener('load', updateHeaderHeight);
+    
+    // Initial call
+    updateHeaderHeight();
+</script>
+
+</body>
+</html>
