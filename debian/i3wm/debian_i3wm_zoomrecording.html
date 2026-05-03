@@ -165,7 +165,7 @@ Meant for <strong>Zoom Meetings</strong> and <strong>SimpleScreenRecorder</stron
         <p>Ensure the local package index is updated and all existing software is upgraded before adding new packages.</p>
         <pre>apt update && apt upgrade -y</pre>
         <p>Comprehensive installation list for productivity, media, and document management:</p>
-        <pre>apt install -y sudo i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw mpv simplescreenrecorder xfce4-screenshooter ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei fonts-arphic-uming fonts-arphic-ukai firefox-esr engrampa pspp xfce4-power-manager papirus-icon-theme lxappearance gnome-disk-utility network-manager network-manager-gnome evince ristretto system-config-printer cups volumeicon-alsa libreoffice-gtk3 gnome-themes-extra adwaita-icon-theme adwaita-qt adwaita-qt6 qt5ct qgnomeplatform-qt5 dconf-cli libglib2.0-bin libreoffice-style-elementary -y</pre>
+        <pre>apt install -y sudo i3 xorg xterm brightnessctl mousepad feh thunar speedtest-cli pavucontrol flatpak libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw mpv simplescreenrecorder xfce4-screenshooter ocrmypdf telegram-desktop lollypop gimp foliate qbittorrent persepolis dbus-user-session xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-gtk fonts-noto-cjk fonts-wqy-zenhei fonts-wqy-microhei fonts-arphic-uming fonts-arphic-ukai firefox-esr engrampa pspp xfce4-power-manager papirus-icon-theme lxappearance gnome-disk-utility network-manager network-manager-gnome evince ristretto system-config-printer cups sudo apt install pipewire-audio-client-libraries libspa-0.2-bluetooth libspa-0.2-jack pipewire-pulse wireplumber pulseaudio libreoffice-gtk3 gnome-themes-extra adwaita-icon-theme adwaita-qt adwaita-qt6 qt5ct qgnomeplatform-qt5 dconf-cli libglib2.0-bin libreoffice-style-elementary -y</pre>
     </section>
 
     <section id="sudo">
@@ -265,9 +265,28 @@ gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'</pre>
 
     <section id="audio">
         <h2>Combined Audio for Screen Recording</h2>
+        <h3>Load the `module-null-sink`</h3>
         <pre>pactl load-module module-null-sink sink_name=Combined_Audio format=s16le channels=2 rate=48000 sink_properties=device.description="Combined_Audio_for_Recording"</pre>
-        <p>Loop back the microphone:</p>
-        <pre>pactl load-module module-loopback source=[YOUR_MIC_SOURCE] sink=Combined_Audio</pre>
+        <h3>Route your Microphone into the `null-sink`</h3>
+        <p>First, identify the name of your microphone's PulseAudio source:</p>
+        <pre>pactl list sources short</pre>
+        <p>Look for an entry similar to `alsa_input.pci-0000_00_1b.0.analog-stereo` in the output. Then, route your microphone into the `Combined_Audio` sink:</p>
+        <pre>pactl load-module module-loopback source=alsa_input.pci-0000_00_1b.0.analog-stereo sink=Combined_Audio</pre>
+        <h3>Configure SimpleScreenRecorder</h3>
+        <p>Launch SimpleScreenRecorder.
+    Proceed through the setup wizard. When you get to the Audio Input page:
+        Audio backend: Select PulseAudio.
+        Source: From the dropdown menu, select `<strong>Monitor of Combined_Audio_for_Recording</strong>`.</p>
+        <h3>Route System Audio to `Combined_Audio_for_Recording`</h3>
+        <p>You need to tell the applications that are playing sound (like your web browser, video player, etc.) to send their audio to your new combined sink.
+
+    Start playing the audio/video you want to record (e.g., a YouTube video in Firefox).
+    Open `pavucontrol` (PulseAudio Volume Control) from your terminal or dmenu.
+    Go to the "Playback" tab.
+    You will see the application that's currently playing audio (e.g., "Firefox," "MPV," etc.). Next to its name, there will be a dropdown menu showing its current output device.
+    Click on this dropdown menu and select `Combined_Audio_for_Recording`.</p>
+        <div class="note">
+                Important: You'll need to do this for each application whose sound you want to capture during your recording session.
     </section>
 
     <section id="thunar">
